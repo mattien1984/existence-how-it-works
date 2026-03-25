@@ -204,7 +204,7 @@ footer{padding:32px 40px;display:flex;justify-content:space-between;font-size:11
     <div id="heroSticky" style="position:sticky;top:0;height:100vh;overflow:hidden;">
 
       <!-- Existence logo — top center, fades on scroll -->
-      <div id="heroLogo" style="position:absolute;top:24px;left:0;right:0;text-align:center;z-index:5;font-family:var(--serif);font-size:20px;font-weight:400;letter-spacing:1px;opacity:0.8;">existence</div>
+      <div id="heroLogo" style="position:absolute;top:24px;left:0;right:0;text-align:center;z-index:5;font-family:var(--serif);font-size:32px;font-weight:400;letter-spacing:1px;opacity:0.8;">existence</div>
 
       <!-- Full video background -->
       <video id="heroVideo" autoplay muted loop playsinline style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;opacity:0.45;">
@@ -301,7 +301,7 @@ footer{padding:32px 40px;display:flex;justify-content:space-between;font-size:11
 </div>
 
 <!-- ═══ CYCLE EXPERIENCE — Sticky cycle + scrolling content ═══ -->
-<div id="cycleExperience" style="position:relative;margin-top:-160vh;">
+<div id="cycleExperience" style="position:relative;margin-top:-145vh;">
 
   <!-- Intro headline now inside hero sticky frame -->
 
@@ -357,17 +357,6 @@ footer{padding:32px 40px;display:flex;justify-content:space-between;font-size:11
               <div class="tb" data-d="200"><div class="tb-bar w"></div><div class="tb-info"><div class="tb-name">Team Standup</div><div class="tb-meta">10:00 AM · Zoom</div></div><div class="tb-pill">Work</div></div>
               <div class="tb" data-d="250"><div class="tb-bar l"></div><div class="tb-info"><div class="tb-name">Lunch with Jordan</div><div class="tb-meta">12:30 PM · West Village</div></div><div class="tb-pill">Life</div></div>
             </div>
-            <div style="margin-top:28px;">
-              <div class="label">TIME BLOCK</div>
-              <div class="tb-exp">
-                <div class="tb-exp-title">Deep Focus: Strategy</div>
-                <div class="tb-row"><span class="tb-row-k">When</span><span class="tb-row-v">8:30 – 10:00 AM</span></div>
-                <div class="tb-row"><span class="tb-row-k">What</span><span class="tb-row-v">Product strategy review</span></div>
-                <div class="tb-row"><span class="tb-row-k">Where</span><span class="tb-row-v">Office, 4th floor</span></div>
-                <div class="tb-row"><span class="tb-row-k">Who</span><span class="tb-row-v">Solo</span></div>
-                <div class="tb-row"><span class="tb-row-k">Pillar</span><span class="tb-row-v">Work</span></div>
-              </div>
-            </div>
           </div>
 
           <!-- Record panel -->
@@ -390,9 +379,9 @@ footer{padding:32px 40px;display:flex;justify-content:space-between;font-size:11
             <div class="step-title" style="color:var(--c-rev);">Reveal</div>
             <p class="step-desc">Your time becomes visible and measurable. What you did, when, who you were with, and how it felt — a complete picture.</p>
             <div class="rev-cards" style="grid-template-columns:1fr;margin-top:20px;">
-              <div class="rev-card"><span class="rev-icon">📊</span><h5>Data Explorer</h5><p>Weekly view. Pillar distribution. Time Alignment Score.</p></div>
-              <div class="rev-card"><span class="rev-icon">🧠</span><h5>AI Summaries</h5><p>Week, month, year. What you did and how it felt.</p></div>
-              <div class="rev-card"><span class="rev-icon">💬</span><h5>"E"</h5><p>Ask anything across your full record.</p></div>
+              <div class="rev-card"><h5>Data Explorer</h5><p>Weekly view. Pillar distribution. Time Alignment Score.</p></div>
+              <div class="rev-card"><h5>AI Summaries</h5><p>Week, month, year. What you did and how it felt.</p></div>
+              <div class="rev-card"><h5>"E"</h5><p>Ask anything across your full record.</p></div>
             </div>
           </div>
 
@@ -402,7 +391,7 @@ footer{padding:32px 40px;display:flex;justify-content:space-between;font-size:11
   </div>
 
 <!-- SCREEN 7 — LOOP CLOSES -->
-<section class="screen" id="s7" style="min-height:60vh;margin-top:-40vh;">
+<section class="screen" id="s7" style="min-height:60vh;margin-top:20vh;">
   <div class="screen-inner" style="text-align:center;">
     <p class="sub sub-center f" style="color:rgba(255,255,255,0.25);margin-bottom:28px;">What you see changes what you do next</p>
     <h2 class="headline f d1">Now it's no longer three steps.<br>It's a system <em>in motion.</em></h2>
@@ -552,8 +541,8 @@ function updateCyclePhase(){
   const rotation=-20*(1-fadeIn);
   const scaleIn=0.85+0.15*fadeIn;
 
-  // Phase 2 (0.06-0.14): Labels appear
-  const labelP=Math.max(0,Math.min(1,(p-0.06)/0.08));
+  // Phase 2 (0.04-0.12): Labels appear
+  const labelP=Math.max(0,Math.min(1,(p-0.05)/0.08));
 
   // Phase 3 (0.16-0.26): Move left, shrink slightly
   const moveP=Math.max(0,Math.min(1,(p-0.16)/0.1));
@@ -574,58 +563,62 @@ function updateCyclePhase(){
     cycleWrap.style.opacity=1;
   }
 
-  // Labels + arcs — as circle moves left, dim Record/Reveal, glow Engineer
-  const engGlow=moveP;
-  cn1.style.opacity=labelP*(0.85+0.15*engGlow);
-  cn1.style.color=engGlow>0.5?colors.eng:'';
-  cn1.style.textShadow=engGlow>0.3?`0 0 ${12*engGlow}px rgba(138,180,248,${0.4*engGlow})`:'none';
-  cn2.style.opacity=labelP*(0.85-0.55*engGlow);
-  cn3.style.opacity=labelP*(0.85-0.55*engGlow);
-  cycleCenter.style.opacity=labelP*0.5;
+  // Labels — only set defaults when no phase is active
+  if(!lastPhase){
+    cn1.style.opacity=labelP*0.85;
+    cn2.style.opacity=labelP*0.85;
+    cn3.style.opacity=labelP*0.85;
+    cycleCenter.style.opacity=labelP;
+  }else{
+    cycleCenter.style.opacity=1;
+  }
 
   // Arcs
   const aE=document.getElementById('arcEng');
   const aR=document.getElementById('arcRec');
   const aV=document.getElementById('arcRev');
-  if(aE){aE.style.opacity=1;aE.style.filter=engGlow>0.3?`drop-shadow(0 0 8px rgba(138,180,248,${0.4*engGlow}))`:'none';}
-  if(aR)aR.style.opacity=1-0.6*engGlow;
-  if(aV)aV.style.opacity=1-0.6*engGlow;
 
   // Phase 4+: Panels handle their own visibility via .active class
 
-  // Determine active step
+  // Determine active step — engineer starts after move completes (0.26) + a beat (0.30)
   let phase='';
-  if(p>=0.2&&p<0.5){phase='eng';}
-  else if(p>=0.5&&p<0.76){phase='rec';}
-  else if(p>=0.76){phase='rev';}
+  if(p>=0.30&&p<0.55){phase='eng';}
+  else if(p>=0.55&&p<0.78){phase='rec';}
+  else if(p>=0.78){phase='rev';}
 
   if(phase!==lastPhase){
     lastPhase=phase;
     // Reset all labels + arcs (inactive = lighter, still visible)
-    cn1.style.color='';cn1.style.opacity='0.5';cn1.style.textShadow='none';cn1.style.fontSize='14px';
-    cn2.style.color='';cn2.style.opacity='0.5';cn2.style.textShadow='none';cn2.style.fontSize='14px';
-    cn3.style.color='';cn3.style.opacity='0.5';cn3.style.textShadow='none';cn3.style.fontSize='14px';
+    cn1.style.color='';cn1.style.opacity='0.5';cn1.style.textShadow='none';
+    cn2.style.color='';cn2.style.opacity='0.5';cn2.style.textShadow='none';
+    cn3.style.color='';cn3.style.opacity='0.5';cn3.style.textShadow='none';
     if(aE){aE.style.opacity='0.5';aE.style.filter='none';aE.querySelector('path').setAttribute('stroke','#fff');aE.querySelector('path').setAttribute('stroke-width','3');aE.querySelector('polygon').setAttribute('fill','#fff');}
     if(aR){aR.style.opacity='0.5';aR.style.filter='none';aR.querySelector('path').setAttribute('stroke','#fff');aR.querySelector('path').setAttribute('stroke-width','3');aR.querySelector('polygon').setAttribute('fill','#fff');}
     if(aV){aV.style.opacity='0.5';aV.style.filter='none';aV.querySelector('path').setAttribute('stroke','#fff');aV.querySelector('path').setAttribute('stroke-width','3');aV.querySelector('polygon').setAttribute('fill','#fff');}
 
     if(phase==='eng'){
-      cn1.style.color=colors.eng;cn1.style.opacity='1';cn1.style.textShadow='0 0 20px rgba(138,180,248,0.6), 0 0 40px rgba(138,180,248,0.2)';cn1.style.fontSize='16px';
+      cn1.style.color=colors.eng;cn1.style.opacity='1';cn1.style.textShadow='0 0 20px rgba(138,180,248,0.6), 0 0 40px rgba(138,180,248,0.2)';
+      cn2.style.opacity='0.1';cn3.style.opacity='0.1';
       if(aE){aE.style.opacity='1';aE.style.filter='drop-shadow(0 0 12px rgba(138,180,248,0.5)) drop-shadow(0 0 25px rgba(138,180,248,0.2))';aE.querySelector('path').setAttribute('stroke',colors.eng);aE.querySelector('path').setAttribute('stroke-width','4.5');aE.querySelector('polygon').setAttribute('fill',colors.eng);}
+      if(aR)aR.style.opacity='0.1';if(aV)aV.style.opacity='0.1';
       showPanel('panelEng');
     }else if(phase==='rec'){
-      cn2.style.color=colors.rec;cn2.style.opacity='1';cn2.style.textShadow='0 0 20px rgba(232,168,124,0.6), 0 0 40px rgba(232,168,124,0.2)';cn2.style.fontSize='16px';
+      cn2.style.color=colors.rec;cn2.style.opacity='1';cn2.style.textShadow='0 0 20px rgba(232,168,124,0.6), 0 0 40px rgba(232,168,124,0.2)';
+      cn1.style.opacity='0.1';cn3.style.opacity='0.1';
       if(aR){aR.style.opacity='1';aR.style.filter='drop-shadow(0 0 12px rgba(232,168,124,0.5)) drop-shadow(0 0 25px rgba(232,168,124,0.2))';aR.querySelector('path').setAttribute('stroke',colors.rec);aR.querySelector('path').setAttribute('stroke-width','4.5');aR.querySelector('polygon').setAttribute('fill',colors.rec);}
+      if(aE)aE.style.opacity='0.1';if(aV)aV.style.opacity='0.1';
       showPanel('panelRec');
     }else if(phase==='rev'){
-      cn3.style.color=colors.rev;cn3.style.opacity='1';cn3.style.textShadow='0 0 20px rgba(130,217,197,0.6), 0 0 40px rgba(130,217,197,0.2)';cn3.style.fontSize='16px';
+      cn3.style.color=colors.rev;cn3.style.opacity='1';cn3.style.textShadow='0 0 20px rgba(130,217,197,0.6), 0 0 40px rgba(130,217,197,0.2)';
+      cn1.style.opacity='0.1';cn2.style.opacity='0.1';
       if(aV){aV.style.opacity='1';aV.style.filter='drop-shadow(0 0 12px rgba(130,217,197,0.5)) drop-shadow(0 0 25px rgba(130,217,197,0.2))';aV.querySelector('path').setAttribute('stroke',colors.rev);aV.querySelector('path').setAttribute('stroke-width','4.5');aV.querySelector('polygon').setAttribute('fill',colors.rev);}
+      if(aE)aE.style.opacity='0.1';if(aR)aR.style.opacity='0.1';
       showPanel('panelRev');
     }else{
       // No active step — reset everything
       cn1.style.opacity=String(labelP*0.85);cn2.style.opacity=String(labelP*0.85);cn3.style.opacity=String(labelP*0.85);
       cn1.style.textShadow='none';cn2.style.textShadow='none';cn3.style.textShadow='none';
-      cn1.style.fontSize='14px';cn2.style.fontSize='14px';cn3.style.fontSize='14px';
+      cn1.style.fontSize='14px';
       if(aE){aE.style.opacity='1';aE.style.filter='none';aE.querySelector('path').setAttribute('stroke','#fff');aE.querySelector('path').setAttribute('stroke-width','3');aE.querySelector('polygon').setAttribute('fill','#fff');}
       if(aR){aR.style.opacity='1';aR.style.filter='none';aR.querySelector('path').setAttribute('stroke','#fff');aR.querySelector('path').setAttribute('stroke-width','3');aR.querySelector('polygon').setAttribute('fill','#fff');}
       if(aV){aV.style.opacity='1';aV.style.filter='none';aV.querySelector('path').setAttribute('stroke','#fff');aV.querySelector('path').setAttribute('stroke-width','3');aV.querySelector('polygon').setAttribute('fill','#fff');}
@@ -654,39 +647,58 @@ const rl2=document.getElementById('rl2');
 const rl3=document.getElementById('rl3');
 
 // Rail is always visible
-// Scroll-driven rail fill — travels continuously down the rail
+// Scroll-driven rail fill — synced with cycle phases
+// Engineer=0.30, Record=0.55, Reveal=0.78
 function updateRailFill(){
-  const cl=document.getElementById('cycleScroller');
-  if(!cl)return;
-  const rect=cl.getBoundingClientRect();
-  const totalScroll=cl.scrollHeight-window.innerHeight;
-  const scrolled=Math.max(0,-rect.top);
-  const p=Math.min(1,scrolled/totalScroll); // 0 to 1 through cycle experience
+  // Use the same scroller and progress as updateCyclePhase
+  // Use total page scroll
+  const totalScroll=document.documentElement.scrollHeight-window.innerHeight;
+  const p=Math.min(1,window.scrollY/totalScroll);
 
-  // Map scroll progress to rail segments: rl0 (0-0.15), eng label, rl1 (0.2-0.4), rec label, rl2 (0.45-0.65), rev label, rl3 (0.7-1)
-  const fills=[
-    {el:rl0, start:0, end:0.12},
-    {el:rl1, start:0.2, end:0.38},
-    {el:rl2, start:0.45, end:0.62},
-    {el:rl3, start:0.7, end:0.88}
-  ];
-  fills.forEach(f=>{
-    const fp=Math.max(0,Math.min(1,(p-f.start)/(f.end-f.start)));
-    const fill=f.el.querySelector('.rail-line-fill');
-    if(fill)fill.style.height=fp*100+'%';
-  });
+  // Top dot — always lit
+  rd0.classList.add('active');
 
-  // Dots
-  rd0.classList.toggle('active',p>0);
-  rd1.classList.toggle('active',p>0.85);
+  // Dynamically calculate where cycle phases land in total page scroll
+  const cs=document.getElementById('cycleScroller');
+  if(!cs)return;
+  const csTop=cs.getBoundingClientRect().top+window.scrollY;
+  const csTotal=cs.scrollHeight-window.innerHeight;
+  const engP=(csTop+0.30*csTotal)/totalScroll;
+  const recP=(csTop+0.55*csTotal)/totalScroll;
+  const revP=(csTop+0.78*csTotal)/totalScroll;
 
-  // Labels — highlight when their section is active
-  [rsEng,rsRec,rsRev].forEach(s=>{s.className='rail-step';});
-  if(p>=0.12 && p<0.38){rsEng.classList.add('current');}
-  else if(p>=0.12){rsEng.classList.add('passed');}
-  if(p>=0.38 && p<0.62){rsRec.classList.add('current');}
-  else if(p>=0.38){rsRec.classList.add('passed');}
-  if(p>=0.62){rsRev.classList.add('current');}
+  // Line 0: fills from start → engineer
+  const f0=Math.max(0,Math.min(1,p/engP));
+  rl0.querySelector('.rail-line-fill').style.height=f0*100+'%';
+
+  // Engineer label — lights up when cycle engineer turns blue
+  rsEng.classList.remove('current','passed');
+  if(p>=engP&&p<recP)rsEng.classList.add('current');
+  else if(p>=recP)rsEng.classList.add('passed');
+
+  // Line 1: fills engineer → record
+  const f1=Math.max(0,Math.min(1,(p-engP)/(recP-engP)));
+  rl1.querySelector('.rail-line-fill').style.height=f1*100+'%';
+
+  // Record label
+  rsRec.classList.remove('current','passed');
+  if(p>=recP&&p<revP)rsRec.classList.add('current');
+  else if(p>=revP)rsRec.classList.add('passed');
+
+  // Line 2: fills record → reveal
+  const f2=Math.max(0,Math.min(1,(p-recP)/(revP-recP)));
+  rl2.querySelector('.rail-line-fill').style.height=f2*100+'%';
+
+  // Reveal label
+  rsRev.classList.remove('current','passed');
+  if(p>=revP)rsRev.classList.add('current');
+
+  // Line 3: fills reveal → end
+  const f3=Math.max(0,Math.min(1,(p-revP)/(1-revP)));
+  rl3.querySelector('.rail-line-fill').style.height=f3*100+'%';
+
+  // Bottom dot
+  rd1.classList.toggle('active',p>0.95);
 }
 window.addEventListener('scroll',updateRailFill,{passive:true});
 updateRailFill();
@@ -764,8 +776,8 @@ function updateHeroTransition(){
   heroMask.style.width=`${55+45*maskFull}%`;
 
   // ═══ ACT 3 (0.5–0.72): "At the center..." fades in, holds, fades out ═══
-  const headIn=Math.max(0,Math.min(1,(p-0.5)/0.06));
-  const headOut=Math.max(0,Math.min(1,(p-0.65)/0.07));
+  const headIn=Math.max(0,Math.min(1,(p-0.55)/0.1));
+  const headOut=Math.max(0,Math.min(1,(p-0.72)/0.08));
   if(centerHeadline){
     centerHeadline.style.opacity=Math.min(headIn,1-headOut);
   }
