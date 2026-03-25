@@ -30,12 +30,12 @@ nav{position:absolute;top:0;left:0;right:0;z-index:1000;padding:24px 40px;displa
 .hero-video-wrap::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(180deg,rgba(5,5,5,0.05) 0%,rgba(5,5,5,0.2) 70%,var(--black) 100%);}
 
 .rail-step{writing-mode:vertical-rl;text-orientation:mixed;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.15);transition:all 0.5s ease;cursor:pointer;padding:8px 4px;}
-.rail-step.current{color:var(--white);font-weight:500;text-shadow:0 0 20px rgba(255,255,255,0.3);}
-.rail-step.passed{color:rgba(255,255,255,0.4);}
+.rail-step.current{color:var(--white);font-weight:500;}
+.rail-step.passed{color:var(--white);}
 
 .rail-line{width:1px;height:80px;background:rgba(255,255,255,0.06);position:relative;overflow:hidden;}
 .rail-line.long{height:140px;}
-.rail-line-fill{position:absolute;top:0;left:0;width:100%;height:0%;background:rgba(255,255,255,0.5);transition:none;}
+.rail-line-fill{position:absolute;top:0;left:0;width:100%;height:0%;background:var(--white);transition:none;}
 
 .rail-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.1);transition:all 0.4s;margin:6px 0;}
 .rail-dot.active{background:var(--white);box-shadow:0 0 12px rgba(255,255,255,0.3);}
