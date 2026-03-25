@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How It Works | Existence</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'><text y='28' font-size='28'>⏳</text></svg>">
+<style>
+@font-face {
+  font-family: 'Season Mix';
+  src: url('fonts/SeasonMixTRIAL-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Season Mix';
+  src: url('fonts/SeasonMixTRIAL-RegularItalic.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Roobert';
+  src: url('fonts/RoobertTRIAL-Light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Roobert';
+  src: url('fonts/RoobertTRIAL-Regular.otf') format('opentype'),
+       url('fonts/RoobertTRIAL-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Roobert';
+  src: url('fonts/RoobertTRIAL-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --black: #0a0a0a;
+  --dark: #111;
+  --gray: #333;
+  --light-gray: #888;
+  --off-white: #e8e4df;
+  --white: #f5f2ed;
+  --accent: #ffffff;
+  --engineer: #ffffff;
+  --record: #ffffff;
+  --reveal: #ffffff;
+  --serif: 'Season Mix', Georgia, serif;
+  --sans: 'Roobert', -apple-system, sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--sans);
+  background: var(--black);
+  color: var(--white);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ═══ NAV ═══ */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  padding: 20px 40px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: rgba(10,10,10,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.nav-logo {
+  font-family: var(--serif); font-size: 22px; font-weight: 400;
+  letter-spacing: 1px; margin-bottom: 16px;
+}
+.nav-progress {
+  display: flex; align-items: center; gap: 0; position: relative;
+}
+.nav-progress a {
+  color: rgba(255,255,255,0.25); text-decoration: none; font-size: 10px;
+  letter-spacing: 2.5px; text-transform: uppercase; font-weight: 500;
+  transition: color 0.5s; padding: 0 4px; white-space: nowrap;
+}
+.nav-progress a.reached { color: var(--white); }
+.nav-progress a:hover { color: var(--white); }
+.nav-progress a.nav-cycle-step {
+  font-size: 13px;
+  letter-spacing: 3px;
+}
+.nav-line {
+  width: 40px; height: 1px; background: rgba(255,255,255,0.12);
+  position: relative; overflow: hidden; flex-shrink: 0;
+}
+.nav-line-fill {
+  position: absolute; top: 0; left: 0; height: 100%; width: 0%;
+  background: var(--white); transition: width 0.5s ease;
+}
+.nav-line.reached .nav-line-fill { width: 100%; }
+
+/* ═══ HERO ═══ */
+#hero {
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  text-align: center; padding: 120px 40px;
+  position: relative;
+}
+.hero-label {
+  font-size: 11px; letter-spacing: 4px; text-transform: uppercase;
+  color: var(--light-gray); margin-bottom: 40px;
+}
+.hero-title {
+  font-family: var(--serif); font-size: clamp(48px, 7vw, 88px);
+  font-weight: 400; line-height: 1.1; margin-bottom: 40px;
+}
+.hero-title em { font-style: italic; color: var(--accent); }
+.hero-sub {
+  font-size: 18px; line-height: 1.7; color: var(--light-gray);
+  max-width: 620px; margin: 0 auto; font-weight: 300;
+}
+
+/* ═══ SCROLL CONTAINER — The central cycle experience ═══ */
+#scroll-experience {
+  position: relative;
+}
+
+/* The sticky cycle that stays centered */
+#cycle-track {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* The cycle SVG */
+#cycle-svg {
+  transition: none; /* JS controls this */
+}
+
+.cycle-arc { fill: none; stroke-width: 2; stroke-linecap: butt; }
+.arc-engineer { stroke: var(--engineer); }
+.arc-record { stroke: var(--record); }
+.arc-reveal { stroke: var(--reveal); }
+.cycle-track-ring { display: none; }
+
+/* Cycle labels that orbit the ring */
+.cycle-label-group text {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  text-anchor: middle;
+}
+.label-engineer { fill: var(--engineer); }
+.label-record { fill: var(--record); }
+.label-reveal { fill: var(--reveal); }
+
+/* Center text in cycle */
+.cycle-center-text {
+  font-family: var(--serif);
+  fill: var(--white);
+  text-anchor: middle;
+  opacity: 0.6;
+  font-size: 20px;
+}
+
+/* Glow on active arc */
+.cycle-arc { transition: filter 0.6s ease, stroke-width 0.6s ease, opacity 0.6s ease; }
+.cycle-arc.glowing {
+  filter: drop-shadow(0 0 12px rgba(255,255,255,0.5)) drop-shadow(0 0 30px rgba(255,255,255,0.2));
+}
+.cycle-label-group text { transition: opacity 0.6s ease, font-size 0.3s ease; }
+
+/* Arrows — simple chevron lines */
+.arc-chevron { fill: none; stroke: var(--white); stroke-width: 1.5; stroke-linecap: butt; stroke-linejoin: miter; opacity: 0.8; }
+
+/* ═══ CONTENT PANELS — Branch off from center ═══ */
+.content-spacer {
+  position: relative;
+  z-index: 5;
+  pointer-events: auto;
+}
+
+.panel {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 120px 40px;
+  position: relative;
+}
+
+.panel-left .panel-content {
+  max-width: 480px;
+  margin-right: auto;
+  margin-left: 5%;
+}
+
+.panel-right .panel-content {
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: 5%;
+}
+
+.panel-center .panel-content {
+  max-width: 640px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* Panel text styles */
+.panel-step {
+  font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+  margin-bottom: 12px; font-weight: 600;
+}
+.panel-title {
+  font-family: var(--serif); font-size: clamp(36px, 4.5vw, 64px);
+  font-weight: 400; line-height: 1.0; margin-bottom: 20px;
+}
+.panel-body {
+  font-size: 16px; line-height: 1.8; color: var(--light-gray);
+  font-weight: 300; margin-bottom: 24px;
+}
+.panel-body strong { color: var(--white); font-weight: 500; }
+
+/* Fade in */
+.fade-in {
+  opacity: 0; transform: translateY(30px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.fade-in.visible { opacity: 1; transform: translateY(0); }
+.fade-in.d1 { transition-delay: 0.1s; }
+.fade-in.d2 { transition-delay: 0.2s; }
+.fade-in.d3 { transition-delay: 0.3s; }
+.fade-in.d4 { transition-delay: 0.4s; }
+
+/* ═══ DETAIL CARDS ═══ */
+.detail-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  padding: 24px;
+  margin-bottom: 14px;
+  backdrop-filter: blur(8px);
+}
+.detail-card-label {
+  font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.detail-card h4 {
+  font-family: var(--serif); font-size: 20px; font-weight: 400; margin-bottom: 8px;
+}
+.detail-card p { font-size: 13px; color: var(--light-gray); line-height: 1.6; }
+
+/* Dimensions grid */
+.dim-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
+.dim-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 11px 14px; border-radius: 8px; font-size: 13px;
+}
+.dim-item-e { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); }
+.dim-item-r { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); }
+
+/* Pillars */
+.pillars { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-top: 14px; }
+.pillar {
+  text-align: center; padding: 16px 8px; border-radius: 10px;
+  font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+}
+.pillar span { font-family: var(--serif); font-size: 24px; font-weight: 400; display: block; margin-bottom: 4px; }
+.p-work { background: rgba(255,255,255,0.08); color: var(--engineer); border: 1px solid rgba(255,255,255,0.15); }
+.p-life { background: rgba(255,255,255,0.08); color: var(--accent); border: 1px solid rgba(255,255,255,0.15); }
+.p-health { background: rgba(255,255,255,0.08); color: var(--reveal); border: 1px solid rgba(255,255,255,0.15); }
+.p-sleep { background: rgba(255,255,255,0.08); color: var(--white); border: 1px solid rgba(255,255,255,0.15); }
+
+/* Quality ring */
+.quality-wrap { display: flex; align-items: center; gap: 16px; margin: 16px 0; }
+.quality-ring { width: 80px; height: 80px; position: relative; }
+.quality-ring svg { transform: rotate(-90deg); width: 100%; height: 100%; }
+.quality-ring svg circle { fill: none; stroke-width: 4; }
+.qt { stroke: rgba(255,255,255,0.06); }
+.qf { stroke: var(--record); stroke-dasharray: 201; stroke-dashoffset: 40; stroke-linecap: round; }
+.quality-num {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  font-family: var(--serif); font-size: 22px; font-weight: 400;
+}
+
+/* Record items */
+.rec-item {
+  display: flex; align-items: center; gap: 10px; font-size: 13px;
+  padding: 8px 14px; border-radius: 6px; margin-bottom: 6px;
+}
+.rec-item-e { background: rgba(255,255,255,0.04); border-left: 2px solid rgba(255,255,255,0.3); }
+.rec-item-r { background: rgba(255,255,255,0.04); border-left: 2px solid rgba(255,255,255,0.3); }
+.rec-item-v { background: rgba(255,255,255,0.04); border-left: 2px solid rgba(255,255,255,0.3); }
+
+/* Reveal modes */
+.reveal-modes { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-top: 20px; }
+.reveal-mode {
+  padding: 24px 18px; background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.1); border-radius: 14px;
+  text-align: center; transition: all 0.3s;
+}
+.reveal-mode:hover { background: rgba(255,255,255,0.04); transform: translateY(-3px); }
+.reveal-mode-icon { font-size: 28px; margin-bottom: 12px; display: block; }
+.reveal-mode h4 { font-family: var(--serif); font-size: 18px; color: var(--reveal); margin-bottom: 8px; }
+.reveal-mode p { font-size: 12px; color: var(--light-gray); line-height: 1.5; }
+
+/* ═══ DNA TRANSFORM SECTION ═══ */
+#dna-transform {
+  min-height: 100vh; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center; padding: 120px 40px;
+  position: relative; z-index: 5;
+}
+
+.dna-title {
+  font-family: var(--serif); font-size: clamp(36px,5vw,64px);
+  font-weight: 400; margin-bottom: 20px;
+}
+.dna-title em { font-style: italic; color: var(--accent); }
+.dna-sub {
+  font-size: 16px; color: var(--light-gray); max-width: 540px;
+  margin: 0 auto 50px; line-height: 1.7; font-weight: 300;
+}
+
+/* DNA Helix SVG */
+.dna-helix { width: 100%; max-width: 600px; margin: 0 auto; }
+.dna-helix svg { width: 100%; }
+.dna-label {
+  font-family: var(--serif); font-size: 15px; color: var(--light-gray);
+  margin-top: 20px; font-style: italic;
+}
+
+/* ═══ OUTCOMES ═══ */
+#outcomes {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  text-align: center; padding: 120px 40px; position: relative; z-index: 5;
+  background: linear-gradient(180deg, transparent 0%, rgba(255,255,255,0.03) 50%, transparent 100%);
+}
+.outcomes-label { font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: var(--accent); margin-bottom: 20px; }
+.outcomes-title {
+  font-family: var(--serif); font-size: clamp(42px,6vw,80px);
+  font-weight: 400; line-height: 1.1; margin-bottom: 32px;
+}
+.outcomes-title em { font-style: italic; }
+.outcomes-body {
+  font-size: 17px; line-height: 1.8; color: var(--light-gray);
+  max-width: 580px; margin: 0 auto 40px; font-weight: 300;
+}
+
+/* Gap closing bars */
+.gap-visual {
+  max-width: 440px; margin: 0 auto; padding: 28px;
+  background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 16px;
+}
+.gap-header { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; }
+.gap-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.gap-label { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--light-gray); min-width: 56px; text-align: right; }
+.gap-bars { flex: 1; height: 20px; position: relative; border-radius: 3px; overflow: hidden; background: rgba(255,255,255,0.02); }
+.gap-intention { position: absolute; top: 0; left: 0; height: 100%; background: rgba(255,255,255,0.15); border-right: 1px solid rgba(255,255,255,0.4); }
+.gap-created { position: absolute; top: 0; left: 0; height: 100%; background: rgba(255,255,255,0.5); border-radius: 0 3px 3px 0; transition: width 1s ease; }
+
+/* ═══ FINAL CTA ═══ */
+#final-cta {
+  min-height: 70vh; display: flex; align-items: center; justify-content: center;
+  text-align: center; padding: 80px 40px; position: relative; z-index: 5;
+}
+.final-title {
+  font-family: var(--serif); font-size: clamp(42px,6vw,80px);
+  font-weight: 400; line-height: 1.1; margin-bottom: 28px;
+}
+.final-title em { font-style: italic; color: var(--accent); }
+.final-sub { font-size: 16px; color: var(--light-gray); max-width: 480px; margin: 0 auto 36px; line-height: 1.7; font-weight: 300; }
+.final-btn {
+  display: inline-block; padding: 14px 44px; background: var(--white); color: var(--black);
+  font-size: 12px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase;
+  text-decoration: none; border-radius: 40px; transition: all 0.3s;
+}
+.final-btn:hover { background: var(--accent); transform: scale(1.05); }
+
+/* ═══ FOOTER ═══ */
+footer {
+  position: relative; z-index: 5; padding: 36px 40px;
+  display: flex; justify-content: space-between; align-items: center;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  font-size: 12px; color: var(--light-gray);
+}
+
+/* ═══ RESPONSIVE ═══ */
+@media (max-width: 900px) {
+  .panel-left .panel-content, .panel-right .panel-content { max-width: 100%; margin: 0; padding: 0 20px; }
+  .reveal-modes { grid-template-columns: 1fr; }
+  .dim-grid { grid-template-columns: 1fr; }
+  .pillars { grid-template-columns: repeat(2,1fr); }
+  nav { padding: 12px 16px; }
+  .nav-progress { flex-wrap: wrap; justify-content: center; gap: 4px; }
+  .nav-line { width: 20px; }
+  #cycle-track { display: none; }
+  .panel { padding: 80px 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">existence</div>
+  <div class="nav-progress" id="navProgress">
+    <a href="#hero" data-nav="hero" class="reached">WHAT IT IS</a>
+    <span class="nav-line" data-nav-line="0"><span class="nav-line-fill"></span></span>
+    <a href="#sec-engineer" data-nav="sec-engineer" class="nav-cycle-step">ENGINEER</a>
+    <span class="nav-line" data-nav-line="1"><span class="nav-line-fill"></span></span>
+    <a href="#sec-record" data-nav="sec-record" class="nav-cycle-step">RECORD</a>
+    <span class="nav-line" data-nav-line="2"><span class="nav-line-fill"></span></span>
+    <a href="#sec-reveal" data-nav="sec-reveal" class="nav-cycle-step">REVEAL</a>
+    <span class="nav-line" data-nav-line="3"><span class="nav-line-fill"></span></span>
+    <a href="#outcomes" data-nav="outcomes">OUTCOMES</a>
+  </div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section id="hero">
+  <div>
+    <div class="hero-label fade-in">HOW IT WORKS</div>
+    <h1 class="hero-title fade-in d1">Turn Time Into<br><em>Transformation</em></h1>
+    <p class="hero-sub fade-in d2">At the center of Existence is a process called the Time Creation Cycle. It turns intention into structured time, lived time into data, and that data into self-knowledge.</p>
+  </div>
+</section>
+
+<!-- ═══ SCROLL EXPERIENCE — Cycle + Content ═══ -->
+<div id="scroll-experience">
+
+  <!-- Sticky cycle in center -->
+  <div id="cycle-track">
+    <svg id="cycle-svg" width="600" height="600" viewBox="-50 -50 600 600">
+      <!-- Track ring -->
+      <circle class="cycle-track-ring" cx="250" cy="250" r="200"/>
+      <!-- Three arcs: each 120° -->
+      <path id="arcEngineer" class="cycle-arc arc-engineer" d=""/>
+      <path id="arcRecord" class="cycle-arc arc-record" d=""/>
+      <path id="arcReveal" class="cycle-arc arc-reveal" d=""/>
+      <!-- Chevron arrows — drawn by JS at arc endpoints -->
+      <polyline id="chevE" class="arc-chevron" points=""/>
+      <polyline id="chevR" class="arc-chevron" points=""/>
+      <polyline id="chevV" class="arc-chevron" points=""/>
+      <!-- Labels -->
+      <g class="cycle-label-group">
+        <text id="lblEngineer" class="label-engineer" x="250" y="30">ENGINEER</text>
+        <text id="lblRecord" class="label-record" x="450" y="390">RECORD</text>
+        <text id="lblReveal" class="label-reveal" x="50" y="390">REVEAL</text>
+      </g>
+      <!-- Center -->
+      <text class="cycle-center-text" x="250" y="242">Time Creation</text>
+      <text class="cycle-center-text" x="250" y="270">Cycle</text>
+    </svg>
+  </div>
+
+  <!-- Content panels that scroll through -->
+  <div class="content-spacer">
+
+    <!-- INTRO — What it is -->
+    <div class="panel panel-left" id="sec-intro" style="min-height:120vh;">
+      <div class="panel-content">
+        <div class="panel-step fade-in" style="color:var(--accent)">THE SYSTEM</div>
+        <div class="panel-title fade-in d1">Your calendar shows what was scheduled.<br><em style="font-family:var(--serif);font-style:italic;color:var(--accent);">Existence shows how your time was lived.</em></div>
+        <p class="panel-body fade-in d2">Existence builds on top of your calendar. It introduces <strong>Time Blocks</strong> — containers that capture what you planned, how it was actually lived, and how that impacted you.</p>
+        <p class="panel-body fade-in d3">On a typical day, you create <strong style="color:var(--accent);font-family:var(--serif);font-size:28px;">15–20</strong> Time Blocks — accounting for all time, not just what was scheduled.</p>
+      </div>
+    </div>
+
+    <!-- ENGINEER -->
+    <div class="panel panel-right" id="sec-engineer" style="min-height:130vh;">
+      <div class="panel-content">
+        <div class="panel-step fade-in" style="color:var(--engineer)">STEP 01</div>
+        <div class="panel-title fade-in d1" style="color:var(--engineer)">Engineer</div>
+        <p class="panel-body fade-in d2">To engineer your time is to give it structure before it is experienced. Each Time Block begins as a projection of what you intend to do.</p>
+
+        <div class="detail-card fade-in d3">
+          <div class="detail-card-label" style="color:var(--engineer)">FOUR DIMENSIONS</div>
+          <h4>Structure Time</h4>
+          <div class="dim-grid">
+            <div class="dim-item dim-item-e">🕐 When it occurs</div>
+            <div class="dim-item dim-item-e">📋 What you plan</div>
+            <div class="dim-item dim-item-e">📍 Where it happens</div>
+            <div class="dim-item dim-item-e">👥 Who you're with</div>
+          </div>
+        </div>
+
+        <div class="detail-card fade-in d4">
+          <div class="detail-card-label" style="color:var(--engineer)">FOUR PILLARS</div>
+          <h4>Your Time, Organized</h4>
+          <div class="pillars">
+            <div class="pillar p-work"><span>35%</span>Work</div>
+            <div class="pillar p-life"><span>30%</span>Life</div>
+            <div class="pillar p-health"><span>10%</span>Health</div>
+            <div class="pillar p-sleep"><span>25%</span>Sleep</div>
+          </div>
+        </div>
+
+        <p class="panel-body fade-in" style="margin-top:16px;">Recurring Time Blocks establish your <strong>Rhythm</strong> — the time you want to consistently create and be accountable to.</p>
+      </div>
+    </div>
+
+    <!-- RECORD -->
+    <div class="panel panel-left" id="sec-record" style="min-height:130vh;">
+      <div class="panel-content">
+        <div class="panel-step fade-in" style="color:var(--record)">STEP 02</div>
+        <div class="panel-title fade-in d1" style="color:var(--record)">Record</div>
+        <p class="panel-body fade-in d2">To record your time is to measure how it was actually created. You update each Time Block to reflect what happened, how it felt, and what it meant.</p>
+
+        <div class="detail-card fade-in d3">
+          <div class="detail-card-label" style="color:var(--record)">WHAT ACTUALLY HAPPENED</div>
+          <div class="rec-item rec-item-r">✏️ What you actually did</div>
+          <div class="rec-item rec-item-r">🕐 When it actually happened</div>
+          <div class="rec-item rec-item-r">👥 Who you were with</div>
+          <div class="rec-item rec-item-r">📍 Where it happened</div>
+        </div>
+
+        <div class="detail-card fade-in d4">
+          <div class="detail-card-label" style="color:var(--record)">HOW IT FELT</div>
+          <div class="quality-wrap">
+            <div class="quality-ring">
+              <svg viewBox="0 0 80 80"><circle class="qt" cx="40" cy="40" r="32"/><circle class="qf" cx="40" cy="40" r="32"/></svg>
+              <div class="quality-num">8.2</div>
+            </div>
+            <div>
+              <div style="font-size:13px;font-weight:500;margin-bottom:3px;">Quality Score</div>
+              <div style="font-size:11px;color:var(--light-gray);">Intention alignment · Goal progress · How it felt</div>
+            </div>
+          </div>
+          <div class="rec-item rec-item-r">💭 Reflections — what it meant</div>
+          <div class="rec-item rec-item-r">📸 Photos & media</div>
+        </div>
+
+        <p class="panel-body fade-in" style="margin-top:16px;">Over time, this becomes a <strong>Record of You</strong> — a multilayered record of how you actually live.</p>
+      </div>
+    </div>
+
+    <!-- REVEAL -->
+    <div class="panel panel-center" id="sec-reveal" style="min-height:120vh;">
+      <div class="panel-content">
+        <div class="panel-step fade-in" style="color:var(--reveal)">STEP 03</div>
+        <div class="panel-title fade-in d1" style="color:var(--reveal)">Reveal</div>
+        <p class="panel-body fade-in d2" style="text-align:center;">As the Record of You builds, your time becomes measurable and visible. What was previously invisible becomes clear.</p>
+
+        <div class="reveal-modes fade-in d3">
+          <div class="reveal-mode">
+            <span class="reveal-mode-icon">📊</span>
+            <h4>Data Explorer</h4>
+            <p>Weekly view of time distribution, pillar alignment, Time Alignment Score. Filter by activities, people, places.</p>
+          </div>
+          <div class="reveal-mode">
+            <span class="reveal-mode-icon">🧠</span>
+            <h4>AI Summaries</h4>
+            <p>Clear overviews across week, month, or year. How time was distributed and how it was experienced.</p>
+          </div>
+          <div class="reveal-mode">
+            <span class="reveal-mode-icon">💬</span>
+            <h4>"E" — Your AI</h4>
+            <p>Converse with your data. Ask anything across your full record. On-demand insight from your time.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Spacer for cycle to finish shrinking -->
+    <div style="height: 60vh;"></div>
+  </div>
+</div>
+
+<!-- ═══ DNA TRANSFORM ═══ -->
+<section id="dna-transform">
+  <div>
+    <div class="fade-in" style="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:16px;">THE SYSTEM IN MOTION</div>
+    <h2 class="dna-title fade-in d1">Each cycle builds on <em>the last</em></h2>
+    <p class="dna-sub fade-in d2">The cycle compresses over time. What starts as a deliberate process becomes intuitive. Intention and creation converge — forming the DNA of how you live.</p>
+
+    <div class="dna-helix fade-in d3">
+      <svg viewBox="0 0 600 180" fill="none">
+        <!-- Strand 1 (Engineer) -->
+        <path d="M0,90 C37,20 75,20 112,90 C150,160 187,160 225,90 C262,20 300,20 337,90 C375,160 412,160 450,90 C487,20 525,20 562,90 L600,90" stroke="var(--engineer)" stroke-width="1.5" opacity="0.6"/>
+        <!-- Strand 2 (Record) -->
+        <path d="M0,90 C37,160 75,160 112,90 C150,20 187,20 225,90 C262,160 300,160 337,90 C375,20 412,20 450,90 C487,160 525,160 562,90 L600,90" stroke="var(--record)" stroke-width="1.5" opacity="0.6"/>
+        <!-- Connecting rungs -->
+        <line x1="56" y1="55" x2="56" y2="125" stroke="var(--reveal)" stroke-width="0.7" opacity="0.25"/>
+        <line x1="112" y1="90" x2="112" y2="90" stroke="var(--reveal)" stroke-width="0.7" opacity="0.25"/>
+        <line x1="168" y1="125" x2="168" y2="55" stroke="var(--reveal)" stroke-width="0.7" opacity="0.25"/>
+        <line x1="280" y1="55" x2="280" y2="125" stroke="var(--reveal)" stroke-width="0.7" opacity="0.25"/>
+        <line x1="337" y1="90" x2="337" y2="90" stroke="var(--reveal)" stroke-width="0.7" opacity="0.25"/>
+        <line x1="393" y1="125" x2="393" y2="55" stroke="var(--reveal)" stroke-width="0.7" opacity="0.25"/>
+        <line x1="506" y1="55" x2="506" y2="125" stroke="var(--reveal)" stroke-width="0.7" opacity="0.25"/>
+        <!-- Convergence dots -->
+        <circle cx="112" cy="90" r="4" fill="var(--accent)" opacity="0.5"/>
+        <circle cx="225" cy="90" r="4" fill="var(--accent)" opacity="0.6"/>
+        <circle cx="337" cy="90" r="4" fill="var(--accent)" opacity="0.7"/>
+        <circle cx="450" cy="90" r="4" fill="var(--accent)" opacity="0.8"/>
+        <circle cx="562" cy="90" r="4" fill="var(--accent)" opacity="0.9"/>
+        <!-- Strands tightening at end -->
+        <path d="M562,90 C580,70 590,80 600,85" stroke="var(--engineer)" stroke-width="1.5" opacity="0.7"/>
+        <path d="M562,90 C580,110 590,100 600,95" stroke="var(--record)" stroke-width="1.5" opacity="0.7"/>
+      </svg>
+    </div>
+    <div class="dna-label fade-in d4">The DNA of Time — intention and creation converging</div>
+  </div>
+</section>
+
+<!-- ═══ OUTCOMES ═══ -->
+<section id="outcomes">
+  <div>
+    <div class="outcomes-label fade-in">THE RESULT</div>
+    <h2 class="outcomes-title fade-in d1"><em>Time Alignment</em></h2>
+    <p class="outcomes-body fade-in d2">When the time you create consistently reflects the life you intend to live, the gap between intention and creation closes. You become who you want to be.</p>
+
+    <div class="gap-visual fade-in d3">
+      <div class="gap-header"><span style="color:rgba(255,255,255,0.4)">Intention</span><span style="color:var(--accent)">Created</span></div>
+      <div class="gap-row"><span class="gap-label">Week 1</span><div class="gap-bars"><div class="gap-intention" style="width:80%"></div><div class="gap-created" style="width:38%"></div></div></div>
+      <div class="gap-row"><span class="gap-label">Week 4</span><div class="gap-bars"><div class="gap-intention" style="width:80%"></div><div class="gap-created" style="width:52%"></div></div></div>
+      <div class="gap-row"><span class="gap-label">Week 8</span><div class="gap-bars"><div class="gap-intention" style="width:80%"></div><div class="gap-created" style="width:64%"></div></div></div>
+      <div class="gap-row"><span class="gap-label">Month 3</span><div class="gap-bars"><div class="gap-intention" style="width:80%"></div><div class="gap-created" style="width:73%"></div></div></div>
+      <div class="gap-row"><span class="gap-label">Month 6</span><div class="gap-bars"><div class="gap-intention" style="width:80%"></div><div class="gap-created" style="width:79%"></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FINAL CTA ═══ -->
+<section id="final-cta">
+  <div>
+    <h2 class="final-title fade-in">Understand Time.<br><em>Understand Yourself.</em></h2>
+    <p class="final-sub fade-in d1">The life you intend and the life you live become the same.</p>
+    <a href="#" class="final-btn fade-in d2">Join Existence</a>
+  </div>
+</section>
+
+<footer>
+  <span>© 2026 All rights reserved.</span>
+  <span>Terms of Use | Privacy Policy</span>
+</footer>
+
+<script>
+/* ═══════════════════════════════════════
+   CYCLE RING — Draw arcs + animate with scroll
+   ═══════════════════════════════════════ */
+const cx = 250, cy = 250;
+
+function polarToCartesian(cx, cy, r, angleDeg) {
+  const a = (angleDeg - 90) * Math.PI / 180;
+  return { x: cx + r * Math.cos(a), y: cy + r * Math.sin(a) };
+}
+
+function describeArc(cx, cy, r, startAngle, endAngle) {
+  const start = polarToCartesian(cx, cy, r, endAngle);
+  const end = polarToCartesian(cx, cy, r, startAngle);
+  const large = endAngle - startAngle <= 180 ? 0 : 1;
+  return `M ${start.x} ${start.y} A ${r} ${r} 0 ${large} 0 ${end.x} ${end.y}`;
+}
+
+function arrowAt(cx, cy, r, angleDeg) {
+  const a = (angleDeg - 90) * Math.PI / 180;
+  const tip = { x: cx + r * Math.cos(a), y: cy + r * Math.sin(a) };
+  // Tangent direction (clockwise along the arc)
+  const tx = -Math.sin(a);
+  const ty = Math.cos(a);
+  const size = 9;
+  const halfAngle = 32 * Math.PI / 180;
+  // Two chevron arms: rotate negative-tangent by ±halfAngle
+  const backX = -tx;
+  const backY = -ty;
+  const inner = {
+    x: tip.x + size * (backX * Math.cos(halfAngle) - backY * Math.sin(halfAngle)),
+    y: tip.y + size * (backX * Math.sin(halfAngle) + backY * Math.cos(halfAngle))
+  };
+  const outer = {
+    x: tip.x + size * (backX * Math.cos(-halfAngle) - backY * Math.sin(-halfAngle)),
+    y: tip.y + size * (backX * Math.sin(-halfAngle) + backY * Math.cos(-halfAngle))
+  };
+  return `${inner.x},${inner.y} ${tip.x},${tip.y} ${outer.x},${outer.y}`;
+}
+
+// Engineer centered at top, flowing clockwise:
+// Engineer: -60° to 60° (centered at 0°/top)
+// Record: 60° to 180° (centered at 120°/bottom-right)
+// Reveal: 180° to 300° (centered at 240°/bottom-left)
+const R = 200;
+const gap = 5;
+document.getElementById('arcEngineer').setAttribute('d', describeArc(cx, cy, R, -60 + gap, 60 - gap));
+document.getElementById('arcRecord').setAttribute('d', describeArc(cx, cy, R, 60 + gap, 180 - gap));
+document.getElementById('arcReveal').setAttribute('d', describeArc(cx, cy, R, 180 + gap, 300 - gap));
+
+// Draw chevron arrows at end of each arc
+function drawChevron(id, angleDeg) {
+  // angleDeg is where the arc ends
+  // Convert to radians (polarToCartesian subtracts 90, so we do the same)
+  const rad = (angleDeg - 90) * Math.PI / 180;
+  // Point on the circle (tip of chevron)
+  const tipX = cx + R * Math.cos(rad);
+  const tipY = cy + R * Math.sin(rad);
+  // Tangent direction (perpendicular to radius, clockwise)
+  const tanX = -Math.sin(rad);
+  const tanY = Math.cos(rad);
+  // Two arms go backward along tangent, splayed inward/outward from circle
+  // Normal direction (outward from center)
+  const normX = Math.cos(rad);
+  const normY = Math.sin(rad);
+  const len = 10;
+  // Arm 1: back along tangent + inward
+  const a1x = tipX - tanX * len + normX * (-5);
+  const a1y = tipY - tanY * len + normY * (-5);
+  // Arm 2: back along tangent + outward
+  const a2x = tipX - tanX * len + normX * 5;
+  const a2y = tipY - tanY * len + normY * 5;
+  document.getElementById(id).setAttribute('points', `${a1x},${a1y} ${tipX},${tipY} ${a2x},${a2y}`);
+}
+drawChevron('chevE', 60 - gap);
+drawChevron('chevR', 180 - gap);
+drawChevron('chevV', 300 - gap);
+
+/* ═══════════════════════════════════════
+   SCROLL-DRIVEN CYCLE SHRINK
+   ═══════════════════════════════════════ */
+const scrollExp = document.getElementById('scroll-experience');
+const cycleSvg = document.getElementById('cycle-svg');
+const lblE = document.getElementById('lblEngineer');
+const lblR = document.getElementById('lblRecord');
+const lblV = document.getElementById('lblReveal');
+
+const arcE = document.getElementById('arcEngineer');
+const arcR = document.getElementById('arcRecord');
+const arcRv = document.getElementById('arcReveal');
+
+// Labels at midpoint of each arc, pushed outside
+const labelR = R + 55;
+const ePos = polarToCartesian(cx, cy, labelR, 0);    // top (midpoint of -60 to 60)
+const rPos = polarToCartesian(cx, cy, labelR, 120);   // bottom-right (midpoint of 60 to 180)
+const vPos = polarToCartesian(cx, cy, labelR, 240);   // bottom-left (midpoint of 180 to 300)
+lblE.setAttribute('x', ePos.x); lblE.setAttribute('y', ePos.y);
+lblR.setAttribute('x', rPos.x); lblR.setAttribute('y', rPos.y);
+lblV.setAttribute('x', vPos.x); lblV.setAttribute('y', vPos.y);
+
+// Track which section is visible via IntersectionObserver
+let activeSection = 'intro';
+
+const sectionIds = ['sec-intro', 'sec-engineer', 'sec-record', 'sec-reveal'];
+const sectionObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting && entry.intersectionRatio > 0.3) {
+      activeSection = entry.target.id;
+      updateHighlight();
+    }
+  });
+}, { threshold: [0.3, 0.5, 0.7] });
+
+sectionIds.forEach(id => {
+  const el = document.getElementById(id);
+  if (el) sectionObserver.observe(el);
+});
+
+function updateHighlight() {
+  // Reset all arcs
+  [arcE, arcR, arcRv].forEach(a => {
+    a.style.strokeWidth = '2.5';
+    a.style.opacity = '0.3';
+    a.classList.remove('glowing');
+  });
+  // Reset all labels
+  [lblE, lblR, lblV].forEach(l => {
+    l.style.opacity = '0.35';
+  });
+
+  // Highlight active
+  if (activeSection === 'sec-engineer') {
+    arcE.style.strokeWidth = '4';
+    arcE.style.opacity = '1';
+    arcE.classList.add('glowing');
+    lblE.style.opacity = '1';
+  } else if (activeSection === 'sec-record') {
+    arcR.style.strokeWidth = '4';
+    arcR.style.opacity = '1';
+    arcR.classList.add('glowing');
+    lblR.style.opacity = '1';
+  } else if (activeSection === 'sec-reveal') {
+    arcRv.style.strokeWidth = '4';
+    arcRv.style.opacity = '1';
+    arcRv.classList.add('glowing');
+    lblV.style.opacity = '1';
+  } else {
+    // Intro — all arcs visible at medium opacity
+    [arcE, arcR, arcRv].forEach(a => { a.style.opacity = '0.6'; a.style.strokeWidth = '3'; });
+    [lblE, lblR, lblV].forEach(l => { l.style.opacity = '0.6'; });
+  }
+}
+
+// Shrink cycle based on scroll position
+function updateCycleScale() {
+  const rect = scrollExp.getBoundingClientRect();
+  const totalScroll = scrollExp.scrollHeight - window.innerHeight;
+  const scrolled = -rect.top;
+  const progress = Math.max(0, Math.min(1, scrolled / totalScroll));
+
+  // Scale: starts at 1, shrinks to 0.2
+  const scale = 1 - progress * 0.8;
+  const opacity = 1 - progress * 0.25;
+
+  cycleSvg.style.transform = `scale(${scale})`;
+  cycleSvg.style.opacity = Math.max(0, opacity);
+}
+
+window.addEventListener('scroll', updateCycleScale, { passive: true });
+updateCycleScale();
+updateHighlight();
+
+/* ═══════════════════════════════════════
+   NAV PROGRESS — light up as you scroll
+   ═══════════════════════════════════════ */
+const navOrder = ['hero', 'sec-engineer', 'sec-record', 'sec-reveal', 'outcomes'];
+const navLinks = document.querySelectorAll('#navProgress a[data-nav]');
+const navLines = document.querySelectorAll('#navProgress .nav-line');
+
+function updateNavProgress(reachedId) {
+  const reachedIdx = navOrder.indexOf(reachedId);
+  navLinks.forEach((link, i) => {
+    if (i <= reachedIdx) {
+      link.classList.add('reached');
+    } else {
+      link.classList.remove('reached');
+    }
+  });
+  navLines.forEach((line, i) => {
+    if (i < reachedIdx) {
+      line.classList.add('reached');
+    } else {
+      line.classList.remove('reached');
+    }
+  });
+}
+
+const navObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      updateNavProgress(entry.target.id);
+    }
+  });
+}, { threshold: 0.2 });
+
+navOrder.forEach(id => {
+  const el = document.getElementById(id);
+  if (el) navObserver.observe(el);
+});
+
+// Also observe sec-intro as "hero" for nav purposes
+const introEl = document.getElementById('sec-intro');
+if (introEl) {
+  const introObs = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) updateNavProgress('hero');
+  }, { threshold: 0.3 });
+  introObs.observe(introEl);
+}
+
+/* ═══════════════════════════════════════
+   FADE-IN OBSERVER
+   ═══════════════════════════════════════ */
+const fadeObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.fade-in').forEach(el => fadeObs.observe(el));
+</script>
+
+</body>
+</html>

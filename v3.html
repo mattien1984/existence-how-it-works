@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How It Works | Existence — V2</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'><text y='28' font-size='28'>⏳</text></svg>">
+<style>
+@font-face{font-family:'Season Mix';src:url('fonts/SeasonMixTRIAL-Regular.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap;}
+@font-face{font-family:'Season Mix';src:url('fonts/SeasonMixTRIAL-RegularItalic.woff2') format('woff2');font-weight:400;font-style:italic;font-display:swap;}
+@font-face{font-family:'Roobert';src:url('fonts/RoobertTRIAL-Light.otf') format('opentype');font-weight:300;font-style:normal;font-display:swap;}
+@font-face{font-family:'Roobert';src:url('fonts/RoobertTRIAL-Regular.otf') format('opentype'),url('fonts/RoobertTRIAL-Regular.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap;}
+@font-face{font-family:'Roobert';src:url('fonts/RoobertTRIAL-Medium.otf') format('opentype');font-weight:500;font-style:normal;font-display:swap;}
+
+:root{--black:#050505;--white:#ffffff;--gray:#666;--dim:#333;--serif:'Season Mix',Georgia,serif;--sans:'Roobert',-apple-system,sans-serif;--c-eng:#8ab4f8;--c-rec:#e8a87c;--c-rev:#82d9c5;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--sans);background:var(--black);color:var(--white);overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+
+/* ═══ TOP NAV ═══ */
+nav{position:absolute;top:0;left:0;right:0;z-index:1000;padding:24px 40px;display:flex;align-items:center;justify-content:center;background:transparent;}
+.nav-logo{font-family:var(--serif);font-size:20px;font-weight:400;letter-spacing:1px;opacity:0.8;}
+
+/* ═══ LEFT RAIL — Sticky Cycle Nav (replaces Oura's timeline) ═══ */
+.left-rail{position:fixed;left:40px;top:50%;transform:translateY(-50%);z-index:100;display:flex;flex-direction:column;align-items:center;gap:0;opacity:1;pointer-events:auto;transition:opacity 0.6s ease;}
+
+/* Hero video background */
+.hero-video-wrap{position:absolute;top:0;left:0;right:0;bottom:0;z-index:0;overflow:hidden;}
+.hero-video-wrap video{width:100%;height:100%;object-fit:cover;opacity:0.45;}
+.hero-video-wrap::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(180deg,rgba(5,5,5,0.05) 0%,rgba(5,5,5,0.2) 70%,var(--black) 100%);}
+
+.rail-step{writing-mode:vertical-rl;text-orientation:mixed;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.15);transition:all 0.5s ease;cursor:pointer;padding:8px 4px;}
+.rail-step.current{color:var(--white);font-weight:500;text-shadow:0 0 20px rgba(255,255,255,0.3);}
+.rail-step.passed{color:rgba(255,255,255,0.4);}
+
+.rail-line{width:1px;height:80px;background:rgba(255,255,255,0.06);position:relative;overflow:hidden;}
+.rail-line.long{height:140px;}
+.rail-line-fill{position:absolute;top:0;left:0;width:100%;height:0%;background:rgba(255,255,255,0.5);transition:none;}
+
+.rail-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.1);transition:all 0.4s;margin:6px 0;}
+.rail-dot.active{background:var(--white);box-shadow:0 0 12px rgba(255,255,255,0.3);}
+
+/* Small cycle loop in rail */
+.rail-loop{width:48px;height:48px;margin:12px 0;opacity:0.15;transition:opacity 0.5s;}
+.rail-loop.active{opacity:0.5;}
+.rail-loop svg{width:100%;height:100%;}
+.rail-loop circle{fill:none;stroke:var(--white);stroke-width:1;}
+
+/* ═══ MAIN CONTENT — Right side ═══ */
+.main{margin-left:100px;}
+
+/* ═══ SCREENS ═══ */
+.screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:120px 60px 120px 40px;position:relative;overflow:hidden;}
+.screen-inner{max-width:900px;width:100%;}
+.screen-split{max-width:1100px;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
+.screen-left{text-align:left;}
+
+/* Fade */
+.f{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;}
+.f.vis{opacity:1;transform:translateY(0);}
+
+/* Type */
+.headline{font-family:var(--serif);font-size:clamp(36px,5vw,68px);font-weight:400;line-height:0.98;margin-bottom:20px;}
+.headline-lg{font-size:clamp(42px,6vw,84px);line-height:0.95;}
+.headline em{font-style:italic;}
+.sub{font-size:16px;line-height:1.7;color:var(--gray);font-weight:300;max-width:520px;}
+.sub-center{margin:0 auto;text-align:center;}
+.label{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:16px;}
+.step-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-bottom:12px;}
+.step-title{font-family:var(--serif);font-size:clamp(42px,5vw,68px);font-weight:400;line-height:1.05;margin-bottom:20px;}
+.step-desc{font-size:17px;line-height:1.7;color:var(--gray);font-weight:300;max-width:480px;}
+.scroll-cue{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);animation:bounce 2s ease-in-out infinite;transition:opacity 0.4s ease;}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(10px);}}
+
+/* Faint grid bg */
+.grid-bg{position:absolute;top:0;left:0;right:0;bottom:0;z-index:0;opacity:0;transition:opacity 1s;background-image:linear-gradient(rgba(255,255,255,0.2) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.2) 1px,transparent 1px);background-size:60px 60px;}
+.grid-bg.vis{opacity:0.025;}
+
+/* System features */
+.sys-features{display:flex;flex-direction:column;gap:0;margin-top:20px;}
+.sys-feat{display:flex;align-items:flex-start;gap:16px;padding:20px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.sys-feat:first-child{border-top:1px solid rgba(255,255,255,0.04);}
+.sys-icon{flex-shrink:0;width:32px;height:32px;margin-top:2px;}
+.sys-feat-text{flex:1;}
+.sys-feat-title{font-size:15px;font-weight:400;color:rgba(255,255,255,0.7);margin-bottom:3px;}
+.sys-feat-sub{font-size:12px;color:var(--gray);font-weight:300;}
+
+/* ═══ CYCLE VISUAL (Screen 3) ═══ */
+.cycle-wrap{width:300px;height:300px;margin:36px auto 0;position:relative;}
+.cycle-wrap svg{width:100%;height:100%;}
+.cy-label{font-family:var(--sans);font-size:14px;font-weight:500;letter-spacing:3px;text-transform:uppercase;color:var(--white);transition:opacity 0.4s,color 0.4s;white-space:nowrap;}
+.cycle-panel{max-width:420px;max-height:75vh;overflow-y:auto;position:absolute;top:18vh;left:0;right:0;opacity:0;transform:translateY(40px);transition:opacity 0.7s ease,transform 0.7s ease;pointer-events:none;}
+.cycle-panel.active{opacity:1;transform:translateY(0);pointer-events:auto;}
+.cycle-panel .step-label{margin-bottom:12px;}
+.cycle-panel .step-title{font-family:var(--serif);font-size:clamp(36px,4vw,56px);font-weight:400;line-height:0.98;margin-bottom:16px;}
+.cycle-panel .step-desc{font-size:15px;line-height:1.7;color:var(--gray);font-weight:300;margin-bottom:8px;}
+
+/* ═══ TIME BLOCKS ═══ */
+.tb{background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.05);border-radius:10px;padding:16px 20px;margin-bottom:6px;display:flex;align-items:center;gap:14px;opacity:0;transform:translateX(-12px);transition:all 0.4s ease;}
+.tb.vis{opacity:1;transform:translateX(0);}
+.tb-bar{width:3px;height:32px;border-radius:1px;}
+.tb-bar.w{background:rgba(255,255,255,0.6);}.tb-bar.l{background:rgba(255,255,255,0.4);}.tb-bar.h{background:rgba(255,255,255,0.3);}.tb-bar.s{background:rgba(255,255,255,0.15);}
+.tb-info{flex:1;}
+.tb-name{font-size:13px;font-weight:400;margin-bottom:1px;}
+.tb-meta{font-size:10px;color:var(--gray);}
+.tb-pill{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.3);padding:3px 7px;border:1px solid rgba(255,255,255,0.06);border-radius:3px;}
+
+/* Expanded block */
+.tb-exp{background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:24px;max-width:320px;margin:24px auto 0;}
+.tb-exp-title{font-size:16px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.05);}
+.tb-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.02);font-size:12px;}
+.tb-row-k{color:var(--gray);}.tb-row-v{color:rgba(255,255,255,0.7);}
+
+/* ═══ RECORD SPLIT ═══ */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:2px;border-radius:14px;overflow:hidden;max-width:400px;}
+.split-col{background:rgba(255,255,255,0.02);padding:20px;font-size:12px;}
+.split-col:last-child{background:rgba(255,255,255,0.035);}
+.split-h{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-bottom:12px;}
+.split-r{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.02);}
+.split-k{color:var(--gray);}.split-v{color:rgba(255,255,255,0.6);}.split-changed{color:var(--white);}
+.q-badge{display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:10px 16px;margin-top:16px;}
+.q-num{font-family:var(--serif);font-size:26px;}
+.q-txt{font-size:10px;color:var(--gray);line-height:1.3;}
+
+/* ═══ REVEAL CARDS ═══ */
+.rev-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:20px;}
+.rev-card{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.04);border-radius:10px;padding:18px;text-align:center;}
+.rev-icon{font-size:22px;margin-bottom:8px;display:block;opacity:0.5;}
+.rev-card h5{font-size:12px;font-weight:400;margin-bottom:5px;}
+.rev-card p{font-size:10px;color:var(--gray);line-height:1.5;}
+
+/* ═══ MULTIPLY — Stacked loops ═══ */
+.loops{display:flex;flex-direction:column;align-items:center;gap:4px;margin-top:28px;}
+.mini-loop{width:180px;height:48px;border:1px solid rgba(255,255,255,0.06);border-radius:24px;display:flex;align-items:center;justify-content:center;font-size:9px;letter-spacing:1.5px;color:rgba(255,255,255,0.2);opacity:0;transform:scale(0.96);transition:all 0.4s ease;}
+.mini-loop.vis{opacity:1;transform:scale(1);}
+.mini-loop.hi{border-color:rgba(255,255,255,0.15);color:rgba(255,255,255,0.5);}
+
+/* Pattern grid */
+.pat-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;max-width:300px;margin:28px auto 0;}
+.pat-cell{aspect-ratio:1;border-radius:3px;background:rgba(255,255,255,0.03);}
+.pat-cell.hi{background:rgba(255,255,255,0.14);}.pat-cell.md{background:rgba(255,255,255,0.07);}
+
+/* DNA */
+.dna-vis{margin:36px auto 0;max-width:460px;}
+.dna-vis svg{width:100%;}
+
+/* Gap bars */
+.gap-wrap{max-width:380px;margin:28px auto 0;}
+.gap-r{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.gap-l{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--gray);min-width:48px;text-align:right;}
+.gap-t{flex:1;height:14px;background:rgba(255,255,255,0.02);border-radius:2px;position:relative;overflow:hidden;}
+.gap-i{position:absolute;top:0;left:0;height:100%;background:rgba(255,255,255,0.06);border-right:1px solid rgba(255,255,255,0.15);}
+.gap-a{position:absolute;top:0;left:0;height:100%;background:rgba(255,255,255,0.3);border-radius:0 2px 2px 0;transition:width 1s ease;}
+
+/* Balanced pillars */
+.bal-wrap{display:flex;gap:20px;justify-content:center;margin-top:28px;}
+.bal-col{width:50px;text-align:center;}
+.bal-b{height:0;background:rgba(255,255,255,0.1);border-radius:3px 3px 0 0;transition:height 1s ease;margin-bottom:5px;}
+.bal-b.vis{height:var(--h);}
+.bal-lbl{font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--gray);}
+
+/* CTA */
+.cta-btn{display:inline-block;padding:16px 52px;border:1px solid rgba(255,255,255,0.25);color:var(--white);font-size:12px;letter-spacing:3px;text-transform:uppercase;text-decoration:none;transition:all 0.3s;margin-top:12px;}
+.cta-btn:hover{background:var(--white);color:var(--black);}
+
+footer{padding:32px 40px;display:flex;justify-content:space-between;font-size:11px;color:var(--dim);border-top:1px solid rgba(255,255,255,0.03);margin-left:100px;}
+
+@media(max-width:900px){
+  .left-rail{display:none;}
+  .main{margin-left:0;}
+  footer{margin-left:0;}
+  .screen-split{grid-template-columns:1fr;gap:40px;}
+  .rev-cards{grid-template-columns:1fr;}
+  .split{grid-template-columns:1fr;}
+  .screen{padding:80px 20px;}
+}
+</style>
+</head>
+<body>
+
+<!-- nav logo is now inside the hero sticky frame -->
+
+<!-- ═══ LEFT RAIL — Persistent Cycle Anchor ═══ -->
+<div class="left-rail" id="leftRail">
+  <div class="rail-dot" id="rd0"></div>
+  <div class="rail-line long" id="rl0"><div class="rail-line-fill"></div></div>
+  <div class="rail-step" id="rs-eng" data-target="s4">ENGINEER</div>
+  <div class="rail-line" id="rl1"><div class="rail-line-fill"></div></div>
+  <div class="rail-step" id="rs-rec" data-target="s5">RECORD</div>
+  <div class="rail-line" id="rl2"><div class="rail-line-fill"></div></div>
+  <div class="rail-step" id="rs-rev" data-target="s6">REVEAL</div>
+  <div class="rail-line long" id="rl3"><div class="rail-line-fill"></div></div>
+  <div class="rail-dot" id="rd1"></div>
+</div>
+
+<!-- ═══ MAIN CONTENT ═══ -->
+<div class="main">
+
+<!-- ═══ HERO + TRANSITION (scroll-driven mask wipe) ═══ -->
+<div id="heroTransition" style="margin-left:-100px;">
+  <!-- Scroll space: 2x viewport to allow the transition -->
+  <div id="heroScroller" style="height:300vh;position:relative;">
+    <!-- Sticky frame that stays in view during scroll -->
+    <div id="heroSticky" style="position:sticky;top:0;height:100vh;overflow:hidden;">
+
+      <!-- Existence logo — top center, fades on scroll -->
+      <div id="heroLogo" style="position:absolute;top:24px;left:0;right:0;text-align:center;z-index:5;font-family:var(--serif);font-size:20px;font-weight:400;letter-spacing:1px;opacity:0.8;">existence</div>
+
+      <!-- Full video background -->
+      <video id="heroVideo" autoplay muted loop playsinline style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;opacity:0.45;">
+        <source src="hero-bg.mp4" type="video/mp4">
+      </video>
+
+      <!-- Dark mask slides from left -->
+      <div id="heroMask" style="position:absolute;top:0;left:0;width:55%;height:100%;background:var(--black);transform:translateX(-100%);z-index:2;"></div>
+
+      <!-- Video darkening overlay (gets darker on right as mask reveals) -->
+      <div id="heroOverlay" style="position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(180deg,rgba(5,5,5,0.05) 0%,rgba(5,5,5,0.15) 70%,var(--black) 100%);z-index:1;"></div>
+
+      <!-- Hero text (centered, fades out) -->
+      <div id="heroText" style="position:absolute;top:0;left:0;right:0;bottom:0;z-index:3;display:flex;align-items:center;justify-content:center;text-align:center;">
+        <div>
+          <h1 class="headline" style="font-size:clamp(32px,4.2vw,58px);">Most people never see how<br>their time actually shapes their life</h1>
+        </div>
+      </div>
+
+      <!-- Scroll cue — centered at bottom of viewport -->
+      <div id="scrollCue" style="position:absolute;bottom:40px;left:50%;transform:translateX(-50%);z-index:5;animation:bounce 2s ease-in-out infinite;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+
+      <!-- "At the center" headline (fades in after s2 splits, fades out before cycle) -->
+      <div id="centerHeadline" style="position:absolute;top:0;left:100px;right:0;bottom:0;z-index:6;display:flex;align-items:center;justify-content:center;text-align:center;opacity:0;pointer-events:none;">
+        <h2 class="headline headline-lg">At the center is a<br>continuous cycle</h2>
+      </div>
+
+      <!-- Hero circle removed — cycle scroller handles everything -->
+
+      <!-- Section 2 content (fades in after mask) -->
+      <div id="s2Content" style="position:absolute;top:0;left:0;right:0;bottom:0;z-index:4;display:flex;align-items:center;opacity:0;">
+        <!-- Left side: headline + features stacked -->
+        <div id="s2Left" style="width:55%;padding:0 40px 0 200px;">
+          <h1 class="headline headline-lg" style="text-align:left;">Existence shows you how it's <em>created</em></h1>
+          <div style="margin-top:36px;">
+            <div class="label" style="opacity:0;" id="s2Label">A TIME INTELLIGENCE SYSTEM</div>
+            <div class="sys-features">
+              <div class="sys-feat" id="sf1" style="opacity:0;transform:translateY(12px);">
+                <div class="sys-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.2"><rect x="6" y="4" width="20" height="24" rx="2"/><line x1="10" y1="10" x2="22" y2="10"/><line x1="10" y1="15" x2="22" y2="15"/><line x1="10" y1="20" x2="18" y2="20"/></svg></div>
+                <div class="sys-feat-text"><div class="sys-feat-title">Structures your time</div><div class="sys-feat-sub">Give every hour intention and form</div></div>
+              </div>
+              <div class="sys-feat" id="sf2" style="opacity:0;transform:translateY(12px);">
+                <div class="sys-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.2"><circle cx="16" cy="16" r="10"/><polyline points="16,10 16,16 20,18"/></svg></div>
+                <div class="sys-feat-text"><div class="sys-feat-title">Records how it is actually lived</div><div class="sys-feat-sub">Capture what happened, how it felt</div></div>
+              </div>
+              <div class="sys-feat" id="sf3" style="opacity:0;transform:translateY(12px);">
+                <div class="sys-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.2"><polyline points="6,24 12,14 18,18 26,8"/><circle cx="26" cy="8" r="2"/></svg></div>
+                <div class="sys-feat-text"><div class="sys-feat-title">Turns that record into insight</div><div class="sys-feat-sub">See what your time is actually creating</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Right side: square video only, scaled down -->
+        <div id="s2Right" style="width:45%;padding:0 40px;display:flex;align-items:center;justify-content:center;">
+          <div id="s2Video" style="width:80%;position:relative;opacity:0;">
+            <video autoplay muted loop playsinline style="width:100%;display:block;opacity:0.6;">
+              <source src="system-bg.mp4" type="video/mp4">
+            </video>
+            <!-- Time Block overlay -->
+            <div style="position:absolute;top:0;left:0;right:0;bottom:0;padding:20px 22px;display:flex;flex-direction:column;justify-content:space-between;pointer-events:none;">
+              <!-- Top left: time + title stacked -->
+              <div>
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                  <div style="font-family:var(--sans);font-size:14px;font-weight:300;letter-spacing:1px;color:rgba(255,255,255,0.75);text-transform:uppercase;">7 AM <span style="opacity:0.4;margin:0 4px;">-</span> 8:30 AM</div>
+                  <div style="font-family:var(--sans);font-size:14px;font-weight:300;letter-spacing:1px;color:rgba(255,255,255,0.75);text-transform:uppercase;background:rgba(255,255,255,0.08);padding:4px 10px;">1H 30M</div>
+                </div>
+                <div style="margin-top:10px;">
+                  <div style="font-family:var(--sans);font-size:clamp(24px,3vw,36px);font-weight:400;color:rgba(255,255,255,0.85);line-height:1.1;">Hike in Zion</div>
+                </div>
+              </div>
+              <!-- Bottom row -->
+              <div style="display:flex;justify-content:flex-end;align-items:center;gap:8px;">
+                <!-- Location pin icon -->
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.2">
+                  <path d="M8 1.5C5.5 1.5 3.5 3.5 3.5 6C3.5 9.5 8 14.5 8 14.5C8 14.5 12.5 9.5 12.5 6C12.5 3.5 10.5 1.5 8 1.5Z"/>
+                  <circle cx="8" cy="6" r="1.5"/>
+                </svg>
+                <span style="font-family:var(--sans);font-size:13px;font-weight:300;color:rgba(255,255,255,0.5);">10</span>
+                <!-- Energy/lightning icon -->
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="7.5,1 3,8 7,8 6.5,13 11,6 7,6 7.5,1"/>
+                </svg>
+              </div>
+            </div>
+            <img src="hash-frame.svg" style="position:absolute;top:-1.5%;left:-1.5%;width:103%;height:103%;pointer-events:none;opacity:0.7;">
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CYCLE EXPERIENCE — Sticky cycle + scrolling content ═══ -->
+<div id="cycleExperience" style="position:relative;margin-top:-160vh;">
+
+  <!-- Intro headline now inside hero sticky frame -->
+
+  <!-- ═══ CYCLE REVEAL + PINNED NARRATIVE ═══ -->
+  <div id="cycleLayout" style="position:relative;">
+
+    <!-- Tall scroll container for the whole cycle experience -->
+    <div id="cycleScroller" style="height:550vh;position:relative;">
+
+      <!-- Sticky frame that holds the cycle throughout -->
+      <div id="cycleFrame" style="position:sticky;top:0;height:100vh;overflow:hidden;">
+
+        <!-- The cycle SVG + labels -->
+        <div id="cycleWrap" style="position:absolute;top:50%;left:50%;width:480px;height:480px;transform:translate(-50%,-50%) rotate(-20deg) scale(0.85);opacity:0;transition:none;">
+          <svg id="cycleSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1117.29 1123.29" style="width:100%;height:100%;">
+            <!-- Engineer arc (top) -->
+            <g id="arcEng" style="transition:opacity 0.4s,filter 0.4s;">
+              <path d="M977.96,254.65c-94.16-129.56-246.9-213.8-419.32-213.8S229.55,127.27,135.71,259.69" fill="none" stroke="#fff" stroke-miterlimit="10" stroke-width="3"/>
+              <polygon points="981.88 239.38 978.9 239.04 977.25 253.74 962.7 251.02 962.15 253.97 979.86 257.28 981.88 239.38" fill="#fff"/>
+            </g>
+            <!-- Record arc (bottom-right) -->
+            <g id="arcRec" style="transition:opacity 0.4s,filter 0.4s;">
+              <path d="M620.57,1073.19c256.89-30.6,456.08-249.21,456.08-514.34,0-77.94-17.21-151.87-48.05-218.17" fill="none" stroke="#fff" stroke-miterlimit="10" stroke-width="3"/>
+              <polygon points="632.07 1083.94 633.8 1081.49 621.7 1072.98 631.07 1061.53 628.75 1059.63 617.33 1073.57 632.07 1083.94" fill="#fff"/>
+            </g>
+            <!-- Reveal arc (bottom-left) -->
+            <g id="arcRev" style="transition:opacity 0.4s,filter 0.4s;">
+              <path d="M85.44,347.81c-28.79,64.46-44.8,135.88-44.8,211.04,0,270.6,207.5,492.74,472.06,515.99" fill="none" stroke="#fff" stroke-miterlimit="10" stroke-width="3"/>
+              <polygon points="70.24 352 71.43 354.76 85 348.88 89.87 362.85 92.71 361.86 86.77 344.85 70.24 352" fill="#fff"/>
+            </g>
+          </svg>
+          <div style="position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;">
+            <div id="cn1" class="cy-label" style="position:absolute;top:-40px;left:50%;transform:translateX(-50%);opacity:0;">ENGINEER</div>
+            <div id="cn2" class="cy-label" style="position:absolute;bottom:16%;right:-14%;opacity:0;">RECORD</div>
+            <div id="cn3" class="cy-label" style="position:absolute;bottom:16%;left:-12%;opacity:0;">REVEAL</div>
+            <div id="cycleCenter" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;font-family:var(--serif);font-size:18px;color:var(--white);opacity:0;">Time Creation<br>Cycle</div>
+          </div>
+        </div>
+
+        <!-- Right-side content panels (positioned absolutely, faded in/out by JS) -->
+        <div id="rightContent" style="position:absolute;top:0;right:0;width:42%;height:100%;padding:18vh 60px 0 20px;opacity:1;overflow-y:auto;overflow-x:hidden;">
+
+          <!-- Engineer panel -->
+          <div id="panelEng" class="cycle-panel">
+            <div class="step-label" style="color:var(--white);">STEP 01</div>
+            <div class="step-title" style="color:var(--c-eng);">Engineer</div>
+            <p class="step-desc">You give your time structure before it is experienced. Each Time Block begins as a projection of what you intend to do.</p>
+            <div id="tbStack" style="margin-top:24px;">
+              <div class="tb" data-d="0"><div class="tb-bar s"></div><div class="tb-info"><div class="tb-name">Sleep</div><div class="tb-meta">11:00 PM – 6:30 AM</div></div><div class="tb-pill">Sleep</div></div>
+              <div class="tb" data-d="50"><div class="tb-bar h"></div><div class="tb-info"><div class="tb-name">Morning Run</div><div class="tb-meta">6:30 AM · Central Park</div></div><div class="tb-pill">Health</div></div>
+              <div class="tb" data-d="100"><div class="tb-bar l"></div><div class="tb-info"><div class="tb-name">Breakfast with Family</div><div class="tb-meta">7:30 AM · Home</div></div><div class="tb-pill">Life</div></div>
+              <div class="tb" data-d="150"><div class="tb-bar w"></div><div class="tb-info"><div class="tb-name">Deep Focus: Strategy</div><div class="tb-meta">8:30 AM · Office</div></div><div class="tb-pill">Work</div></div>
+              <div class="tb" data-d="200"><div class="tb-bar w"></div><div class="tb-info"><div class="tb-name">Team Standup</div><div class="tb-meta">10:00 AM · Zoom</div></div><div class="tb-pill">Work</div></div>
+              <div class="tb" data-d="250"><div class="tb-bar l"></div><div class="tb-info"><div class="tb-name">Lunch with Jordan</div><div class="tb-meta">12:30 PM · West Village</div></div><div class="tb-pill">Life</div></div>
+            </div>
+            <div style="margin-top:28px;">
+              <div class="label">TIME BLOCK</div>
+              <div class="tb-exp">
+                <div class="tb-exp-title">Deep Focus: Strategy</div>
+                <div class="tb-row"><span class="tb-row-k">When</span><span class="tb-row-v">8:30 – 10:00 AM</span></div>
+                <div class="tb-row"><span class="tb-row-k">What</span><span class="tb-row-v">Product strategy review</span></div>
+                <div class="tb-row"><span class="tb-row-k">Where</span><span class="tb-row-v">Office, 4th floor</span></div>
+                <div class="tb-row"><span class="tb-row-k">Who</span><span class="tb-row-v">Solo</span></div>
+                <div class="tb-row"><span class="tb-row-k">Pillar</span><span class="tb-row-v">Work</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Record panel -->
+          <div id="panelRec" class="cycle-panel">
+            <div class="step-label" style="color:var(--white);">STEP 02</div>
+            <div class="step-title" style="color:var(--c-rec);">Record</div>
+            <p class="step-desc">You capture how your time was actually created. You update each Time Block to reflect what happened, how it felt, and what it meant.</p>
+            <div class="q-badge" style="margin-top:16px;"><span class="q-num">8.2</span><span class="q-txt">Quality Score<br>Intention · Impact · Feel</span></div>
+            <div style="margin-top:24px;">
+              <div class="split">
+                <div class="split-col"><div class="split-h">Intended</div><div class="split-r"><span class="split-k">What</span><span class="split-v">Strategy review</span></div><div class="split-r"><span class="split-k">When</span><span class="split-v">8:30 – 10:00 AM</span></div><div class="split-r"><span class="split-k">Where</span><span class="split-v">Office</span></div><div class="split-r"><span class="split-k">Who</span><span class="split-v">Solo</span></div></div>
+                <div class="split-col"><div class="split-h">Actual</div><div class="split-r"><span class="split-k">What</span><span class="split-changed">Strategy + hiring sync</span></div><div class="split-r"><span class="split-k">When</span><span class="split-changed">8:30 – 10:45 AM</span></div><div class="split-r"><span class="split-k">Where</span><span class="split-v">Office</span></div><div class="split-r"><span class="split-k">Who</span><span class="split-changed">+ Maya joined</span></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Reveal panel -->
+          <div id="panelRev" class="cycle-panel">
+            <div class="step-label" style="color:var(--white);">STEP 03</div>
+            <div class="step-title" style="color:var(--c-rev);">Reveal</div>
+            <p class="step-desc">Your time becomes visible and measurable. What you did, when, who you were with, and how it felt — a complete picture.</p>
+            <div class="rev-cards" style="grid-template-columns:1fr;margin-top:20px;">
+              <div class="rev-card"><span class="rev-icon">📊</span><h5>Data Explorer</h5><p>Weekly view. Pillar distribution. Time Alignment Score.</p></div>
+              <div class="rev-card"><span class="rev-icon">🧠</span><h5>AI Summaries</h5><p>Week, month, year. What you did and how it felt.</p></div>
+              <div class="rev-card"><span class="rev-icon">💬</span><h5>"E"</h5><p>Ask anything across your full record.</p></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- SCREEN 7 — LOOP CLOSES -->
+<section class="screen" id="s7" style="min-height:60vh;margin-top:-40vh;">
+  <div class="screen-inner" style="text-align:center;">
+    <p class="sub sub-center f" style="color:rgba(255,255,255,0.25);margin-bottom:28px;">What you see changes what you do next</p>
+    <h2 class="headline f d1">Now it's no longer three steps.<br>It's a system <em>in motion.</em></h2>
+  </div>
+</section>
+
+<!-- SCREEN 8 — MULTIPLICATION -->
+<section class="screen" id="s8">
+  <div class="screen-inner" style="text-align:center;">
+    <h2 class="headline f">Each cycle builds<br>on the last</h2>
+    <div class="loops" id="loopsStack">
+      <div class="mini-loop hi" data-d="0">DAY 1</div>
+      <div class="mini-loop hi" data-d="60">DAY 2</div>
+      <div class="mini-loop" data-d="120">DAY 3</div>
+      <div class="mini-loop" data-d="180">WEEK 1</div>
+      <div class="mini-loop" data-d="240">WEEK 2</div>
+      <div class="mini-loop" data-d="300">WEEK 4</div>
+      <div class="mini-loop" data-d="360">WEEK 8</div>
+    </div>
+  </div>
+</section>
+
+<!-- SCREEN 9 — PATTERNS -->
+<section class="screen" id="s9">
+  <div class="screen-inner" style="text-align:center;">
+    <h2 class="headline f">Patterns in your time<br>begin to <em>emerge</em></h2>
+    <div class="pat-grid f d1" id="patGrid"></div>
+    <p class="sub sub-center f d2" style="margin-top:20px;">Work-heavy weeks. High-energy clusters. Recovery gaps.</p>
+  </div>
+</section>
+
+<!-- SCREEN 10 — IDENTITY -->
+<section class="screen" id="s10">
+  <div class="screen-inner" style="text-align:center;">
+    <h2 class="headline headline-lg f">What you repeat<br>becomes <em>who you are</em></h2>
+    <div class="dna-vis f d1">
+      <svg viewBox="0 0 460 120" fill="none">
+        <path d="M0,60 C28,10 56,10 84,60 C112,110 140,110 168,60 C196,10 224,10 252,60 C280,110 308,110 336,60 C364,10 392,10 420,60 C434,85 448,80 460,70" stroke="var(--white)" stroke-width="1" opacity="0.35"/>
+        <path d="M0,60 C28,110 56,110 84,60 C112,10 140,10 168,60 C196,110 224,110 252,60 C280,10 308,10 336,60 C364,110 392,110 420,60 C434,35 448,40 460,50" stroke="var(--white)" stroke-width="1" opacity="0.35"/>
+        <circle cx="84" cy="60" r="2.5" fill="var(--white)" opacity="0.3"/>
+        <circle cx="168" cy="60" r="2.5" fill="var(--white)" opacity="0.4"/>
+        <circle cx="252" cy="60" r="2.5" fill="var(--white)" opacity="0.5"/>
+        <circle cx="336" cy="60" r="2.5" fill="var(--white)" opacity="0.6"/>
+        <circle cx="420" cy="60" r="2.5" fill="var(--white)" opacity="0.8"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- SCREEN 11 — ALIGNMENT -->
+<section class="screen" id="s11">
+  <div class="screen-inner" style="text-align:center;">
+    <h2 class="headline f">The gap between what you intend<br>and what you create<br>becomes <em>visible</em></h2>
+    <div class="gap-wrap f d1" id="gapWrap">
+      <div class="gap-r"><span class="gap-l">Week 1</span><div class="gap-t"><div class="gap-i" style="width:75%"></div><div class="gap-a" data-w="35%"></div></div></div>
+      <div class="gap-r"><span class="gap-l">Week 4</span><div class="gap-t"><div class="gap-i" style="width:75%"></div><div class="gap-a" data-w="50%"></div></div></div>
+      <div class="gap-r"><span class="gap-l">Week 8</span><div class="gap-t"><div class="gap-i" style="width:75%"></div><div class="gap-a" data-w="62%"></div></div></div>
+      <div class="gap-r"><span class="gap-l">Month 3</span><div class="gap-t"><div class="gap-i" style="width:75%"></div><div class="gap-a" data-w="70%"></div></div></div>
+      <div class="gap-r"><span class="gap-l">Month 6</span><div class="gap-t"><div class="gap-i" style="width:75%"></div><div class="gap-a" data-w="74%"></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SCREEN 12 — FINAL STATE -->
+<section class="screen" id="s12">
+  <div class="screen-inner" style="text-align:center;">
+    <p class="sub sub-center f" style="color:rgba(255,255,255,0.25);margin-bottom:24px;">You begin to create time that reflects the life you want</p>
+    <h2 class="headline headline-lg f d1"><em>Time Alignment</em></h2>
+    <div class="bal-wrap f d2">
+      <div class="bal-col"><div class="bal-b" style="--h:72px;"></div><div class="bal-lbl">Work</div></div>
+      <div class="bal-col"><div class="bal-b" style="--h:64px;"></div><div class="bal-lbl">Life</div></div>
+      <div class="bal-col"><div class="bal-b" style="--h:36px;"></div><div class="bal-lbl">Health</div></div>
+      <div class="bal-col"><div class="bal-b" style="--h:48px;"></div><div class="bal-lbl">Sleep</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SCREEN 13 — CTA -->
+<section class="screen" id="s13" style="min-height:60vh;">
+  <div class="screen-inner" style="text-align:center;">
+    <h2 class="headline headline-lg f">Start Creating Time</h2>
+    <a href="#" class="cta-btn f d1">Join Existence</a>
+  </div>
+</section>
+
+</div><!-- /main -->
+
+<footer><span>© 2026 All rights reserved.</span><span>Terms of Use | Privacy Policy</span></footer>
+
+<script>
+/* ═══ FADE OBSERVER — staggered by data-fade-order ═══ */
+const fadeEls=document.querySelectorAll('.f');
+const fO=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');fO.unobserve(e.target);}});},{threshold:0,rootMargin:'0px 0px -80px 0px'});
+fadeEls.forEach(el=>{const order=parseInt(el.dataset.fadeOrder??0,10);el.style.transitionDelay=(order*120)+'ms';fO.observe(el);});
+
+/* ═══ GRID BG ═══ */
+const gO=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vis');});},{threshold:0.3});
+document.querySelectorAll('.grid-bg').forEach(el=>gO.observe(el));
+
+/* ═══ TIME BLOCKS CASCADE ═══ */
+const tO=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.querySelectorAll('.tb').forEach(t=>{setTimeout(()=>t.classList.add('vis'),parseInt(t.dataset.d)||0);});});},{threshold:0.2});
+document.querySelectorAll('#tbStack').forEach(el=>tO.observe(el));
+
+/* ═══ CYCLE DRAWING ═══ */
+// ═══ CYCLE SCROLL-DRIVEN ANIMATION ═══
+// Phases: 0-15% rotate+fade in centered | 15-30% labels appear | 30-45% move left, dim rec/rev, glow eng | 45-65% engineer | 65-82% record | 82-100% reveal
+const cycleWrap=document.getElementById('cycleWrap');
+const cn1=document.getElementById('cn1');
+const cn2=document.getElementById('cn2');
+const cn3=document.getElementById('cn3');
+const cycleCenter=document.getElementById('cycleCenter');
+const rightContent=document.getElementById('rightContent');
+const panelEng=document.getElementById('panelEng');
+const panelRec=document.getElementById('panelRec');
+const panelRev=document.getElementById('panelRev');
+const cycleScroller=document.getElementById('cycleScroller');
+const colors={eng:'#8ab4f8',rec:'#e8a87c',rev:'#82d9c5'};
+
+let lastPhase='';
+let currentPanel='';
+function showPanel(id){
+  if(currentPanel===id)return;
+  currentPanel=id;
+  [panelEng,panelRec,panelRev].forEach(p=>p.classList.remove('active'));
+  const panel=document.getElementById(id);
+  if(panel){
+    void panel.offsetHeight; // force reflow so browser knows the translateY(40px) starting state
+    panel.classList.add('active');
+  }
+  // Trigger time block cascade for engineer
+  if(id==='panelEng'){
+    panel.querySelectorAll('.tb').forEach(tb=>{
+      setTimeout(()=>tb.classList.add('vis'),parseInt(tb.dataset.d)||0);
+    });
+  }
+}
+
+function updateCyclePhase(){
+  if(!cycleScroller)return;
+  const rect=cycleScroller.getBoundingClientRect();
+  const total=cycleScroller.scrollHeight-window.innerHeight;
+  const scrolled=Math.max(0,-rect.top);
+  const p=Math.min(1,scrolled/total);
+
+  // Phase 1 (0-0.06): Circle fades in + rotates centered
+  const fadeIn=Math.min(1,p/0.06);
+  const rotation=-20*(1-fadeIn);
+  const scaleIn=0.85+0.15*fadeIn;
+
+  // Phase 2 (0.06-0.14): Labels appear
+  const labelP=Math.max(0,Math.min(1,(p-0.06)/0.08));
+
+  // Phase 3 (0.16-0.26): Move left, shrink slightly
+  const moveP=Math.max(0,Math.min(1,(p-0.16)/0.1));
+  const leftPct=50-15*moveP;
+  const moveScale=1-0.15*moveP;
+
+  // Combine transforms
+  if(p<0.16){
+    cycleWrap.style.left='50%';
+    cycleWrap.style.top='50%';
+    cycleWrap.style.transform=`translate(-50%,-50%) rotate(${rotation}deg) scale(${scaleIn})`;
+    cycleWrap.style.opacity=fadeIn;
+  }else{
+    // Moving to left
+    cycleWrap.style.left=leftPct+'%';
+    cycleWrap.style.top='50%';
+    cycleWrap.style.transform=`translate(-50%,-50%) rotate(0deg) scale(${moveScale})`;
+    cycleWrap.style.opacity=1;
+  }
+
+  // Labels + arcs — as circle moves left, dim Record/Reveal, glow Engineer
+  const engGlow=moveP;
+  cn1.style.opacity=labelP*(0.85+0.15*engGlow);
+  cn1.style.color=engGlow>0.5?colors.eng:'';
+  cn1.style.textShadow=engGlow>0.3?`0 0 ${12*engGlow}px rgba(138,180,248,${0.4*engGlow})`:'none';
+  cn2.style.opacity=labelP*(0.85-0.55*engGlow);
+  cn3.style.opacity=labelP*(0.85-0.55*engGlow);
+  cycleCenter.style.opacity=labelP*0.5;
+
+  // Arcs
+  const aE=document.getElementById('arcEng');
+  const aR=document.getElementById('arcRec');
+  const aV=document.getElementById('arcRev');
+  if(aE){aE.style.opacity=1;aE.style.filter=engGlow>0.3?`drop-shadow(0 0 8px rgba(138,180,248,${0.4*engGlow}))`:'none';}
+  if(aR)aR.style.opacity=1-0.6*engGlow;
+  if(aV)aV.style.opacity=1-0.6*engGlow;
+
+  // Phase 4+: Panels handle their own visibility via .active class
+
+  // Determine active step
+  let phase='';
+  if(p>=0.2&&p<0.5){phase='eng';}
+  else if(p>=0.5&&p<0.76){phase='rec';}
+  else if(p>=0.76){phase='rev';}
+
+  if(phase!==lastPhase){
+    lastPhase=phase;
+    // Reset all labels + arcs (inactive = lighter, still visible)
+    cn1.style.color='';cn1.style.opacity='0.5';cn1.style.textShadow='none';cn1.style.fontSize='14px';
+    cn2.style.color='';cn2.style.opacity='0.5';cn2.style.textShadow='none';cn2.style.fontSize='14px';
+    cn3.style.color='';cn3.style.opacity='0.5';cn3.style.textShadow='none';cn3.style.fontSize='14px';
+    if(aE){aE.style.opacity='0.5';aE.style.filter='none';aE.querySelector('path').setAttribute('stroke','#fff');aE.querySelector('path').setAttribute('stroke-width','3');aE.querySelector('polygon').setAttribute('fill','#fff');}
+    if(aR){aR.style.opacity='0.5';aR.style.filter='none';aR.querySelector('path').setAttribute('stroke','#fff');aR.querySelector('path').setAttribute('stroke-width','3');aR.querySelector('polygon').setAttribute('fill','#fff');}
+    if(aV){aV.style.opacity='0.5';aV.style.filter='none';aV.querySelector('path').setAttribute('stroke','#fff');aV.querySelector('path').setAttribute('stroke-width','3');aV.querySelector('polygon').setAttribute('fill','#fff');}
+
+    if(phase==='eng'){
+      cn1.style.color=colors.eng;cn1.style.opacity='1';cn1.style.textShadow='0 0 20px rgba(138,180,248,0.6), 0 0 40px rgba(138,180,248,0.2)';cn1.style.fontSize='16px';
+      if(aE){aE.style.opacity='1';aE.style.filter='drop-shadow(0 0 12px rgba(138,180,248,0.5)) drop-shadow(0 0 25px rgba(138,180,248,0.2))';aE.querySelector('path').setAttribute('stroke',colors.eng);aE.querySelector('path').setAttribute('stroke-width','4.5');aE.querySelector('polygon').setAttribute('fill',colors.eng);}
+      showPanel('panelEng');
+    }else if(phase==='rec'){
+      cn2.style.color=colors.rec;cn2.style.opacity='1';cn2.style.textShadow='0 0 20px rgba(232,168,124,0.6), 0 0 40px rgba(232,168,124,0.2)';cn2.style.fontSize='16px';
+      if(aR){aR.style.opacity='1';aR.style.filter='drop-shadow(0 0 12px rgba(232,168,124,0.5)) drop-shadow(0 0 25px rgba(232,168,124,0.2))';aR.querySelector('path').setAttribute('stroke',colors.rec);aR.querySelector('path').setAttribute('stroke-width','4.5');aR.querySelector('polygon').setAttribute('fill',colors.rec);}
+      showPanel('panelRec');
+    }else if(phase==='rev'){
+      cn3.style.color=colors.rev;cn3.style.opacity='1';cn3.style.textShadow='0 0 20px rgba(130,217,197,0.6), 0 0 40px rgba(130,217,197,0.2)';cn3.style.fontSize='16px';
+      if(aV){aV.style.opacity='1';aV.style.filter='drop-shadow(0 0 12px rgba(130,217,197,0.5)) drop-shadow(0 0 25px rgba(130,217,197,0.2))';aV.querySelector('path').setAttribute('stroke',colors.rev);aV.querySelector('path').setAttribute('stroke-width','4.5');aV.querySelector('polygon').setAttribute('fill',colors.rev);}
+      showPanel('panelRev');
+    }else{
+      // No active step — reset everything
+      cn1.style.opacity=String(labelP*0.85);cn2.style.opacity=String(labelP*0.85);cn3.style.opacity=String(labelP*0.85);
+      cn1.style.textShadow='none';cn2.style.textShadow='none';cn3.style.textShadow='none';
+      cn1.style.fontSize='14px';cn2.style.fontSize='14px';cn3.style.fontSize='14px';
+      if(aE){aE.style.opacity='1';aE.style.filter='none';aE.querySelector('path').setAttribute('stroke','#fff');aE.querySelector('path').setAttribute('stroke-width','3');aE.querySelector('polygon').setAttribute('fill','#fff');}
+      if(aR){aR.style.opacity='1';aR.style.filter='none';aR.querySelector('path').setAttribute('stroke','#fff');aR.querySelector('path').setAttribute('stroke-width','3');aR.querySelector('polygon').setAttribute('fill','#fff');}
+      if(aV){aV.style.opacity='1';aV.style.filter='none';aV.querySelector('path').setAttribute('stroke','#fff');aV.querySelector('path').setAttribute('stroke-width','3');aV.querySelector('polygon').setAttribute('fill','#fff');}
+      // Hide all panels
+      [panelEng,panelRec,panelRev].forEach(p=>p.classList.remove('active'));
+      currentPanel='';
+    }
+  }
+}
+
+window.addEventListener('scroll',updateCyclePhase,{passive:true});
+updateCyclePhase();
+
+// Cycle shrink is now handled inside updateCyclePhase
+
+/* ═══ LEFT RAIL ═══ */
+const rail=document.getElementById('leftRail');
+const rsEng=document.getElementById('rs-eng');
+const rsRec=document.getElementById('rs-rec');
+const rsRev=document.getElementById('rs-rev');
+const rd0=document.getElementById('rd0');
+const rd1=document.getElementById('rd1');
+const rl0=document.getElementById('rl0');
+const rl1=document.getElementById('rl1');
+const rl2=document.getElementById('rl2');
+const rl3=document.getElementById('rl3');
+
+// Rail is always visible
+// Scroll-driven rail fill — travels continuously down the rail
+function updateRailFill(){
+  const cl=document.getElementById('cycleScroller');
+  if(!cl)return;
+  const rect=cl.getBoundingClientRect();
+  const totalScroll=cl.scrollHeight-window.innerHeight;
+  const scrolled=Math.max(0,-rect.top);
+  const p=Math.min(1,scrolled/totalScroll); // 0 to 1 through cycle experience
+
+  // Map scroll progress to rail segments: rl0 (0-0.15), eng label, rl1 (0.2-0.4), rec label, rl2 (0.45-0.65), rev label, rl3 (0.7-1)
+  const fills=[
+    {el:rl0, start:0, end:0.12},
+    {el:rl1, start:0.2, end:0.38},
+    {el:rl2, start:0.45, end:0.62},
+    {el:rl3, start:0.7, end:0.88}
+  ];
+  fills.forEach(f=>{
+    const fp=Math.max(0,Math.min(1,(p-f.start)/(f.end-f.start)));
+    const fill=f.el.querySelector('.rail-line-fill');
+    if(fill)fill.style.height=fp*100+'%';
+  });
+
+  // Dots
+  rd0.classList.toggle('active',p>0);
+  rd1.classList.toggle('active',p>0.85);
+
+  // Labels — highlight when their section is active
+  [rsEng,rsRec,rsRev].forEach(s=>{s.className='rail-step';});
+  if(p>=0.12 && p<0.38){rsEng.classList.add('current');}
+  else if(p>=0.12){rsEng.classList.add('passed');}
+  if(p>=0.38 && p<0.62){rsRec.classList.add('current');}
+  else if(p>=0.38){rsRec.classList.add('passed');}
+  if(p>=0.62){rsRev.classList.add('current');}
+}
+window.addEventListener('scroll',updateRailFill,{passive:true});
+updateRailFill();
+
+/* ═══ HERO → S2 → HEADLINE SCROLL TRANSITION ═══ */
+const heroScroller=document.getElementById('heroScroller');
+const heroMask=document.getElementById('heroMask');
+const heroText=document.getElementById('heroText');
+const heroOverlay=document.getElementById('heroOverlay');
+const heroVideo=document.getElementById('heroVideo');
+const s2Content=document.getElementById('s2Content');
+const s2Right=document.getElementById('s2Right');
+const s2Video=document.getElementById('s2Video');
+const s2Label=document.getElementById('s2Label');
+const scrollCueEl=document.getElementById('scrollCue');
+const heroLogo=document.getElementById('heroLogo');
+const centerHeadline=document.getElementById('centerHeadline');
+
+function updateHeroTransition(){
+  const rect=heroScroller.getBoundingClientRect();
+  const scrollRange=heroScroller.scrollHeight-window.innerHeight;
+  const scrolled=Math.max(0,-rect.top);
+  const p=Math.min(1,scrolled/scrollRange);
+
+  // ═══ ACT 1 (0–0.3): Hero video → mask wipe → S2 content appears ═══
+  const maskP=Math.max(0,Math.min(1,p/0.25));
+  heroMask.style.transform=`translateX(${-100+maskP*100}%)`;
+  heroText.style.opacity=Math.max(0,1-p*7);
+  if(heroLogo)heroLogo.style.opacity=Math.max(0,0.8-p*6);
+  if(scrollCueEl)scrollCueEl.style.opacity=Math.max(0,1-p*10);
+
+  const heroFade=Math.max(0,Math.min(1,(p-0.1)/0.15));
+  heroVideo.style.opacity=0.45*(1-heroFade);
+
+  // S2 left rises up
+  const contentP=Math.max(0,Math.min(1,(p-0.15)/0.15));
+  const s2Left=document.getElementById('s2Left');
+  if(s2Left){
+    const rise=120*(1-contentP);
+    s2Left.style.transform=`translateY(${rise}px)`;
+  }
+
+  // S2 features
+  if(s2Label){
+    const lp=Math.max(0,Math.min(1,(p-0.22)/0.06));
+    s2Label.style.opacity=lp;
+    s2Label.style.transform=`translateY(${12*(1-lp)}px)`;
+  }
+  ['sf1','sf2','sf3'].forEach((id,i)=>{
+    const el=document.getElementById(id);
+    if(el){
+      const start=0.24+i*0.03;
+      const fp=Math.max(0,Math.min(1,(p-start)/0.06));
+      el.style.opacity=fp;
+      el.style.transform=`translateY(${12*(1-fp)}px)`;
+      el.style.transition='none';
+    }
+  });
+
+  // Square video
+  const vidP=Math.max(0,Math.min(1,(p-0.18)/0.12));
+
+  // ═══ ACT 2 (0.4–0.55): S2 content splits apart + fades out ═══
+  const splitP=Math.max(0,Math.min(1,(p-0.4)/0.15));
+  const s2Fade=1-splitP;
+
+  s2Content.style.opacity=Math.min(contentP,s2Fade);
+  if(s2Left)s2Left.style.transform=`translateY(${120*(1-contentP)}px) translateX(${-80*splitP}px)`;
+  s2Right.style.opacity=Math.min(Math.max(0,Math.min(1,(p-0.2)/0.12)),s2Fade);
+  s2Right.style.transform=`translateX(${80*splitP}px)`;
+  if(s2Video)s2Video.style.opacity=Math.min(vidP,s2Fade);
+
+  // Mask expands to full black background
+  const maskFull=Math.max(0,Math.min(1,(p-0.42)/0.1));
+  heroMask.style.width=`${55+45*maskFull}%`;
+
+  // ═══ ACT 3 (0.5–0.72): "At the center..." fades in, holds, fades out ═══
+  const headIn=Math.max(0,Math.min(1,(p-0.5)/0.06));
+  const headOut=Math.max(0,Math.min(1,(p-0.65)/0.07));
+  if(centerHeadline){
+    centerHeadline.style.opacity=Math.min(headIn,1-headOut);
+  }
+
+  // Hero circle removed — cycle scroller is the only circle
+}
+
+window.addEventListener('scroll',updateHeroTransition,{passive:true});
+updateHeroTransition();
+
+// Fade out scroll cue on scroll
+const scrollCue=document.querySelector('.scroll-cue');
+if(scrollCue){window.addEventListener('scroll',()=>{scrollCue.style.opacity=window.scrollY>80?'0':'1';},{passive:true});}
+
+// Update active step
+function setRailStep(step){
+  [rsEng,rsRec,rsRev].forEach(s=>{s.className='rail-step';});
+  [rl0,rl1,rl2,rl3].forEach(l=>{l.classList.remove('filled');});
+  [rd0,rd1].forEach(d=>{d.className='rail-dot';});
+
+  if(step==='none'){
+    rd0.classList.add('active');
+    // Just the top dot, nothing else
+  }else if(step==='eng'){
+    rsEng.classList.add('current');
+    rd0.classList.add('active');
+    rl0.classList.add('filled');
+  }else if(step==='rec'){
+    rsEng.classList.add('passed');rsRec.classList.add('current');
+    rd0.classList.add('active');
+    rl0.classList.add('filled');rl1.classList.add('filled');
+  }else if(step==='rev'){
+    rsEng.classList.add('passed');rsRec.classList.add('passed');rsRev.classList.add('current');
+    rd0.classList.add('active');
+    rl0.classList.add('filled');rl1.classList.add('filled');rl2.classList.add('filled');
+  }else if(step==='done'){
+    rsEng.classList.add('passed');rsRec.classList.add('passed');rsRev.classList.add('passed');
+    rd0.classList.add('active');rd1.classList.add('active');
+    rl0.classList.add('filled');rl1.classList.add('filled');rl2.classList.add('filled');rl3.classList.add('filled');
+  }
+}
+
+// Step obs kept only for arc highlighting (not rail)
+const stepObs=new IntersectionObserver(es=>{es.forEach(e=>{
+  if(e.isIntersecting){
+    const id=e.target.id;
+  }
+});},{threshold:0.35});
+['s3','s4','s4b','s5','s6','s7'].forEach(id=>{const el=document.getElementById(id);if(el)stepObs.observe(el);});
+
+// Rail click
+document.querySelectorAll('.rail-step').forEach(s=>{
+  s.addEventListener('click',()=>{const t=document.getElementById(s.dataset.target);if(t)t.scrollIntoView({behavior:'smooth'});});
+});
+
+/* ═══ MINI LOOPS ═══ */
+const mO=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.querySelectorAll('.mini-loop').forEach(m=>{setTimeout(()=>m.classList.add('vis'),parseInt(m.dataset.d)||0);});});},{threshold:0.2});
+const ls=document.getElementById('loopsStack');if(ls)mO.observe(ls);
+
+/* ═══ PATTERN GRID ═══ */
+const pg=document.getElementById('patGrid');
+if(pg){[1,2,1,0,1,2,0,2,1,2,1,0,1,1,0,1,2,2,1,0,0,1,2,1,1,2,1,0,2,2,1,0,1,2,1].forEach(v=>{const d=document.createElement('div');d.className='pat-cell'+(v===2?' hi':v===1?' md':'');pg.appendChild(d);});}
+
+/* ═══ GAP BARS ═══ */
+const gapO=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.querySelectorAll('.gap-a').forEach(b=>{b.style.width=b.dataset.w;});});},{threshold:0.3});
+const gw=document.getElementById('gapWrap');if(gw)gapO.observe(gw);
+
+/* ═══ BALANCED PILLARS ═══ */
+const bO=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.querySelectorAll('.bal-b').forEach(b=>b.classList.add('vis'));});},{threshold:0.3});
+document.querySelectorAll('.bal-wrap').forEach(el=>bO.observe(el));
+</script>
+
+</body>
+</html>
