@@ -234,7 +234,7 @@ body {
    ═══════════════════════════════════ */
 #heroSection {
   position: relative;
-  height: 500vh;
+  height: 900vh;
   margin-left: -90px;
 }
 
@@ -323,9 +323,7 @@ body {
 }
 .tb-svg-inner {
   position: relative;
-  /* images handle their own brightness */
   width: 100%;
-  height: 100%;
 }
 .tb-svg-inner img,
 .tb-svg-inner svg {
@@ -354,8 +352,8 @@ body {
 .hero-left-text.visible { visibility: visible; }
 .hlp {
   position: absolute;
-  top: 28vh; left: 300px; right: 40px;
-  max-width: 480px;
+  top: 34vh; left: 300px; right: 40px;
+  max-width: 500px;
   opacity: 0;
   transform: translateY(30px);
   transition: opacity 0.5s ease, transform 0.5s ease;
@@ -975,7 +973,7 @@ footer {
 <body>
 
 <!-- ═══ EXISTENCE LOGO ═══ -->
-<div class="logo" id="logo">existence</div>
+<div class="logo" id="logo"><img src="logo-existence.svg" alt="existence" style="height:2.5em;vertical-align:middle;"></div>
 
 <!-- ═══ LEFT RAIL ═══ -->
 <div class="left-rail" id="leftRail">
@@ -998,6 +996,11 @@ footer {
      ═══════════════════════════════════════════════════════════ -->
 <section id="heroSection">
   <div id="heroSticky">
+
+    <!-- Blurred video background (for "live" section) -->
+    <video id="videoBlurred" autoplay muted loop playsinline style="position:absolute;top:-10%;left:-10%;width:120%;height:120%;object-fit:cover;filter:blur(28px) brightness(0.45);opacity:0;transition:opacity 0.8s ease;z-index:2;pointer-events:none;">
+      <source src="lived-video.mp4" type="video/mp4">
+    </video>
 
     <!-- Blurred calendar background — full bleed -->
     <div class="hero-grid-bg" id="heroGridBg">
@@ -1033,6 +1036,14 @@ footer {
         <img src="sleep-fill-4.svg" class="pillar-fill" id="pfSleep" style="position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;transition:opacity 0.3s ease;pointer-events:none;">
         <!-- Pulsing indicator dot -->
         <div id="tbDot" style="position:absolute;width:8px;height:8px;border-radius:50%;background:#fff;box-shadow:0 0 10px 3px rgba(255,255,255,0.45);opacity:0;transition:opacity 0.4s ease,top 0.4s ease,left 0.4s ease;pointer-events:none;z-index:30;"></div>
+        <!-- Sharp video clipped to TB rectangle -->
+        <div id="videoSharpWrap" style="position:absolute;top:5.134%;left:6.061%;width:87.879%;height:88.798%;overflow:hidden;opacity:0;transition:opacity 0.8s ease;z-index:20;">
+          <video id="videoSharp" autoplay muted loop playsinline style="width:100%;height:100%;object-fit:fill;">
+            <source src="run-sharp.mp4" type="video/mp4">
+          </video>
+        </div>
+        <!-- Corner frame on top -->
+        <img id="gridCornersImg" src="GridCorners.svg" style="position:absolute;top:5.134%;left:6.061%;width:87.879%;height:88.798%;pointer-events:none;z-index:21;opacity:0;transition:opacity 0.8s ease;">
       </div>
     </div>
 
@@ -1073,7 +1084,7 @@ footer {
         <p class="sub" style="color:rgb(166,166,166);">Work. Life. Health. Sleep. Every Time Block is automatically sorted into one. Together, they define the life you intend to create — and reveal whether your time reflects it.</p>
       </div>
       <!-- Sub-panel 6: Set Intention -->
-      <div class="hlp waiting" id="hlp6">
+      <div class="hlp waiting" id="hlp6" data-highlight="tb-allFilled" style="top:24vh;">
         <h2 class="headline" style="text-align:left;line-height:1.05;margin-bottom:14px;">Set Your Intention</h2>
         <p class="sub" style="color:rgb(166,166,166);margin-bottom:28px;">Split your 168 hours each week across four pillars. This becomes the benchmark Existence measures your time against.</p>
         <div class="intention-sliders" id="intentionSliders">
@@ -1111,6 +1122,26 @@ footer {
           </div>
         </div>
       </div>
+      <!-- Sub-panel 7: Live Your Time Block -->
+      <div class="hlp waiting" id="hlp7" style="top:24vh;left:200px;max-width:700px;">
+        <h2 class="headline" style="text-align:left;line-height:1.05;margin-bottom:6px;">Each Time Block begins as the ideal you.</h2>
+        <h2 class="headline" style="text-align:left;line-height:1.05;margin-bottom:14px;">After it's lived, it becomes the real you.</h2>
+        <p class="sub" style="color:rgb(166,166,166);margin-bottom:28px;">The same block transforms to capture how time was actually experienced.</p>
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div style="display:flex;align-items:flex-start;gap:14px;padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,0.08);">
+            <img src="energy1.svg" style="width:32px;height:32px;flex-shrink:0;margin-top:2px;">
+            <div><div style="font-family:var(--sans);font-size:14px;font-weight:500;color:#fff;margin-bottom:2px;">Quality Score</div><div style="font-family:var(--sans);font-size:12px;color:rgb(166,166,166);">Rate how it compared to your intention, 0–10</div></div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:14px;padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,0.08);">
+            <img src="reflection1.svg" style="width:32px;height:32px;flex-shrink:0;margin-top:2px;">
+            <div><div style="font-family:var(--sans);font-size:14px;font-weight:500;color:#fff;margin-bottom:2px;">Reflections</div><div style="font-family:var(--sans);font-size:12px;color:rgb(166,166,166);">Capture what it meant — in your own words</div></div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:14px;">
+            <img src="Media1.svg" style="width:32px;height:32px;flex-shrink:0;margin-top:2px;">
+            <div><div style="font-family:var(--sans);font-size:14px;font-weight:500;color:#fff;margin-bottom:2px;">Photos & Media</div><div style="font-family:var(--sans);font-size:12px;color:rgb(166,166,166);">Memorialize the moment with images and media</div></div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- "At the center is a continuous cycle" transition -->
@@ -1125,59 +1156,6 @@ footer {
      SECTIONS A–D: TIME BLOCK DEEP DIVE
      ═══════════════════════════════════════════════════════════ -->
 
-<!-- SECTION B: The Duality -->
-<section class="tb-feature-section" id="sectionDuality">
-  <div class="tb-feature-inner">
-    <p class="label f">THE DUALITY</p>
-    <h2 class="section-headline f d1">Each Time Block begins as the ideal you.<br>After it's lived, it becomes the real you.</h2>
-    <p class="section-subtext f d2">The same block transforms to capture how time was actually experienced.</p>
-
-    <div class="feature-row f d1">
-      <div class="feature-icon">
-        <svg width="28" height="28" viewBox="0 0 32 32" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="16" cy="16" r="11"/>
-          <path d="M16 9 A7 7 0 0 1 16 23" stroke-width="2.5"/>
-          <line x1="16" y1="16" x2="16" y2="10"/>
-        </svg>
-      </div>
-      <div class="feature-text">
-        <div class="feature-title">Quality Score</div>
-        <div class="feature-desc">Rate how it compared to your intention, 0&ndash;10</div>
-      </div>
-    </div>
-
-    <div class="feature-row f d2">
-      <div class="feature-icon">
-        <svg width="28" height="28" viewBox="0 0 32 32" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M6 24 Q6 6 16 6 Q26 6 26 24"/>
-          <circle cx="11" cy="16" r="1" fill="rgba(255,255,255,0.4)" stroke="none"/>
-          <circle cx="16" cy="14" r="1" fill="rgba(255,255,255,0.4)" stroke="none"/>
-          <circle cx="21" cy="16" r="1" fill="rgba(255,255,255,0.4)" stroke="none"/>
-        </svg>
-      </div>
-      <div class="feature-text">
-        <div class="feature-title">Reflections</div>
-        <div class="feature-desc">Capture what it meant &mdash; in your own words</div>
-      </div>
-    </div>
-
-    <div class="feature-row f d3">
-      <div class="feature-icon">
-        <svg width="28" height="28" viewBox="0 0 32 32" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="5" y="7" width="22" height="18" rx="3"/>
-          <circle cx="13" cy="15" r="3"/>
-          <path d="M5 22 l6-4 4 3 6-5 6 4"/>
-        </svg>
-      </div>
-      <div class="feature-text">
-        <div class="feature-title">Photos &amp; Media</div>
-        <div class="feature-desc">Memorialize the moment with images and media</div>
-      </div>
-    </div>
-
-    <div class="duality-line f d4">Every Time Block holds both.</div>
-  </div>
-</section>
 
 <!-- SECTION C: Scale Up -->
 <section class="tb-feature-section centered" id="sectionScale">
@@ -1508,7 +1486,7 @@ footer {
   /* ─── Time Block SVG positioning ─── */
   /* Start: small, blurred, in a grid position. End: large, sharp, right side. */
   var vStart = { l: 70, t: 40, w: 5, h: 8 };  /* percent of viewport — starts right, small */
-  var vEnd   = { l: 58, t: 12, w: 28, h: 72 };
+  var vEnd   = { l: 58, t: 18, w: 28, h: 65 };
 
   function positionTbSvg(progress) {
     var p = easeInOutCubic(clamp(progress, 0, 1));
@@ -1719,22 +1697,27 @@ footer {
     /* TB scale disabled — was causing border artifact */
 
     /* TB visibility envelope */
-    if (hp < 0.06 || hp > 0.92) {
+    if (hp < 0.06 || hp > 0.96) {
       tbSvg.style.opacity = '0';
     }
 
     /* Frame 2+: Left text panels swap as you scroll, TB highlights match */
-    var showLeft = hp > 0.28 && hp < 0.90;
+    var showLeft = hp > 0.22 && hp < 0.96;
     heroLeftText.classList.toggle('visible', showLeft);
 
     /* Sub-panels: divide 0.28-0.78 into 5 equal phases */
-    var hlpPanels = ['hlp0','hlp1','hlp2','hlp3','hlp4','hlp5','hlp6'];
+    var hlpPanels = ['hlp0','hlp1','hlp2','hlp3','hlp4','hlp5','hlp6','hlp7'];
     /* Image state IDs for TB swap */
-    var panelStart = 0.28, panelEnd = 0.78;
+    var panelStart = 0.22, panelEnd = 0.94;
     var panelRange = panelEnd - panelStart;
     var numPanels = hlpPanels.length;
     var panelP = clamp((hp - panelStart) / panelRange, 0, 0.999);
-    var activePanel = Math.floor(panelP * numPanels);
+    // Custom breakpoints: panels 0-6 get equal share of first 75%, panel 7 gets last 25%
+    var panelBreaks = [0, 0.107, 0.214, 0.321, 0.428, 0.535, 0.642, 0.75, 1.0];
+    var activePanel = 0;
+    for (var pb = 1; pb < panelBreaks.length; pb++) {
+      if (panelP >= panelBreaks[pb]) activePanel = pb;
+    }
 
     if (typeof window._lastHlpPanel === 'undefined') window._lastHlpPanel = -1;
     if (typeof window._hlpWasShown === 'undefined') window._hlpWasShown = false;
@@ -1777,12 +1760,35 @@ footer {
 
       /* Swap TB image states — crossfade between pre-made SVGs */
       var tbStates = ['tbBase','tbWhen','tbWhat','tbWhere','tbWho','tbPillar','tbAllFilled'];
-      var hlpStateMap = [0, 2, 1, 4, 3, 5, 6]; // panel 0=base, 1=what, 2=when, 3=who, 4=where, 5=pillar, 6=allFilled
-      var targetState = hlpStateMap[activePanel] || 0;
-      tbStates.forEach(function(id, i) {
-        var img = document.getElementById(id);
-        if (img) img.style.opacity = (i === targetState) ? '1' : '0';
-      });
+      var hlpStateMap = [0, 2, 1, 4, 3, 5, 6, -1]; // panel 0=base, 1=what, 2=when, 3=who, 4=where, 5=pillar, 6=allFilled, 7=video (hide all TB states)
+      var targetState = hlpStateMap[activePanel];
+      if (targetState === undefined) targetState = 0;
+      var videoWrap = document.getElementById('videoLivedWrap');
+      var videoBlurred = document.getElementById('videoBlurred');
+      var videoSharpWrap = document.getElementById('videoSharpWrap');
+      var gridCornersImg = document.getElementById('gridCornersImg');
+      if (targetState === -1) {
+        // Video mode — hide all TB states, show video layers
+        tbStates.forEach(function(id) {
+          var img = document.getElementById(id);
+          if (img) img.style.opacity = '0';
+        });
+        ['pfLife','pfHealth','pfWork','pfSleep'].forEach(function(id) {
+          var el = document.getElementById(id); if(el) el.style.opacity = '0';
+        });
+        if (videoBlurred) videoBlurred.style.opacity = '1';
+        if (videoSharpWrap) videoSharpWrap.style.opacity = '1';
+        if (gridCornersImg) gridCornersImg.style.opacity = '1';
+        if (heroGridBg) heroGridBg.style.opacity = '0';
+      } else {
+        tbStates.forEach(function(id, i) {
+          var img = document.getElementById(id);
+          if (img) img.style.opacity = (i === targetState) ? '1' : '0';
+        });
+        if (videoBlurred) videoBlurred.style.opacity = '0';
+        if (videoSharpWrap) videoSharpWrap.style.opacity = '0';
+        if (gridCornersImg) gridCornersImg.style.opacity = '0';
+      }
 
       /* Pillar wave animation — auto-plays when panel 5 is active */
       if (activePanel === 5 && !window._pillarAnimRunning) {
@@ -1841,12 +1847,13 @@ footer {
       // Dot positions as % of TB card: [top%, left%] — left edge of the TB, vertically centered on region
       var dotPositions = {
         0: null,                    // intro — no dot
-        1: { top: 33, left: -2 },  // what (title area)
+        1: { top: 29, left: -2 },  // what (title area)
         2: { top: 49, left: -2 },  // when (time row)
-        3: { top: 56.5, left: -2 },// who (people row)
-        4: { top: 63, left: -2 },  // where (place row)
-        5: { top: 44, left: -2 },  // pillar (Life/Health/Work/Sleep row)
-        6: { top: 44, left: -2 }   // intention (same position as pillar)
+        3: { top: 58.5, left: -2 },// who (people row)
+        4: { top: 66.5, left: -2 },  // where (place row)
+        5: { top: 42, left: -2 },  // pillar (Life/Health/Work/Sleep row)
+        6: { top: 42, left: -2 },  // intention (same position as pillar)
+        7: null                    // video — no dot
       };
       var dp = dotPositions[activePanel];
       if (dp && tbDot) {
