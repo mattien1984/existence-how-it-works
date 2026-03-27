@@ -1696,6 +1696,21 @@ function setS2Version(v) {
   }
 }
 
+// Parallax on hero squares (v2/v3 only)
+const parallaxRates = { 'gsq-5': -0.07, 'gsq-1': 0.12, 'gsq-2': -0.09, 'gsq-3': 0.14, 'gsq-4': -0.16, 'gsq-6': 0.08 };
+window.addEventListener('scroll', () => {
+  const heroV2 = document.getElementById('heroV2');
+  const heroV3 = document.getElementById('heroV3');
+  if ((heroV2 && heroV2.style.display !== 'none') || (heroV3 && heroV3.style.display !== 'none')) {
+    const scrollY = window.scrollY;
+    Object.entries(parallaxRates).forEach(([cls, rate]) => {
+      document.querySelectorAll('.' + cls).forEach(el => {
+        el.style.transform = `translateY(${scrollY * rate}px)`;
+      });
+    });
+  }
+}, { passive: true });
+
 // Nav scroll behavior
 const nav = document.getElementById('nav');
 let lastScroll = 0;
