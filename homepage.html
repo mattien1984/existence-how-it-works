@@ -337,6 +337,8 @@ nav.scrolled {
 .btn-ghost .arrow {
   transition: transform 0.3s;
   font-size: 16px;
+  position: relative;
+  top: -2px;
 }
 .btn-ghost:hover .arrow { transform: translateX(4px); }
 
@@ -552,6 +554,151 @@ section {
   font-weight: 300;
   line-height: 1.6;
   color: var(--gray);
+}
+
+/* ═══════════════════════════════════
+   TIME BLOCK SCROLL FLIP
+   ═══════════════════════════════════ */
+.tb-flip-section {
+  padding-top: 40px;
+}
+.tb-flip-layout {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 48px;
+  align-items: center;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.tb-flip-copy {
+  max-width: 300px;
+  transition: opacity 0.5s ease;
+}
+.tb-flip-copy-left {
+  justify-self: end;
+  text-align: right;
+}
+.tb-flip-copy-right {
+  justify-self: start;
+  text-align: left;
+  opacity: 0.1;
+}
+.tb-book-label {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 400;
+  font-style: italic;
+  color: #000;
+  margin-bottom: 8px;
+}
+.tb-book-desc {
+  font-family: var(--sans);
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.65;
+  color: #222;
+}
+.tb-flip-card-container {
+  perspective: 1400px;
+  width: 460px;
+  height: 463px;
+}
+.tb-flip-card {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: none;
+}
+.tb-flip-front,
+.tb-flip-back {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.tb-flip-front img,
+.tb-flip-back img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  border-radius: 8px;
+  filter: drop-shadow(0 3px 10px rgba(0,0,0,0.3));
+}
+.tb-flip-back {
+  transform: rotateY(180deg);
+}
+.tb-flip-object {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border: none;
+  border-radius: 8px;
+  filter: drop-shadow(0 3px 10px rgba(0,0,0,0.3));
+}
+.tb-video-card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+.tb-video-bg {
+  position: absolute;
+  /* Card rect in SVG: x=48,y=44 in 792x796 viewbox */
+  top: 5.5%;
+  left: 6.06%;
+  width: 87.88%;
+  height: 87.94%;
+  object-fit: cover;
+  z-index: 0;
+  brightness: 0.6;
+}
+.tb-video-card::after {
+  content: '';
+  position: absolute;
+  top: 5.5%;
+  left: 6.06%;
+  width: 87.88%;
+  height: 87.94%;
+  background: rgba(0,0,0,0.5);
+  z-index: 0;
+}
+.tb-png-overlay {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  z-index: 1;
+  display: block;
+}
+.tb-book-tagline {
+  font-family: var(--serif);
+  font-size: clamp(20px, 2.5vw, 32px);
+  font-style: italic;
+  text-align: center;
+  color: var(--black);
+  opacity: 0;
+  margin-top: 48px;
+  transition: opacity 0.6s ease;
+}
+.tb-book-tagline.visible {
+  opacity: 0.7;
+}
+
+@media (max-width: 900px) {
+  .tb-flip-layout {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    text-align: center;
+  }
+  .tb-flip-copy-left,
+  .tb-flip-copy-right {
+    justify-self: center;
+    text-align: center;
+    max-width: 320px;
+  }
+  .tb-flip-card-container { width: 200px; height: 202px; }
 }
 
 /* ═══════════════════════════════════
@@ -1483,6 +1630,44 @@ footer {
 <div class="divider"><div class="divider-line"></div></div>
 
 <!-- ═══════════════════════════════════
+     TIME BLOCK (Section 3)
+     ═══════════════════════════════════ -->
+<section class="timeblock-section" style="background: var(--white); padding: 160px 48px;">
+  <div class="section-inner">
+    <div class="tb-flip-section" id="s2v1-timeblock">
+      <div class="tb-flip-layout">
+        <div class="tb-flip-copy tb-flip-copy-left" id="tbCopyLeft">
+          <p class="tb-book-label">The Ideal You</p>
+          <p class="tb-book-desc">Each Time Block begins as a projection — what you intend to do, when, where, and with whom.</p>
+        </div>
+        <div class="tb-flip-card-container">
+          <div class="tb-flip-card" id="tbFlipCard">
+            <div class="tb-flip-front">
+              <img src="Editing Time Block.svg" alt="Lived Time Block">
+            </div>
+            <div class="tb-flip-back">
+              <div class="tb-video-card">
+                <video class="tb-video-bg" autoplay muted loop playsinline>
+                  <source src="run-sharp.mp4" type="video/mp4">
+                </video>
+                <img src="NEW-Block.png" alt="Intended Time Block" class="tb-png-overlay">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tb-flip-copy tb-flip-copy-right" id="tbCopyRight">
+          <p class="tb-book-label">The Real You</p>
+          <p class="tb-book-desc">After it's lived, the block captures what actually happened — how it felt, what it meant, and what you want to remember.</p>
+        </div>
+      </div>
+      <p class="tb-book-tagline" id="tbTagline">Every Time Block holds both.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"><div class="divider-line"></div></div>
+
+<!-- ═══════════════════════════════════
      SOLUTION — THE CYCLE
      ═══════════════════════════════════ -->
 <section class="solution">
@@ -1731,6 +1916,57 @@ const observer = new IntersectionObserver((entries) => {
   rootMargin: '0px 0px -60px 0px'
 });
 reveals.forEach(el => observer.observe(el));
+
+// Time Block cursor-driven flip
+const tbCard = document.getElementById('tbFlipCard');
+const tbSection = document.getElementById('s2v1-timeblock');
+const tbCopyLeft = document.getElementById('tbCopyLeft');
+const tbCopyRight = document.getElementById('tbCopyRight');
+const tbTagline = document.getElementById('tbTagline');
+
+if (tbCard && tbSection) {
+  let hasEntered = false;
+  let currentSide = null; // 'left' or 'right'
+
+  // Auto-flip once on scroll into view, then hand off to cursor
+  const tbObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !hasEntered) {
+        hasEntered = true;
+        tbCard.style.transition = 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)';
+        tbCard.style.transform = 'rotateY(180deg)';
+        currentSide = 'right';
+        if (tbCopyLeft) tbCopyLeft.style.opacity = '0.1';
+        if (tbCopyRight) tbCopyRight.style.opacity = '1';
+        setTimeout(() => {
+          if (tbTagline) tbTagline.classList.add('visible');
+        }, 600);
+      }
+    });
+  }, { threshold: 0.4 });
+  tbObserver.observe(tbSection);
+
+  // Continuous cursor-driven rotation across section
+  const tbParent = tbSection.closest('section');
+  if (tbParent) {
+    tbParent.addEventListener('mousemove', (e) => {
+      if (!hasEntered) return;
+      const rect = tbParent.getBoundingClientRect();
+      const xRaw = (e.clientX - rect.left) / rect.width;
+      // Compress range — 20%-80% of section maps to full 0-180
+      const xPercent = Math.max(0, Math.min(1, (xRaw - 0.2) / 0.6));
+      const rotation = xPercent * 180;
+      tbCard.style.transition = 'transform 0.15s ease-out';
+      tbCard.style.transform = `rotateY(${rotation}deg)`;
+
+      // Fade copy based on position
+      const leftOpacity = 0.1 + (1 - xPercent) * 0.9;
+      const rightOpacity = 0.1 + xPercent * 0.9;
+      if (tbCopyLeft) tbCopyLeft.style.opacity = leftOpacity;
+      if (tbCopyRight) tbCopyRight.style.opacity = rightOpacity;
+    });
+  }
+}
 
 </script>
 
