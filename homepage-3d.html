@@ -1281,7 +1281,7 @@ footer {
   position: absolute;
   overflow: hidden;
   border-radius: 0;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+  box-shadow: none;
   will-change: transform, width, height, left, top, opacity;
 }
 .float-sq img,
@@ -1653,44 +1653,64 @@ footer {
     };
   }
 
+  // Per-square scatter offsets — each drifts in a unique direction
+  const scatterOffsets = [
+    { dx: -140, dy: -180 },  // fsq0 (big) — up-left
+    { dx:  160, dy: -120 },  // fsq1 — right-up
+    { dx:  200, dy:  70  },  // fsq2 — right-down slightly
+    { dx: -180, dy:  130 },  // fsq3 — left-down
+    { dx:  90,  dy:  170 },  // fsq4 — right-down
+    { dx: -110, dy: -200 }   // fsq5 — left-up
+  ];
+
   function updateFloatingSquares() {
     const viewH = window.innerHeight;
+    const viewW = window.innerWidth;
     if (!heroEl || !gapSection) return;
 
     const heroRect = heroEl.getBoundingClientRect();
     const gapRect = gapSection.getBoundingClientRect();
-
-    // SIMPLE: everything driven by scrollY relative to hero height
     const heroH = heroEl.offsetHeight || viewH;
-    const scrollProgress = Math.max(0, Math.min(1, window.scrollY / heroH));
 
-    // gapProgress for later stages
-    const gapProgress = Math.max(0, Math.min(1, -gapRect.top / (gapRect.height - viewH)));
+    // ─── PHASE CALCULATIONS ───
+    // heroScroll: 0 at top, 1 when hero is fully scrolled past
+    const heroScroll = Math.max(0, Math.min(1, window.scrollY / heroH));
 
-    // Combined: scroll through hero drives 70%, gap section drives rest
-    const progress = Math.min(1, scrollProgress * 0.7 + gapProgress * 0.4);
+    // Phase 1a — Subtle scale: first 40% of hero scroll
+    const scaleProgress = Math.max(0, Math.min(1, heroScroll / 0.4));
+    const scaleEase = 1 - Math.pow(1 - scaleProgress, 2);
 
-    // Swoop starts at 3%, but stack organization happens late (completes at 70%)
-    const transProgress = Math.max(0, Math.min(1, (progress - 0.03) / 0.67));
+    // Phase 1b — Scatter: starts at 40%, fully scattered by 85%
+    const scatterRaw = Math.max(0, Math.min(1, (heroScroll - 0.4) / 0.45));
+    const scatterEase = 1 - Math.pow(1 - scatterRaw, 2);
 
-    // Cubic ease out
-    const ease = 1 - Math.pow(1 - transProgress, 3);
+    // Phase 2 — Collect into stack: driven by gap section entering viewport
+    // gapRect.top goes from positive (below viewport) to negative (scrolled past)
+    // When gapRect.top == viewH, gap is just below viewport => 0
+    // When gapRect.top == 0, gap sticky is at top of viewport => 1
+    // We want collection to complete as the sticky viewport takes hold
+    const gapEnter = Math.max(0, Math.min(1, 1 - gapRect.top / viewH));
+    // Smooth ease for collection
+    const collectEase = gapEnter < 0.01 ? 0 : Math.pow(gapEnter, 0.6);
 
-    // Stack targets
-    const stackLeftX = window.innerWidth * 0.35;
-    const stackY = viewH * 0.40;
-    const stackRightX = window.innerWidth * 0.65;
+    // Phase 3 — Lock: once gapProgress > 0, squares stay locked
+    // gapProgress tracks how far we've scrolled through the 200vh gap section
+    const gapScrollable = gapRect.height - viewH;
+    const gapProgress = gapScrollable > 0 ? Math.max(0, Math.min(1, -gapRect.top / gapScrollable)) : 0;
+
+    // Once fully collected, clamp to 1
+    const collectFinal = Math.min(1, collectEase + gapProgress);
+
+    // ─── STACK TARGETS ───
+    const stackLeftX = viewW * 0.35;
+    const stackY = viewH * 0.55;
+    const stackRightX = viewW * 0.65;
     const STACK_SIZE = 150;
 
-    // Determine visibility: show floating squares when hero or gap is in view
+    // ─── VISIBILITY ───
     const heroVisible = heroRect.bottom > 0;
     const gapVisible = gapRect.top < viewH && gapRect.bottom > 0;
     const shouldShow = heroVisible || gapVisible;
-
-    // Lift phase: driven by raw scrollY so even 1px of scroll produces visible movement
-    // Fully lifted by 150px of scroll
-    const liftProgress = Math.max(0, Math.min(1, window.scrollY / 80));
-    const liftEase = 1 - Math.pow(1 - liftProgress, 2);
 
     sqEls.forEach((el, i) => {
       if (!el) return;
@@ -1699,56 +1719,71 @@ footer {
       // Home position (SVG mapped to screen)
       const home = svgToScreen(def.sx, def.sy, def.sw, def.sh);
 
-      // Stack position
-      const stackX = stackLeftX - STACK_SIZE / 2 + i * 20;
-      const stackYi = stackY - STACK_SIZE / 2 + i * 12;
-
       if (!shouldShow) {
         el.style.opacity = '0';
         return;
       }
 
-      // Always visible — no staggered fade-in
-      const fadeInProgress = 1;
+      // Stack target for this card
+      const stackX = stackLeftX - STACK_SIZE / 2 + i * 20;
+      const stackYi = stackY - STACK_SIZE / 2 + i * 12;
 
-      if (ease < 0.01) {
-        // Flat at SVG positions — subtle scale on first scroll
-        el.style.left = home.x + 'px';
-        el.style.top = home.y + 'px';
+      if (collectFinal < 0.01) {
+        // ─── PHASE 1: Hero visible, no collection yet ───
+        // Scatter offset for this card
+        const scatter = scatterOffsets[i];
+        const scX = home.x + scatter.dx * scatterEase;
+        const scY = home.y + scatter.dy * scatterEase;
+
+        el.style.left = scX + 'px';
+        el.style.top = scY + 'px';
         el.style.width = home.w + 'px';
         el.style.height = home.h + 'px';
-        el.style.transform = liftEase > 0.01 ? `scale(${1 + liftEase * 0.05})` : 'none';
-        el.style.opacity = fadeInProgress;
+        // Subtle scale-up during first 40% of hero scroll
+        const s = 1 + scaleEase * 0.06;
+        el.style.transform = `scale(${s})`;
+        el.style.opacity = '1';
       } else {
-        // Interpolate to stack with arching path
-        // Add vertical arc: cards go UP first then curve down to target
-        const arcHeight = -120 * Math.sin(ease * Math.PI);
-        const curX = home.x + (stackX - home.x) * ease;
-        const curY = home.y + (stackYi - home.y) * ease + arcHeight * (1 - ease);
-        const curW = home.w + (STACK_SIZE - home.w) * ease;
-        const curH = home.h + (STACK_SIZE - home.h) * ease;
+        // ─── PHASE 2/3: Collecting into stack, or locked ───
+        const t = collectFinal; // 0..1
+
+        // Start position: scattered home position (where phase 1 left off)
+        const scatter = scatterOffsets[i];
+        const startX = home.x + scatter.dx;
+        const startY = home.y + scatter.dy;
+        const homeSize = Math.min(home.w, home.h);
+
+        // Smooth ease for the collection motion
+        const easeT = 1 - Math.pow(1 - t, 3);
+
+        // Arc: cards rise slightly then settle
+        const arcHeight = -80 * Math.sin(easeT * Math.PI);
+
+        const curX = startX + (stackX - startX) * easeT;
+        const curY = startY + (stackYi - startY) * easeT + arcHeight * (1 - easeT);
+        const curSize = homeSize + (STACK_SIZE - homeSize) * easeT;
 
         el.style.left = curX + 'px';
         el.style.top = curY + 'px';
-        el.style.width = curW + 'px';
-        el.style.height = curH + 'px';
+        el.style.width = curSize + 'px';
+        el.style.height = curSize + 'px';
         el.style.opacity = '1';
 
-        // 3D fan effect
-        const rotY = 35 * ease;
-        const rotZ = (i - 2.5) * 2 * ease;
-        const tz = i * (-16) * ease;
+        // 3D fan effect ramps in with collection
+        const rotY = 35 * easeT;
+        const rotZ = (i - 2.5) * 2 * easeT;
+        const tz = i * (-16) * easeT;
         el.style.transform = `perspective(1200px) rotateY(${rotY}deg) rotateZ(${rotZ}deg) translateZ(${tz}px)`;
       }
     });
 
-    // Empty cards on right side
-    const emptyVisible = progress > 0.5;
-    const emptyOpacity = emptyVisible ? Math.min(1, (progress - 0.5) / 0.3) : 0;
+    // ─── EMPTY OUTLINE CARDS (right side) ───
+    // Fade in during collection phase
+    const emptyOpacity = collectFinal > 0.3 ? Math.min(1, (collectFinal - 0.3) / 0.4) : 0;
 
     emptyEls.forEach((el, i) => {
       if (!el) return;
-      if (!shouldShow || !emptyVisible) {
+      if (!shouldShow || emptyOpacity < 0.01) {
         el.style.opacity = '0';
         return;
       }
@@ -1763,9 +1798,10 @@ footer {
       el.style.transform = `perspective(1200px) rotateY(${rotY}deg) rotateZ(${rotZ}deg) translateZ(${tz}px)`;
     });
 
-    // Headline
+    // ─── HEADLINE ───
+    // Show once collection is mostly done
     if (gapHeadline) {
-      gapHeadline.classList.toggle('visible', progress > 0.5);
+      gapHeadline.classList.toggle('visible', collectFinal > 0.6);
     }
   }
 
