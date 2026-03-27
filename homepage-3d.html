@@ -1263,6 +1263,88 @@ footer {
   .hero-cta-group { flex-direction: column; gap: 16px; }
   .product-side { grid-template-columns: 1fr; }
 }
+
+/* ═══════════════════════════════════
+   FLOATING SQUARES + GAP SECTION
+   ═══════════════════════════════════ */
+.hero-grid-bg .grid-sq { display: none; }
+
+.floating-squares {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 50;
+}
+.float-sq {
+  position: absolute;
+  overflow: hidden;
+  border-radius: 0;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+  will-change: transform, width, height, left, top, opacity;
+}
+.float-sq img,
+.float-sq video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.gap-section {
+  position: relative;
+  height: 200vh;
+  background: #ffffff;
+  padding: 0;
+  overflow: hidden;
+}
+.gap-section-inner {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.gap-headline {
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--serif);
+  font-size: clamp(22px, 2.8vw, 38px);
+  font-weight: 400;
+  line-height: 1.2;
+  color: var(--black);
+  text-align: center;
+  max-width: 500px;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  pointer-events: none;
+}
+.gap-headline.visible { opacity: 1; }
+
+.gap-empty-stack {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 49;
+}
+.gap-card-empty {
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  border: 1.5px solid rgba(0,0,0,0.12);
+  border-radius: 0;
+  background: none;
+  opacity: 0;
+  will-change: transform, opacity;
+  transition: opacity 0.5s ease;
+}
 </style>
 </head>
 <body>
@@ -1283,25 +1365,8 @@ footer {
      HERO
      ═══════════════════════════════════ -->
 <section class="hero">
-  <!-- Version toggles -->
-  <div class="version-tabs">
-    <div class="version-tab active" id="heroTabV1" onclick="setHeroVersion(1)">v1</div>
-    <div class="version-tab" id="heroTabV2" onclick="setHeroVersion(2)">v2</div>
-    <div class="version-tab" id="heroTabV3" onclick="setHeroVersion(3)">v3</div>
-    <div class="version-tab" id="heroTabV4" onclick="setHeroVersion(4)">v4</div>
-    <div class="version-tab" id="heroTabV5" onclick="setHeroVersion(5)">v5</div>
-  </div>
-
-  <!-- V1: Full bleed video -->
-  <div class="hero-v1" id="heroV1">
-    <video autoplay muted loop playsinline>
-      <source src="hero-bg.mp4" type="video/mp4">
-    </video>
-    <div class="hero-v1-overlay"></div>
-  </div>
-
-  <!-- V2: Grid + squares (current) -->
-  <div class="hero-v2" id="heroV2" style="display: none;">
+  <!-- heroV2 removed -->
+  <div style="display:none;">
   <!-- Full grid background -->
   <div class="hero-fullgrid">
     <img src="fullgrid.svg" alt="">
@@ -1357,7 +1422,7 @@ footer {
   </div><!-- end hero-v2 -->
 
   <!-- V3: V2 squares + blurred running video bg -->
-  <div class="hero-v3-new" id="heroV3" style="display: none;">
+  <div class="hero-v3-new" id="heroV3">
     <div class="hero-v3-video-bg">
       <video autoplay muted loop playsinline>
         <source src="dts-bg-video.mp4" type="video/mp4">
@@ -1375,122 +1440,12 @@ footer {
     </div>
   </div><!-- end hero-v3 -->
 
-  <!-- V4: Grid bg + phone on right -->
-  <div class="hero-v4" id="heroV4" style="display: none;">
-    <div class="hero-fullgrid">
-      <img src="fullgrid.svg" alt="">
-    </div>
-    <div class="spotlight-ball"></div>
-    <div class="hero-v4-phone">
-      <div class="phone-device">
-        <div class="phone-screen">
-          <div class="phone-screen-slide active" data-slide="0">
-            <video autoplay muted loop playsinline><source src="phone-hero-video.mp4" type="video/mp4"></video>
-          </div>
-          <div class="phone-screen-slide" data-slide="1">
-            <video muted loop playsinline><source src="phone-screen-1.mp4" type="video/mp4"></video>
-          </div>
-          <div class="phone-screen-slide" data-slide="2">
-            <video muted loop playsinline><source src="phone-screen-2.mp4" type="video/mp4"></video>
-          </div>
-          <div class="phone-screen-slide" data-slide="3">
-            <video muted loop playsinline><source src="phone-screen-3.mp4" type="video/mp4"></video>
-          </div>
-          <div class="phone-screen-slide" data-slide="4">
-            <video muted loop playsinline><source src="phone-screen-4.mp4" type="video/mp4"></video>
-          </div>
-        </div>
-        <img class="phone-bezel" src="phone-frame.webp" alt="">
-        <div class="phone-ratio"></div>
-      </div>
-      <div class="phone-dots">
-        <div class="phone-dot active" onclick="setPhoneSlide(0)"></div>
-        <div class="phone-dot" onclick="setPhoneSlide(1)"></div>
-        <div class="phone-dot" onclick="setPhoneSlide(2)"></div>
-        <div class="phone-dot" onclick="setPhoneSlide(3)"></div>
-        <div class="phone-dot" onclick="setPhoneSlide(4)"></div>
-      </div>
-    </div>
-  </div><!-- end hero-v4 -->
 
-  <!-- V4: Blurred hero grid image + phone + spotlight -->
-  <div class="hero-v4" id="heroV5" style="display: none;">
-    <div class="hero-v4-bg">
-      <img src="existence-hero-grid.jpg" alt="">
-    </div>
-    <div class="spotlight-ball"></div>
-    <div class="hero-v3-phone hero-v4-phone">
-      <div class="phone-device">
-        <div class="phone-screen">
-          <div class="phone-screen-slide active" data-slide="0">
-            <video autoplay muted loop playsinline><source src="phone-hero-video.mp4" type="video/mp4"></video>
-          </div>
-          <div class="phone-screen-slide" data-slide="1">
-            <video muted loop playsinline><source src="phone-screen-1.mp4" type="video/mp4"></video>
-          </div>
-          <div class="phone-screen-slide" data-slide="2">
-            <video muted loop playsinline><source src="phone-screen-2.mp4" type="video/mp4"></video>
-          </div>
-          <div class="phone-screen-slide" data-slide="3">
-            <video muted loop playsinline><source src="phone-screen-3.mp4" type="video/mp4"></video>
-          </div>
-          <div class="phone-screen-slide" data-slide="4">
-            <video muted loop playsinline><source src="phone-screen-4.mp4" type="video/mp4"></video>
-          </div>
-        </div>
-        <img class="phone-bezel" src="phone-frame.webp" alt="">
-        <div class="phone-ratio"></div>
-      </div>
-      <div class="phone-dots">
-        <div class="phone-dot active" onclick="setPhoneSlide(0)"></div>
-        <div class="phone-dot" onclick="setPhoneSlide(1)"></div>
-        <div class="phone-dot" onclick="setPhoneSlide(2)"></div>
-        <div class="phone-dot" onclick="setPhoneSlide(3)"></div>
-        <div class="phone-dot" onclick="setPhoneSlide(4)"></div>
-      </div>
-    </div>
-  </div><!-- end hero-v4/v5 -->
-
-  <!-- Text content: V1 copy -->
-  <div class="hero-content hero-copy-v1" id="heroCopyV1">
-    <h1>Structure your time.<br>Record how it's lived.<br><em>Reveal who you're becoming.</em></h1>
-    <p class="hero-sub" style="color: #ccc;">Existence is a Time Intelligence System that captures what you intended to do, what you actually did, and how it felt.</p>
-    <div class="hero-cta-group">
-      <a href="#" class="btn-primary">Apply to Join</a>
-      <a href="v5.html" class="btn-ghost" style="color: #ccc;">See how it works <span class="arrow">→</span></a>
-    </div>
-  </div>
-  <!-- Text content: V2 copy -->
-  <div class="hero-content hero-copy-v2" id="heroCopyV2" style="display: none;">
+  
+  <!-- Hero copy -->
+  <div class="hero-content">
     <h1>Record your days.<br>Remember each moment.<br><em>Reimagine your existence.</em></h1>
     <p class="hero-sub" style="color: #ccc;">Existence adds depth to your calendar with technology that bridges the gap between what you intended to do, what you actually did, and how it felt.</p>
-    <div class="hero-cta-group">
-      <a href="#" class="btn-primary">Apply to Join</a>
-      <a href="v5.html" class="btn-ghost" style="color: #ccc;">See how it works <span class="arrow">→</span></a>
-    </div>
-  </div>
-  <!-- Text content: V3 copy (same as v2) -->
-  <div class="hero-content hero-copy-v3" id="heroCopyV3" style="display: none;">
-    <h1>Record your days.<br>Remember each moment.<br><em>Reimagine your existence.</em></h1>
-    <p class="hero-sub" style="color: #ccc;">Existence adds depth to your calendar with technology that bridges the gap between what you intended to do, what you actually did, and how it felt.</p>
-    <div class="hero-cta-group">
-      <a href="#" class="btn-primary">Apply to Join</a>
-      <a href="v5.html" class="btn-ghost" style="color: #ccc;">See how it works <span class="arrow">→</span></a>
-    </div>
-  </div>
-  <!-- Text content: V4 copy (same as v1) -->
-  <div class="hero-content hero-copy-v4" id="heroCopyV4" style="display: none;">
-    <h1>Structure your time.<br>Record how it's lived.<br><em>Reveal who you're becoming.</em></h1>
-    <p class="hero-sub" style="color: #ccc;">Existence is a Time Intelligence System that captures what you intended to do, what you actually did, and how it felt.</p>
-    <div class="hero-cta-group">
-      <a href="#" class="btn-primary">Apply to Join</a>
-      <a href="v5.html" class="btn-ghost" style="color: #ccc;">See how it works <span class="arrow">→</span></a>
-    </div>
-  </div>
-  <!-- Text content: V5 copy (same as v1) -->
-  <div class="hero-content hero-copy-v5" id="heroCopyV5" style="display: none;">
-    <h1>Structure your time.<br>Record how it's lived.<br><em>Reveal who you're becoming.</em></h1>
-    <p class="hero-sub" style="color: #ccc;">Existence is a Time Intelligence System that captures what you intended to do, what you actually did, and how it felt.</p>
     <div class="hero-cta-group">
       <a href="#" class="btn-primary">Apply to Join</a>
       <a href="v5.html" class="btn-ghost" style="color: #ccc;">See how it works <span class="arrow">→</span></a>
@@ -1502,38 +1457,44 @@ footer {
 </section>
 
 <!-- ═══════════════════════════════════
+     GAP SECTION (floating squares converge)
+     ═══════════════════════════════════ -->
+<section class="gap-section" id="gapSection">
+  <div class="gap-section-inner">
+    <div class="gap-headline" id="gapHeadline">
+      There's a gap between the life you're living<br>and the life you intend to live.
+    </div>
+  </div>
+</section>
+
+<!-- Floating squares (fixed overlay) -->
+<div class="floating-squares" id="floatingSquares">
+  <div class="float-sq" id="fsq0"><video autoplay muted loop playsinline><source src="dts-v1.mp4" type="video/mp4"/></video></div>
+  <div class="float-sq" id="fsq1"><img src="dts-1.jpg" alt=""/></div>
+  <div class="float-sq" id="fsq2"><video autoplay muted loop playsinline><source src="dts-v2.mp4" type="video/mp4"/></video></div>
+  <div class="float-sq" id="fsq3"><img src="dts-3.jpg" alt=""/></div>
+  <div class="float-sq" id="fsq4"><img src="dts-2.jpg" alt=""/></div>
+  <div class="float-sq" id="fsq5"><video autoplay muted loop playsinline><source src="dts-v3.mp4" type="video/mp4"/></video></div>
+</div>
+
+<!-- Empty outline stack (right side) -->
+<div class="gap-empty-stack" id="gapEmptyStack">
+  <div class="gap-card-empty" id="emptyCard0"></div>
+  <div class="gap-card-empty" id="emptyCard1"></div>
+  <div class="gap-card-empty" id="emptyCard2"></div>
+  <div class="gap-card-empty" id="emptyCard3"></div>
+  <div class="gap-card-empty" id="emptyCard4"></div>
+  <div class="gap-card-empty" id="emptyCard5"></div>
+</div>
+
+<!-- ═══════════════════════════════════
      PROBLEM
      ═══════════════════════════════════ -->
 <section class="problem">
-  <!-- Section 2 version tabs (inverted for white bg) -->
-  <div class="version-tabs version-tabs-light">
-    <div class="version-tab version-tab-light active" id="s2TabV1" onclick="setS2Version(1)">v1</div>
-    <div class="version-tab version-tab-light" id="s2TabV2" onclick="setS2Version(2)">v2</div>
-  </div>
-
   <div class="section-inner">
     <div class="problem-grid">
-      <!-- S2V1 copy -->
-      <div id="s2CopyV1">
+      <div>
         <h2 class="section-headline reveal reveal-delay-1" style="font-size: clamp(29px, 3.6vw, 50px);">There's a gap between the life you're living and the life you intend to live.</h2>
-        <div class="problem-points">
-          <div class="problem-point reveal reveal-delay-2">
-            <span class="num">.01</span>
-            <p>Time passes without structure or meaning. You plan to spend your hours one way — and live them another.</p>
-          </div>
-          <div class="problem-point reveal reveal-delay-3">
-            <span class="num">.02</span>
-            <p>Without structure, the patterns shaping your life remain invisible. Weeks blur together. Months vanish.</p>
-          </div>
-          <div class="problem-point reveal reveal-delay-4">
-            <span class="num">.03</span>
-            <p>Without visibility, the life you intend and the life you live continue to diverge — and you never know why.</p>
-          </div>
-        </div>
-      </div>
-      <!-- S2V2 copy -->
-      <div id="s2CopyV2" style="display: none;">
-        <h2 class="section-headline" style="font-size: clamp(29px, 3.6vw, 50px);">When you understand the patterns shaping your life, you realize time isn't running out — it's asking you to close the gap between intention and creation.</h2>
       </div>
       <div class="problem-visual reveal" id="graph-container">
         <svg class="graph-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 463.07 463.07">
@@ -1647,94 +1608,173 @@ footer {
      SCRIPTS
      ═══════════════════════════════════ -->
 <script>
-// Hero version toggle
-function setHeroVersion(v) {
-  const versions = ['heroV1','heroV2','heroV3','heroV4','heroV5'];
-  const copies = ['heroCopyV1','heroCopyV2','heroCopyV3','heroCopyV4','heroCopyV5'];
-  const tabs = ['heroTabV1','heroTabV2','heroTabV3','heroTabV4','heroTabV5'];
-  versions.forEach((id, i) => {
-    const el = document.getElementById(id);
-    const copy = document.getElementById(copies[i]);
-    const tab = document.getElementById(tabs[i]);
-    if (i === v - 1) {
-      if (el) el.style.display = 'block';
-      if (copy) copy.style.display = 'block';
-      if (tab) tab.classList.add('active');
-    } else {
-      if (el) el.style.display = 'none';
-      if (copy) copy.style.display = 'none';
-      if (tab) tab.classList.remove('active');
+
+// ═══════════════════════════════════
+// FLOATING SQUARES + GAP SECTION SYSTEM
+// ═══════════════════════════════════
+(function() {
+  const SVG_W = 1920, SVG_H = 1080;
+
+  // Square definitions: SVG coords + sizes + target sizes in stack
+  const sqDefs = [
+    { id: 'fsq0', sx: 974.56,  sy: 201.45, sw: 386, sh: 386 },
+    { id: 'fsq1', sx: 1314.69, sy: 489.57, sw: 211, sh: 211 },
+    { id: 'fsq2', sx: 1590.2,  sy: 557.24, sw: 211, sh: 211 },
+    { id: 'fsq3', sx: 1012.59, sy: 707.09, sw: 211, sh: 211 },
+    { id: 'fsq4', sx: 1335.73, sy: 778.92, sw: 150, sh: 150 },
+    { id: 'fsq5', sx: 1539.47, sy: 262.46, sw: 144, sh: 144 }
+  ];
+
+  const sqEls = sqDefs.map(d => document.getElementById(d.id));
+  const emptyEls = [];
+  for (let i = 0; i < 6; i++) emptyEls.push(document.getElementById('emptyCard' + i));
+  const gapSection = document.getElementById('gapSection');
+  const gapHeadline = document.getElementById('gapHeadline');
+  const heroEl = document.querySelector('.hero');
+
+  // Convert SVG coords to screen coords (xMidYMid slice)
+  function svgToScreen(sx, sy, sw, sh) {
+    const svgEl = document.querySelector('.hero-v3-new .hero-grid-svg') || document.querySelector('.hero-grid-svg');
+    if (!svgEl) return { x: 0, y: 0, w: sw, h: sh };
+    const rect = svgEl.getBoundingClientRect();
+    const vw = rect.width, vh = rect.height;
+    // slice: scale = max of the two ratios
+    const scaleX = vw / SVG_W;
+    const scaleY = vh / SVG_H;
+    const scale = Math.max(scaleX, scaleY);
+    // offset for centering
+    const offX = rect.left + (vw - SVG_W * scale) / 2;
+    const offY = rect.top + (vh - SVG_H * scale) / 2;
+    return {
+      x: offX + sx * scale,
+      y: offY + sy * scale,
+      w: sw * scale,
+      h: sh * scale
+    };
+  }
+
+  function updateFloatingSquares() {
+    const viewH = window.innerHeight;
+    if (!heroEl || !gapSection) return;
+
+    const heroRect = heroEl.getBoundingClientRect();
+    const gapRect = gapSection.getBoundingClientRect();
+
+    // SIMPLE: everything driven by scrollY relative to hero height
+    const heroH = heroEl.offsetHeight || viewH;
+    const scrollProgress = Math.max(0, Math.min(1, window.scrollY / heroH));
+
+    // gapProgress for later stages
+    const gapProgress = Math.max(0, Math.min(1, -gapRect.top / (gapRect.height - viewH)));
+
+    // Combined: scroll through hero drives 70%, gap section drives rest
+    const progress = Math.min(1, scrollProgress * 0.7 + gapProgress * 0.4);
+
+    // Swoop starts at 3%, but stack organization happens late (completes at 70%)
+    const transProgress = Math.max(0, Math.min(1, (progress - 0.03) / 0.67));
+
+    // Cubic ease out
+    const ease = 1 - Math.pow(1 - transProgress, 3);
+
+    // Stack targets
+    const stackLeftX = window.innerWidth * 0.35;
+    const stackY = viewH * 0.40;
+    const stackRightX = window.innerWidth * 0.65;
+    const STACK_SIZE = 150;
+
+    // Determine visibility: show floating squares when hero or gap is in view
+    const heroVisible = heroRect.bottom > 0;
+    const gapVisible = gapRect.top < viewH && gapRect.bottom > 0;
+    const shouldShow = heroVisible || gapVisible;
+
+    // Lift phase: driven by raw scrollY so even 1px of scroll produces visible movement
+    // Fully lifted by 150px of scroll
+    const liftProgress = Math.max(0, Math.min(1, window.scrollY / 80));
+    const liftEase = 1 - Math.pow(1 - liftProgress, 2);
+
+    sqEls.forEach((el, i) => {
+      if (!el) return;
+      const def = sqDefs[i];
+
+      // Home position (SVG mapped to screen)
+      const home = svgToScreen(def.sx, def.sy, def.sw, def.sh);
+
+      // Stack position
+      const stackX = stackLeftX - STACK_SIZE / 2 + i * 20;
+      const stackYi = stackY - STACK_SIZE / 2 + i * 12;
+
+      if (!shouldShow) {
+        el.style.opacity = '0';
+        return;
+      }
+
+      // Always visible — no staggered fade-in
+      const fadeInProgress = 1;
+
+      if (ease < 0.01) {
+        // Flat at SVG positions — subtle scale on first scroll
+        el.style.left = home.x + 'px';
+        el.style.top = home.y + 'px';
+        el.style.width = home.w + 'px';
+        el.style.height = home.h + 'px';
+        el.style.transform = liftEase > 0.01 ? `scale(${1 + liftEase * 0.05})` : 'none';
+        el.style.opacity = fadeInProgress;
+      } else {
+        // Interpolate to stack with arching path
+        // Add vertical arc: cards go UP first then curve down to target
+        const arcHeight = -120 * Math.sin(ease * Math.PI);
+        const curX = home.x + (stackX - home.x) * ease;
+        const curY = home.y + (stackYi - home.y) * ease + arcHeight * (1 - ease);
+        const curW = home.w + (STACK_SIZE - home.w) * ease;
+        const curH = home.h + (STACK_SIZE - home.h) * ease;
+
+        el.style.left = curX + 'px';
+        el.style.top = curY + 'px';
+        el.style.width = curW + 'px';
+        el.style.height = curH + 'px';
+        el.style.opacity = '1';
+
+        // 3D fan effect
+        const rotY = 35 * ease;
+        const rotZ = (i - 2.5) * 2 * ease;
+        const tz = i * (-16) * ease;
+        el.style.transform = `perspective(1200px) rotateY(${rotY}deg) rotateZ(${rotZ}deg) translateZ(${tz}px)`;
+      }
+    });
+
+    // Empty cards on right side
+    const emptyVisible = progress > 0.5;
+    const emptyOpacity = emptyVisible ? Math.min(1, (progress - 0.5) / 0.3) : 0;
+
+    emptyEls.forEach((el, i) => {
+      if (!el) return;
+      if (!shouldShow || !emptyVisible) {
+        el.style.opacity = '0';
+        return;
+      }
+      el.style.opacity = emptyOpacity;
+      const ex = stackRightX - 75 + i * 20;
+      const ey = stackY - 75 + i * 12;
+      el.style.left = ex + 'px';
+      el.style.top = ey + 'px';
+      const rotY = -35;
+      const rotZ = (i - 2.5) * -2;
+      const tz = i * (-16);
+      el.style.transform = `perspective(1200px) rotateY(${rotY}deg) rotateZ(${rotZ}deg) translateZ(${tz}px)`;
+    });
+
+    // Headline
+    if (gapHeadline) {
+      gapHeadline.classList.toggle('visible', progress > 0.5);
     }
-  });
-  // Compact height + right-shifted text for v4/v5
-  const hero = document.querySelector('.hero');
-  if (v === 4 || v === 5) { hero.classList.add('compact'); hero.classList.add('text-right-shift'); } else { hero.classList.remove('compact'); hero.classList.remove('text-right-shift'); }
-  // Auto-play phone videos when active
-  if (v === 4 || v === 5) {
-    const activeSlide = document.querySelector('.phone-screen-slide.active video');
-    if (activeSlide) activeSlide.play();
   }
-}
 
-// Phone slide switcher — targets all visible phone instances
-function setPhoneSlide(index) {
-  document.querySelectorAll('.hero-v4-phone').forEach(phone => {
-    const slides = phone.querySelectorAll('.phone-screen-slide');
-    const dots = phone.querySelectorAll('.phone-dot');
-    slides.forEach((s, i) => {
-      s.classList.toggle('active', i === index);
-      const vid = s.querySelector('video');
-      if (i === index) { vid.play(); } else { vid.pause(); }
-    });
-    dots.forEach((d, i) => d.classList.toggle('active', i === index));
-  });
-}
-// Auto-cycle phone slides
-let phoneInterval;
-function startPhoneCycle() {
-  clearInterval(phoneInterval);
-  phoneInterval = setInterval(() => {
-    const current = document.querySelector('.phone-screen-slide.active');
-    if (!current) return;
-    const idx = parseInt(current.dataset.slide);
-    setPhoneSlide((idx + 1) % 5);
-  }, 4000);
-}
-startPhoneCycle();
+  window.addEventListener('scroll', updateFloatingSquares, { passive: true });
+  window.addEventListener('resize', updateFloatingSquares);
 
-// S2 version toggle
-function setS2Version(v) {
-  const copyV1 = document.getElementById('s2CopyV1');
-  const copyV2 = document.getElementById('s2CopyV2');
-  const tabV1 = document.getElementById('s2TabV1');
-  const tabV2 = document.getElementById('s2TabV2');
-  if (v === 1) {
-    copyV1.style.display = 'block';
-    copyV2.style.display = 'none';
-    tabV1.classList.add('active');
-    tabV2.classList.remove('active');
-  } else {
-    copyV1.style.display = 'none';
-    copyV2.style.display = 'block';
-    tabV2.classList.add('active');
-    tabV1.classList.remove('active');
-  }
-}
-
-// Parallax on hero squares (v2/v3 only)
-const parallaxRates = { 'gsq-5': -0.07, 'gsq-1': 0.12, 'gsq-2': -0.09, 'gsq-3': 0.14, 'gsq-4': -0.16, 'gsq-6': 0.08 };
-window.addEventListener('scroll', () => {
-  const heroV2 = document.getElementById('heroV2');
-  const heroV3 = document.getElementById('heroV3');
-  if ((heroV2 && heroV2.style.display !== 'none') || (heroV3 && heroV3.style.display !== 'none')) {
-    const scrollY = window.scrollY;
-    Object.entries(parallaxRates).forEach(([cls, rate]) => {
-      document.querySelectorAll('.' + cls).forEach(el => {
-        el.style.transform = `translateY(${scrollY * rate}px)`;
-      });
-    });
-  }
-}, { passive: true });
+  // Initial position
+  window.dispatchEvent(new Event('scroll'));
+})();
 
 // Nav scroll behavior
 const nav = document.getElementById('nav');
