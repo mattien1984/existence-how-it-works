@@ -410,7 +410,25 @@ section {
 .problem {
   background: #ffffff;
   overflow: hidden;
+  position: relative;
+  z-index: 2;
 }
+/* Tighter vertical spacing only for v3 + black background */
+.problem.s2v3-active {
+  padding-top: 120px;
+  padding-bottom: 0;
+  background: var(--black) !important;
+}
+.problem.s2v3-active .section-headline { color: var(--white) !important; }
+.problem.s2v3-active .reality-arrow-container { filter: invert(1); }
+/* Invert all SVG strokes and outline fills to white on black bg */
+.problem.s2v3-active .s2v3-composition-svg line { stroke: #fff !important; }
+.problem.s2v3-active .s2v3-composition-svg path { stroke: #fff !important; }
+.problem.s2v3-active .s2v3-composition-svg polygon[stroke="#000"] { stroke: #fff !important; }
+.problem.s2v3-active .s2v3-composition-svg polygon[fill="#f8f7f5"] { fill: #111 !important; }
+/* Corner marks — small polygons used as frame corners */
+.problem.s2v3-active .s2v3-composition-svg polygon[fill="black"],
+.problem.s2v3-active .s2v3-composition-svg polygon:not([fill="#f8f7f5"]):not([fill="#00ff5b"]):not([fill="#ec00ff"]):not([fill="#49004f"]):not([fill="#00ee97"]):not([fill="#002bff"]):not([fill="#fff"]) { fill: #fff !important; }
 .problem .section-tag { color: #999; }
 .problem .section-headline { color: var(--black); }
 .problem .problem-point p { color: #555; }
@@ -703,6 +721,100 @@ section {
   }
   .tb-flip-card-container { width: 200px; height: 202px; }
 }
+
+/* ═══════════════════════════════════
+   S2V3 — STACKED TIME BLOCKS
+   ═══════════════════════════════════ */
+.s2v3-stacks {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 120px;
+  perspective: 900px;
+  overflow: hidden;
+  padding-top: 40px;
+}
+.s2v3-stack {
+  position: relative;
+  width: 380px;
+  height: 440px;
+  transform-style: preserve-3d;
+}
+/* Left stack: angled 3D tilt like a row of records leaning */
+.s2v3-stack-left {
+  transform: rotateY(32deg) rotateX(-4deg) rotateZ(-2deg);
+}
+/* Right stack: mirrored 3D angle */
+.s2v3-stack-right {
+  transform: rotateY(-32deg) rotateX(-4deg) rotateZ(2deg);
+}
+.s2v3-card {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  overflow: hidden;
+  transform-style: preserve-3d;
+}
+.s2v3-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Filled stack (left): cards spaced in Z depth, larger and cropped at bottom */
+.s2v3-filled:nth-child(1) { top: -40px; left: -20px; z-index: 1; transform: translateZ(-100px) rotate(-4deg); width: 320px; height: 320px; }
+.s2v3-filled:nth-child(2) { top: 0px;   left: 10px;  z-index: 2; transform: translateZ(-50px) rotate(-2deg); width: 290px; height: 290px; }
+.s2v3-filled:nth-child(3) { top: 40px;  left: 40px;  z-index: 3; transform: translateZ(0px) rotate(0deg); width: 260px; height: 260px; }
+.s2v3-filled:nth-child(4) { top: 75px;  left: 65px;  z-index: 4; transform: translateZ(50px) rotate(2deg); width: 230px; height: 230px; }
+.s2v3-filled:nth-child(5) { top: 110px; left: 90px;  z-index: 5; transform: translateZ(100px) rotate(4deg); }
+
+/* Darken back cards progressively */
+.s2v3-filled::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.s2v3-filled:nth-child(1)::after { background: rgba(0,0,0,0.55); }
+.s2v3-filled:nth-child(2)::after { background: rgba(0,0,0,0.38); }
+.s2v3-filled:nth-child(3)::after { background: rgba(0,0,0,0.2); }
+.s2v3-filled:nth-child(4)::after { background: rgba(0,0,0,0.08); }
+.s2v3-filled:nth-child(5)::after { background: rgba(0,0,0,0); }
+
+/* Solid dark card for deepest back card */
+.s2v3-filled-dark { background: #1a1a1a; }
+
+/* Hover lift on individual squares */
+.sq-roll {
+  cursor: pointer;
+  transition-property: opacity, transform !important;
+}
+.sq-roll.visible-done {
+  transition: transform 0.4s ease-out !important;
+}
+.sq-roll.visible-done:hover {
+  transform: translateY(-12px) !important;
+}
+
+.s2v3-composition {
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  overflow: hidden;
+  margin-top: -320px;
+}
+
+/* Empty stack (right): mirrored with Z depth spacing */
+.s2v3-empty {
+  background: transparent;
+  border: 1px solid rgba(0,0,0,0.12);
+  transform-style: preserve-3d;
+}
+.s2v3-empty:nth-child(1) { top: -40px; right: -20px; left: auto; z-index: 1; transform: translateZ(-100px) rotate(4deg); width: 320px; height: 320px; }
+.s2v3-empty:nth-child(2) { top: 0px;   right: 10px;  left: auto; z-index: 2; transform: translateZ(-50px) rotate(2deg); width: 290px; height: 290px; }
+.s2v3-empty:nth-child(3) { top: 40px;  right: 40px;  left: auto; z-index: 3; transform: translateZ(0px) rotate(0deg); width: 260px; height: 260px; }
+.s2v3-empty:nth-child(4) { top: 75px;  right: 65px;  left: auto; z-index: 4; transform: translateZ(50px) rotate(-2deg); width: 230px; height: 230px; }
+.s2v3-empty:nth-child(5) { top: 110px; right: 90px;  left: auto; z-index: 5; transform: translateZ(100px) rotate(-4deg); }
 
 /* ═══════════════════════════════════
    DIVIDER
@@ -1502,13 +1614,49 @@ footer {
 </section>
 
 <!-- ═══════════════════════════════════
-     PROBLEM
+     SECTION 2 — PHONE MOCK + INTRO
+     ═══════════════════════════════════ -->
+<section class="phone-intro" style="background: var(--white); padding: 100px 48px 80px; overflow: visible; position: relative; z-index: 1;">
+  <!-- Section 2 version tabs -->
+  <div class="version-tabs version-tabs-light">
+    <div class="version-tab version-tab-light active" id="sec2TabV1" onclick="setSec2Version(1)">v1</div>
+    <div class="version-tab version-tab-light" id="sec2TabV2" onclick="setSec2Version(2)">v2</div>
+  </div>
+
+  <!-- S2 V1: Single phone with video -->
+  <div id="sec2V1" style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;">
+    <div>
+      <h2 style="font-family: var(--serif); font-size: clamp(32px, 3.5vw, 48px); font-weight: 400; line-height: 1.05; color: var(--black); margin-bottom: 20px;">With Existence, time isn't only something you manage, it's something you create.</h2>
+      <p style="font-family: var(--sans); font-size: 16px; font-weight: 300; line-height: 1.6; color: #555; margin-bottom: 32px;">This is placeholder text. More text to come when we come up with it.</p>
+      <a href="v5.html" style="display: inline-block; font-family: var(--sans); font-size: 12px; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; color: var(--white); background: var(--black); padding: 14px 32px; border-radius: 100px; text-decoration: none;">See How It Works</a>
+    </div>
+    <div style="position: relative; display: flex; justify-content: center; overflow: visible;">
+      <object id="phoneSvg" data="phone-video.svg" type="image/svg+xml" style="width: 130%; height: auto; margin-left: 220px; margin-bottom: -80px;"></object>
+    </div>
+  </div>
+
+  <!-- S2 V2: Two phones image -->
+  <div id="sec2V2" style="display: none; max-width: 1200px; margin: -100px auto -80px; grid-template-columns: 0.8fr 1.2fr; gap: 40px; align-items: center; padding-left: 90px; margin-left: 0;">
+    <div>
+      <h2 style="font-family: var(--serif); font-size: clamp(32px, 3.5vw, 48px); font-weight: 400; line-height: 1.05; color: var(--black); margin-bottom: 20px;">With Existence, time isn't only something you manage, it's something you create.</h2>
+      <p style="font-family: var(--sans); font-size: 16px; font-weight: 300; line-height: 1.6; color: #555; margin-bottom: 32px;">This is placeholder text. More text to come when we come up with it.</p>
+      <a href="v5.html" style="display: inline-block; font-family: var(--sans); font-size: 12px; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; color: var(--white); background: var(--black); padding: 14px 32px; border-radius: 100px; text-decoration: none;">See How It Works</a>
+    </div>
+    <div style="position: relative; display: flex; justify-content: center; overflow: visible;">
+      <img src="two-phones.png" alt="Existence app" style="width: 145%; height: auto; margin-left: auto; margin-right: -340px;">
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     SECTION 3 — PROBLEM (was section 2)
      ═══════════════════════════════════ -->
 <section class="problem">
   <!-- Section 2 version tabs (inverted for white bg) -->
   <div class="version-tabs version-tabs-light">
     <div class="version-tab version-tab-light active" id="s2TabV1" onclick="setS2Version(1)">v1</div>
     <div class="version-tab version-tab-light" id="s2TabV2" onclick="setS2Version(2)">v2</div>
+    <div class="version-tab version-tab-light" id="s2TabV3" onclick="setS2Version(3)">v3</div>
   </div>
 
   <div class="section-inner">
@@ -1535,6 +1683,466 @@ footer {
       <div id="s2CopyV2" style="display: none;">
         <h2 class="section-headline" style="font-size: clamp(29px, 3.6vw, 50px);">When you understand the patterns shaping your life, you realize time isn't running out — it's asking you to close the gap between intention and creation.</h2>
       </div>
+      <!-- S2V3: Stacked time blocks (SVG composition) -->
+      <div id="s2ContentV3" style="display: none; grid-column: 1 / -1;">
+        <h2 class="section-headline reveal" style="font-size: clamp(29px, 3.6vw, 50px); text-align: center; max-width: 700px; margin: 0 auto 12px;">There's a gap between the life you're living and the life you intend to live.</h2>
+        <div class="reality-arrow-container" style="text-align: center; margin-top: 60px; margin-bottom: 16px;">
+          <svg class="reality-arrow-svg" viewBox="0 0 434.03 23.41" style="width: 320px; opacity: 0.7;" xmlns="http://www.w3.org/2000/svg">
+            <!-- Left text: Reality -->
+            <g class="reality-text-left" style="opacity:0; transition: opacity 0.8s ease 1.2s;">
+              <path d="M1.82,18.15V3.2h5.68c.98,0,1.83.17,2.54.5.71.33,1.26.8,1.63,1.4.38.6.57,1.32.57,2.18,0,1.03-.24,1.86-.73,2.51-.48.65-1.14,1.12-1.95,1.43-.82.31-1.72.46-2.7.46h-3.2v6.47h-1.84ZM10.36,18.15l-.26-3.61c-.06-.73-.3-1.32-.73-1.78-.43-.46-.99-.69-1.69-.69H3.31v-1.5h4.55c.78,0,1.47.16,2.05.49.58.33,1.05.78,1.39,1.37.34.58.54,1.25.6,2.01l.26,3.72h-1.79ZM3.65,10.42h3.82c.71,0,1.28-.14,1.7-.41.42-.27.73-.62.92-1.05.19-.43.29-.89.29-1.39s-.1-.94-.29-1.36c-.19-.42-.5-.76-.92-1.01-.42-.26-.99-.38-1.7-.38h-3.82v5.6Z"/>
+              <path d="M19.6,18.32c-.8,0-1.52-.15-2.18-.44-.66-.29-1.22-.7-1.69-1.22-.47-.52-.83-1.12-1.09-1.8-.26-.68-.38-1.4-.38-2.16s.12-1.51.35-2.18c.23-.67.58-1.25,1.02-1.74s.99-.88,1.62-1.15,1.35-.42,2.15-.42,1.48.13,2.1.38c.62.26,1.15.61,1.58,1.07.43.46.77.99.99,1.6s.34,1.27.34,1.99c0,.13,0,.26-.01.39,0,.13-.02.26-.03.38h-9.12v-1.41h7.39c-.06-.91-.37-1.63-.95-2.16-.58-.53-1.34-.79-2.3-.79-.53,0-1,.09-1.43.27-.43.18-.79.44-1.09.79-.3.35-.53.77-.68,1.26-.16.49-.24,1.06-.24,1.7,0,.8.16,1.51.47,2.12s.74,1.11,1.29,1.46c.55.36,1.17.53,1.87.53.87,0,1.57-.18,2.11-.54.54-.36.9-.89,1.07-1.57h1.75c-.11.73-.39,1.36-.84,1.91-.45.55-1.02.97-1.71,1.27s-1.48.45-2.38.45Z"/>
+              <path d="M30.22,18.32c-.74,0-1.39-.14-1.95-.41-.56-.27-1-.65-1.3-1.14-.31-.49-.46-1.06-.46-1.7,0-.7.17-1.3.52-1.82.35-.51.84-.91,1.48-1.19.64-.28,1.39-.42,2.26-.42h2.5c.23,0,.39-.04.49-.13.1-.09.15-.21.15-.38,0-.73-.25-1.32-.76-1.78-.51-.46-1.21-.69-2.12-.69-.53,0-1,.1-1.43.3s-.77.46-1.04.79-.41.69-.44,1.09h-1.64c.07-.71.32-1.34.74-1.88s.96-.97,1.63-1.28c.67-.31,1.4-.47,2.2-.47.94,0,1.75.17,2.42.5.68.33,1.2.8,1.58,1.4s.57,1.3.57,2.09v6.94h-1.71v-1.86c-.2.4-.48.75-.84,1.06-.36.31-.79.54-1.27.72-.48.17-1.01.26-1.58.26ZM30.47,16.87c1.08,0,1.92-.32,2.53-.95.6-.63.91-1.51.91-2.62v-.24h-3.03c-.78,0-1.42.17-1.9.52-.48.35-.73.84-.73,1.46,0,.54.2.98.61,1.31.41.33.94.5,1.61.5Z"/>
+              <path d="M38.72,18.15V2.97h1.71v15.18h-1.71Z"/>
+              <path d="M43.56,2.97h1.96v2.39h-1.96v-2.39ZM43.69,18.15V7.39h1.71v10.76h-1.71Z"/>
+              <path d="M52.92,18.15c-1.03,0-1.84-.3-2.46-.9-.61-.6-.92-1.42-.92-2.48v-5.87h-2.24v-1.52h2.24v-3.44h1.71v3.44h3.31v1.52h-3.31v5.83c0,.6.16,1.06.47,1.4.31.33.73.5,1.26.5h1.58v1.52h-1.64Z"/>
+              <path d="M58,22.51l1.47-4.1-3.93-11.02h1.77l3.01,8.73,2.99-8.73h1.77l-5.38,15.12h-1.71Z"/>
+            </g>
+            <!-- Right text: Intention -->
+            <g class="reality-text-right" style="opacity:0; transition: opacity 0.8s ease 1.2s;">
+              <path d="M348.06,18.15V3.2h1.84v14.95h-1.84ZM349.89,4.85h-1.84v-1.64h1.84v1.64ZM349.89,18.15h-1.84v-1.64h1.84v1.64Z"/>
+              <path d="M353.29,18.15V7.39h1.71v2.07c.3-.74.76-1.3,1.39-1.68.63-.38,1.35-.57,2.18-.57s1.52.18,2.12.54c.61.36,1.07.87,1.4,1.52.33.65.49,1.41.49,2.3v6.58h-1.73v-6.3c0-.93-.24-1.67-.73-2.23-.48-.56-1.13-.84-1.94-.84-.63,0-1.18.15-1.66.46-.48.31-.85.73-1.12,1.26-.27.53-.41,1.15-.41,1.85v5.81h-1.71Z"/>
+              <path d="M369.76,18.15c-1.03,0-1.84-.3-2.46-.9-.61-.6-.92-1.42-.92-2.48v-5.87h-2.24v-1.52h2.24v-3.44h1.71v3.44h3.31v1.52h-3.31v5.83c0,.6.16,1.06.47,1.4.31.33.73.5,1.26.5h1.58v1.52h-1.64Z"/>
+              <path d="M377.91,18.32c-.8,0-1.52-.15-2.18-.44-.66-.29-1.22-.7-1.69-1.22-.47-.52-.83-1.12-1.09-1.8-.26-.68-.38-1.4-.38-2.16s.12-1.51.35-2.18c.23-.67.58-1.25,1.02-1.74s.99-.88,1.62-1.15,1.35-.42,2.15-.42,1.48.13,2.1.38c.62.26,1.15.61,1.58,1.07.43.46.77.99.99,1.6s.34,1.27.34,1.99c0,.13,0,.26-.01.39,0,.13-.02.26-.03.38h-9.12v-1.41h7.39c-.06-.91-.37-1.63-.95-2.16-.58-.53-1.34-.79-2.3-.79-.53,0-1,.09-1.43.27-.43.18-.79.44-1.09.79-.3.35-.53.77-.68,1.26-.16.49-.24,1.06-.24,1.7,0,.8.16,1.51.47,2.12s.74,1.11,1.29,1.46c.55.36,1.17.53,1.87.53.87,0,1.57-.18,2.11-.54.54-.36.9-.89,1.07-1.57h1.75c-.11.73-.39,1.36-.84,1.91-.45.55-1.02.97-1.71,1.27s-1.48.45-2.38.45Z"/>
+              <path d="M385.32,18.15V7.39h1.71v2.07c.3-.74.76-1.3,1.39-1.68.63-.38,1.35-.57,2.18-.57s1.52.18,2.12.54c.61.36,1.07.87,1.4,1.52.33.65.49,1.41.49,2.3v6.58h-1.73v-6.3c0-.93-.24-1.67-.73-2.23-.48-.56-1.13-.84-1.94-.84-.63,0-1.18.15-1.66.46-.48.31-.85.73-1.12,1.26-.27.53-.41,1.15-.41,1.85v5.81h-1.71Z"/>
+              <path d="M401.79,18.15c-1.03,0-1.84-.3-2.46-.9-.61-.6-.92-1.42-.92-2.48v-5.87h-2.24v-1.52h2.24v-3.44h1.71v3.44h3.31v1.52h-3.31v5.83c0,.6.16,1.06.47,1.4.31.33.73.5,1.26.5h1.58v1.52h-1.64Z"/>
+              <path d="M405.46,2.97h1.96v2.39h-1.96v-2.39ZM405.59,18.15V7.39h1.71v10.76h-1.71Z"/>
+              <path d="M415.28,18.32c-1.07,0-2.01-.24-2.84-.72-.83-.48-1.47-1.13-1.93-1.96-.46-.83-.69-1.79-.69-2.87s.23-2.04.69-2.87,1.11-1.49,1.93-1.96c.83-.48,1.77-.71,2.84-.71s2.01.24,2.84.71c.83.48,1.47,1.13,1.94,1.96s.71,1.79.71,2.87-.24,2.04-.71,2.87c-.47.83-1.12,1.49-1.94,1.96-.83.48-1.77.72-2.84.72ZM415.28,16.78c.74,0,1.39-.17,1.95-.51.56-.34,1-.82,1.3-1.42.31-.6.46-1.3.46-2.08s-.15-1.48-.46-2.08c-.31-.6-.74-1.08-1.3-1.42-.56-.34-1.21-.51-1.93-.51s-1.39.17-1.95.51c-.56.34-1,.82-1.31,1.42-.31.61-.47,1.3-.47,2.08s.16,1.48.47,2.08c.31.61.75,1.08,1.31,1.42.56.34,1.21.51,1.93.51Z"/>
+              <path d="M423.27,18.15V7.39h1.71v2.07c.3-.74.76-1.3,1.39-1.68.63-.38,1.35-.57,2.18-.57s1.52.18,2.12.54c.61.36,1.07.87,1.4,1.52.33.65.49,1.41.49,2.3v6.58h-1.73v-6.3c0-.93-.24-1.67-.73-2.23-.48-.56-1.13-.84-1.94-.84-.63,0-1.18.15-1.66.46-.48.31-.85.73-1.12,1.26-.27.53-.41,1.15-.41,1.85v5.81h-1.71Z"/>
+            </g>
+            <!-- Arrow line: trim path from center outward -->
+            <g>
+              <!-- Left arrow half -->
+              <line class="arrow-trim-left" x1="206.39" y1="10.41" x2="109.19" y2="10.41" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".86" stroke-dasharray="97.2" stroke-dashoffset="97.2" style="transition: stroke-dashoffset 0.8s cubic-bezier(0.16,1,0.3,1) 0.3s;"/>
+              <polygon class="arrow-tip-left" points="112.05 13.93 112.63 13.3 109.52 10.41 112.63 7.51 112.05 6.88 108.25 10.41 112.05 13.93" style="opacity:0; transition: opacity 0.3s ease 1s;"/>
+              <!-- Right arrow half -->
+              <line class="arrow-trim-right" x1="206.39" y1="10.41" x2="303.6" y2="10.41" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".86" stroke-dasharray="97.2" stroke-dashoffset="97.2" style="transition: stroke-dashoffset 0.8s cubic-bezier(0.16,1,0.3,1) 0.3s;"/>
+              <polygon class="arrow-tip-right" points="300.74 13.93 300.15 13.3 303.27 10.41 300.15 7.51 300.74 6.88 304.53 10.41 300.74 13.93" style="opacity:0; transition: opacity 0.3s ease 1s;"/>
+            </g>
+          </svg>
+        </div>
+        <div class="s2v3-composition">
+          <svg class="s2v3-composition-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1906.75 907.06" style="width: 100%; height: auto; display: block; margin-bottom: -4px;">
+            <defs>
+              <clipPath id="clippath"><rect x=".56" y="3.46" width="1905.41" height="903.84" fill="none"/></clipPath>
+              <clipPath id="clippath-1"><rect x=".56" y=".46" width="1905.41" height="903.84" fill="none"/></clipPath>
+              <clipPath id="cq1"><polygon points="-149.41 583.33 164.23 533.65 164.23 220.14 -149.41 269.82 -149.41 583.33"/></clipPath>
+              <clipPath id="cq2"><polygon points="-44.73 624.48 268.91 574.8 268.91 261.29 -44.73 310.97 -44.73 624.48"/></clipPath>
+              <clipPath id="cq3"><polygon points="35.38 667.41 349.02 617.73 349.02 304.22 35.38 353.9 35.38 667.41"/></clipPath>
+              <clipPath id="cq4"><polygon points="112.18 754.95 459.62 699.92 459.62 352.61 112.18 407.64 112.18 754.95"/></clipPath>
+              <clipPath id="cq5"><polygon points="209.52 832.03 570.44 774.86 570.44 414.08 209.52 471.25 209.52 832.03"/></clipPath>
+              <clipPath id="cq6"><polygon points="323.11 921.07 713.25 859.28 713.25 469.3 323.11 531.09 323.11 921.07"/></clipPath>
+              <clipPath id="cq7"><polygon points="422.16 1035.8 847.07 968.5 847.07 543.77 422.16 611.07 422.16 1035.8"/></clipPath>
+              <filter id="cardShadow" x="-10%" y="-10%" width="130%" height="130%">
+                <feDropShadow dx="4" dy="6" stdDeviation="8" flood-color="#000" flood-opacity="0.25"/>
+              </filter>
+            </defs>
+            <!-- LEFT: Filled cards with DTS images + existence frames -->
+            <g clip-path="url(#clippath)">
+              <g>
+                <!-- Card 1 (back): dts-4.jpg -->
+                <g class="sq-roll" style="opacity:0;transform:translateX(-60px);transition:all 1.4s cubic-bezier(0.16,1,0.3,1) 0.6s;">
+                  <g clip-path="url(#cq1)"><image href="dts-4.jpg" x="-250" y="120" width="700" height="700" preserveAspectRatio="xMidYMid slice"/></g>
+                  <line x1="164.23" y1="220.14" x2="164.23" y2="533.65" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".25"/>
+                  <line x1="164.24" y1="220.01" x2="-149.41" y2="269.69" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".25"/>
+                  <line x1="164.24" y1="533.65" x2="-149.41" y2="583.33" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".25"/>
+                  <line x1="-149.41" y1="269.82" x2="-149.41" y2="583.43" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".25"/>
+                  <g>
+                    <polygon points="163.68 234.4 164.76 234.23 164.76 219.43 163.68 219.61 163.68 234.4"/>
+                    <polygon points="149.97 221.78 149.97 222.86 164.76 220.52 164.76 219.43 149.97 221.78"/>
+                    <polygon points="163.68 234.88 164.76 234.7 164.76 219.91 163.68 220.08 163.68 234.88"/>
+                  </g>
+                  <g>
+                    <polygon points="-135.17 268.02 -135.17 266.94 -149.96 269.28 -149.96 270.37 -135.17 268.02"/>
+                    <polygon points="-149.96 284.07 -148.87 283.9 -148.87 269.11 -149.96 269.28 -149.96 284.07"/>
+                    <polygon points="-149.96 284.55 -148.87 284.38 -148.87 269.59 -149.96 269.76 -149.96 284.55"/>
+                  </g>
+                  <g>
+                    <polygon points="-135.17 580.5 -135.17 581.59 -149.96 583.93 -149.96 582.85 -135.17 580.5"/>
+                    <polygon points="-149.96 569.14 -148.87 568.97 -148.87 583.76 -149.96 583.93 -149.96 569.14"/>
+                    <polygon points="-149.96 568.66 -148.87 568.49 -148.87 583.28 -149.96 583.45 -149.96 568.66"/>
+                  </g>
+                  <g>
+                    <polygon points="149.98 535.34 149.98 536.43 164.77 534.08 164.77 533 149.98 535.34"/>
+                    <polygon points="164.77 519.29 163.69 519.46 163.69 534.26 164.77 534.08 164.77 519.29"/>
+                    <polygon points="164.77 518.81 163.69 518.99 163.69 533.78 164.77 533.61 164.77 518.81"/>
+                  </g>
+                </g>
+                <!-- Card 2: dts-1.jpg -->
+                <g class="sq-roll" style="opacity:0;transform:translateX(-50px);transition:all 1.4s cubic-bezier(0.16,1,0.3,1) 0.5s;">
+                  <g clip-path="url(#cq2)"><image href="dts-1.jpg" x="-150" y="160" width="700" height="700" preserveAspectRatio="xMidYMid slice"/></g>
+                  <line x1="268.91" y1="261.29" x2="268.91" y2="574.8" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".25"/>
+                  <line x1="268.92" y1="261.16" x2="-44.73" y2="310.84" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".25"/>
+                  <line x1="268.92" y1="574.8" x2="-44.73" y2="624.48" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".25"/>
+                  <line x1="-44.73" y1="310.97" x2="-44.73" y2="624.58" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".25"/>
+                  <g>
+                    <polygon points="268.36 275.55 269.45 275.38 269.45 260.58 268.36 260.76 268.36 275.55"/>
+                    <polygon points="254.66 262.93 254.66 264.01 269.45 261.67 269.45 260.58 254.66 262.93"/>
+                    <polygon points="268.36 276.03 269.45 275.85 269.45 261.06 268.36 261.23 268.36 276.03"/>
+                  </g>
+                  <g>
+                    <polygon points="-30.48 309.17 -30.48 308.09 -45.27 310.43 -45.27 311.52 -30.48 309.17"/>
+                    <polygon points="-45.27 325.22 -44.19 325.05 -44.19 310.26 -45.27 310.43 -45.27 325.22"/>
+                    <polygon points="-45.27 325.7 -44.19 325.53 -44.19 310.74 -45.27 310.91 -45.27 325.7"/>
+                  </g>
+                  <g>
+                    <polygon points="-30.48 621.65 -30.48 622.74 -45.27 625.08 -45.27 624 -30.48 621.65"/>
+                    <polygon points="-45.27 610.29 -44.19 610.12 -44.19 624.91 -45.27 625.08 -45.27 610.29"/>
+                    <polygon points="-45.27 609.81 -44.19 609.64 -44.19 624.43 -45.27 624.6 -45.27 609.81"/>
+                  </g>
+                  <g>
+                    <polygon points="254.67 576.49 254.67 577.58 269.46 575.23 269.46 574.15 254.67 576.49"/>
+                    <polygon points="269.46 560.44 268.37 560.61 268.37 575.41 269.46 575.23 269.46 560.44"/>
+                    <polygon points="269.46 559.96 268.37 560.14 268.37 574.93 269.46 574.76 269.46 559.96"/>
+                  </g>
+                </g>
+                <!-- Card 3: dts-3.jpg -->
+                <g class="sq-roll" style="opacity:0;transform:translateX(-40px);transition:all 1.4s cubic-bezier(0.16,1,0.3,1) 0.4s;">
+                  <g clip-path="url(#cq3)"><image href="dts-3.jpg" x="-70" y="200" width="700" height="700" preserveAspectRatio="xMidYMid slice"/></g>
+                  <line x1="349.02" y1="304.22" x2="349.02" y2="617.73" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".25"/>
+                  <line x1="349.03" y1="304.09" x2="35.38" y2="353.77" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".25"/>
+                  <line x1="349.03" y1="617.73" x2="35.38" y2="667.41" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".25"/>
+                  <line x1="35.38" y1="353.9" x2="35.38" y2="667.51" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".25"/>
+                  <g>
+                    <polygon points="348.47 318.48 349.55 318.31 349.55 303.52 348.47 303.69 348.47 318.48"/>
+                    <polygon points="334.76 305.86 334.76 306.94 349.55 304.6 349.55 303.52 334.76 305.86"/>
+                    <polygon points="348.47 318.96 349.55 318.79 349.55 303.99 348.47 304.17 348.47 318.96"/>
+                  </g>
+                  <g>
+                    <polygon points="49.62 352.11 49.62 351.02 34.83 353.36 34.83 354.45 49.62 352.11"/>
+                    <polygon points="34.83 368.15 35.92 367.98 35.92 353.19 34.83 353.36 34.83 368.15"/>
+                    <polygon points="34.83 368.63 35.92 368.46 35.92 353.67 34.83 353.84 34.83 368.63"/>
+                  </g>
+                  <g>
+                    <polygon points="49.62 664.59 49.62 665.67 34.83 668.01 34.83 666.93 49.62 664.59"/>
+                    <polygon points="34.83 653.22 35.92 653.05 35.92 667.84 34.83 668.01 34.83 653.22"/>
+                    <polygon points="34.83 652.74 35.92 652.57 35.92 667.36 34.83 667.54 34.83 652.74"/>
+                  </g>
+                  <g>
+                    <polygon points="334.77 619.42 334.77 620.51 349.56 618.17 349.56 617.08 334.77 619.42"/>
+                    <polygon points="349.56 603.37 348.48 603.55 348.48 618.34 349.56 618.17 349.56 603.37"/>
+                    <polygon points="349.56 602.9 348.48 603.07 348.48 617.86 349.56 617.69 349.56 602.9"/>
+                  </g>
+                </g>
+                <!-- Card 4: dts-2.jpg -->
+                <g class="sq-roll" style="opacity:0;transform:translateX(-30px);transition:all 1.4s cubic-bezier(0.16,1,0.3,1) 0.3s;">
+                  <g clip-path="url(#cq4)"><image href="dts-2.jpg" x="10" y="250" width="700" height="700" preserveAspectRatio="xMidYMid slice"/></g>
+                  <line x1="459.62" y1="352.61" x2="459.62" y2="699.92" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".28"/>
+                  <line x1="459.63" y1="352.47" x2="112.18" y2="407.5" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".28"/>
+                  <line x1="459.63" y1="699.92" x2="112.18" y2="754.95" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".28"/>
+                  <line x1="112.18" y1="407.64" x2="112.18" y2="755.06" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".28"/>
+                  <g>
+                    <polygon points="459.01 368.41 460.22 368.22 460.22 351.83 459.01 352.02 459.01 368.41"/>
+                    <polygon points="443.83 354.43 443.83 355.63 460.22 353.03 460.22 351.83 443.83 354.43"/>
+                    <polygon points="459.01 368.94 460.22 368.75 460.22 352.36 459.01 352.55 459.01 368.94"/>
+                  </g>
+                  <g>
+                    <polygon points="127.96 405.66 127.96 404.45 111.57 407.05 111.57 408.25 127.96 405.66"/>
+                    <polygon points="111.57 423.44 112.77 423.25 112.77 406.86 111.57 407.05 111.57 423.44"/>
+                    <polygon points="111.57 423.97 112.77 423.78 112.77 407.39 111.57 407.58 111.57 423.97"/>
+                  </g>
+                  <g>
+                    <polygon points="127.96 751.82 127.96 753.02 111.57 755.62 111.57 754.42 127.96 751.82"/>
+                    <polygon points="111.57 739.23 112.77 739.04 112.77 755.43 111.57 755.62 111.57 739.23"/>
+                    <polygon points="111.57 738.7 112.77 738.51 112.77 754.9 111.57 755.09 111.57 738.7"/>
+                  </g>
+                  <g>
+                    <polygon points="443.84 701.79 443.84 702.99 460.23 700.4 460.23 699.19 443.84 701.79"/>
+                    <polygon points="460.23 684.01 459.02 684.2 459.02 700.59 460.23 700.4 460.23 684.01"/>
+                    <polygon points="460.23 683.48 459.02 683.67 459.02 700.06 460.23 699.87 460.23 683.48"/>
+                  </g>
+                </g>
+                <!-- Card 5: dts-4.jpg -->
+                <g class="sq-roll" style="opacity:0;transform:translateX(-20px);transition:all 1.4s cubic-bezier(0.16,1,0.3,1) 0.2s;">
+                  <g clip-path="url(#cq5)"><image href="dts-4.jpg" x="100" y="310" width="700" height="700" preserveAspectRatio="xMidYMid slice"/></g>
+                  <line x1="570.44" y1="414.08" x2="570.44" y2="774.86" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".29"/>
+                  <line x1="570.46" y1="413.93" x2="209.52" y2="471.1" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".29"/>
+                  <line x1="570.46" y1="774.86" x2="209.52" y2="832.03" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".29"/>
+                  <line x1="209.52" y1="471.25" x2="209.52" y2="832.14" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".29"/>
+                  <g>
+                    <polygon points="569.81 430.49 571.06 430.29 571.06 413.27 569.81 413.46 569.81 430.49"/>
+                    <polygon points="554.04 415.96 554.04 417.21 571.06 414.51 571.06 413.27 554.04 415.96"/>
+                    <polygon points="569.81 431.04 571.06 430.84 571.06 413.82 569.81 414.01 569.81 431.04"/>
+                  </g>
+                  <g>
+                    <polygon points="225.91 469.18 225.91 467.93 208.89 470.63 208.89 471.88 225.91 469.18"/>
+                    <polygon points="208.89 487.65 210.13 487.45 210.13 470.43 208.89 470.63 208.89 487.65"/>
+                    <polygon points="208.89 488.2 210.13 488 210.13 470.98 208.89 471.18 208.89 488.2"/>
+                  </g>
+                  <g>
+                    <polygon points="225.91 828.78 225.91 830.03 208.89 832.72 208.89 831.47 225.91 828.78"/>
+                    <polygon points="208.89 815.7 210.13 815.5 210.13 832.53 208.89 832.72 208.89 815.7"/>
+                    <polygon points="208.89 815.15 210.13 814.95 210.13 831.98 208.89 832.17 208.89 815.15"/>
+                  </g>
+                  <g>
+                    <polygon points="554.05 776.81 554.05 778.05 571.07 775.36 571.07 774.11 554.05 776.81"/>
+                    <polygon points="571.07 758.34 569.82 758.53 569.82 775.56 571.07 775.36 571.07 758.34"/>
+                    <polygon points="571.07 757.79 569.82 757.98 569.82 775.01 571.07 774.81 571.07 757.79"/>
+                  </g>
+                </g>
+                <!-- Card 6: dts-1.jpg -->
+                <g class="sq-roll" style="opacity:0;transform:translateX(-10px);transition:all 1.4s cubic-bezier(0.16,1,0.3,1) 0.1s;">
+                  <g clip-path="url(#cq6)"><image href="dts-1.jpg" x="210" y="370" width="700" height="700" preserveAspectRatio="xMidYMid slice"/></g>
+                  <line x1="713.25" y1="469.3" x2="713.25" y2="859.28" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".31"/>
+                  <line x1="713.26" y1="469.14" x2="323.11" y2="530.93" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".31"/>
+                  <line x1="713.26" y1="859.27" x2="323.11" y2="921.07" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".31"/>
+                  <line x1="323.11" y1="531.09" x2="323.11" y2="921.19" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".31"/>
+                  <g>
+                    <polygon points="712.57 487.03 713.92 486.82 713.92 468.42 712.57 468.63 712.57 487.03"/>
+                    <polygon points="695.52 471.33 695.52 472.68 713.92 469.77 713.92 468.42 695.52 471.33"/>
+                    <polygon points="712.57 487.63 713.92 487.41 713.92 469.01 712.57 469.23 712.57 487.63"/>
+                  </g>
+                  <g>
+                    <polygon points="340.83 528.86 340.83 527.51 322.43 530.42 322.43 531.77 340.83 528.86"/>
+                    <polygon points="322.43 548.82 323.78 548.61 323.78 530.21 322.43 530.42 322.43 548.82"/>
+                    <polygon points="322.43 549.42 323.78 549.2 323.78 530.8 322.43 531.02 322.43 549.42"/>
+                  </g>
+                  <g>
+                    <polygon points="340.83 917.56 340.83 918.91 322.43 921.82 322.43 920.47 340.83 917.56"/>
+                    <polygon points="322.43 903.42 323.78 903.21 323.78 921.61 322.43 921.82 322.43 903.42"/>
+                    <polygon points="322.43 902.83 323.78 902.61 323.78 921.01 322.43 921.23 322.43 902.83"/>
+                  </g>
+                  <g>
+                    <polygon points="695.53 861.38 695.53 862.73 713.93 859.81 713.93 858.46 695.53 861.38"/>
+                    <polygon points="713.93 841.41 712.58 841.63 712.58 860.03 713.93 859.81 713.93 841.41"/>
+                    <polygon points="713.93 840.82 712.58 841.03 712.58 859.43 713.93 859.22 713.93 840.82"/>
+                  </g>
+                </g>
+                <!-- Card 7 (front): video dts-v4.mp4 -->
+                <g class="sq-roll" style="opacity:0;transform:translateX(0);transition:all 1.4s cubic-bezier(0.16,1,0.3,1) 0s;">
+                  <g clip-path="url(#cq7)"><foreignObject x="320" y="440" width="630" height="700"><video xmlns="http://www.w3.org/1999/xhtml" autoplay="" muted="" loop="" playsinline="" style="width:100%;height:100%;object-fit:cover;display:block;"><source src="dts-v4.mp4" type="video/mp4"/></video></foreignObject></g>
+                  <line x1="847.07" y1="543.77" x2="847.07" y2="968.5" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".34"/>
+                  <line x1="847.08" y1="543.59" x2="422.16" y2="610.89" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".34"/>
+                  <line x1="847.08" y1="968.5" x2="422.16" y2="1035.8" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".34"/>
+                  <line x1="422.16" y1="611.07" x2="422.16" y2="1035.94" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".34"/>
+                  <g>
+                    <polygon points="846.33 563.08 847.8 562.85 847.8 542.81 846.33 543.04 846.33 563.08"/>
+                    <polygon points="827.76 545.98 827.76 547.45 847.8 544.28 847.8 542.81 827.76 545.98"/>
+                    <polygon points="846.33 563.73 847.8 563.5 847.8 543.46 846.33 543.69 846.33 563.73"/>
+                  </g>
+                  <g>
+                    <polygon points="441.46 608.64 441.46 607.17 421.42 610.34 421.42 611.81 441.46 608.64"/>
+                    <polygon points="421.42 630.38 422.89 630.15 422.89 610.11 421.42 610.34 421.42 630.38"/>
+                    <polygon points="421.42 631.03 422.89 630.79 422.89 610.75 421.42 610.99 421.42 631.03"/>
+                  </g>
+                  <g>
+                    <polygon points="441.46 1031.98 441.46 1033.45 421.42 1036.62 421.42 1035.15 441.46 1031.98"/>
+                    <polygon points="421.42 1016.58 422.89 1016.35 422.89 1036.39 421.42 1036.62 421.42 1016.58"/>
+                    <polygon points="421.42 1015.94 422.89 1015.7 422.89 1035.74 421.42 1035.98 421.42 1015.94"/>
+                  </g>
+                  <g>
+                    <polygon points="827.77 970.79 827.77 972.26 847.81 969.09 847.81 967.62 827.77 970.79"/>
+                    <polygon points="847.81 949.05 846.34 949.28 846.34 969.32 847.81 969.09 847.81 949.05"/>
+                    <polygon points="847.81 948.4 846.34 948.63 846.34 968.67 847.81 968.44 847.81 948.4"/>
+                  </g>
+                </g>
+              </g>
+            </g>
+            <!-- RIGHT: White outline cards with existence frames -->
+            <g clip-path="url(#clippath-1)">
+              <g>
+                <!-- Right card 1 (back) -->
+                <g class="sq-roll" style="opacity:0;transform:translateX(60px);transition:all 1.4s cubic-bezier(0.16,1,0.3,1) 0.6s;" opacity="0.10">
+                  <polygon points="2067.05 582.41 1753.41 532.73 1753.41 219.22 2067.05 268.9 2067.05 582.41" fill="#f8f7f5"/>
+                  <line x1="1753.41" y1="219.22" x2="1753.41" y2="532.73" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".25"/>
+                  <line x1="1753.4" y1="219.09" x2="2067.05" y2="268.77" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".25"/>
+                  <line x1="1753.4" y1="532.73" x2="2067.05" y2="582.41" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".25"/>
+                  <line x1="2067.05" y1="268.9" x2="2067.05" y2="582.51" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".25"/>
+                  <g>
+                    <polygon points="1753.96 233.48 1752.87 233.3 1752.87 218.51 1753.96 218.68 1753.96 233.48"/>
+                    <polygon points="1767.66 220.86 1767.66 221.94 1752.87 219.6 1752.87 218.51 1767.66 220.86"/>
+                    <polygon points="1753.96 233.95 1752.87 233.78 1752.87 218.99 1753.96 219.16 1753.96 233.95"/>
+                  </g>
+                  <g>
+                    <polygon points="2052.8 267.1 2052.8 266.02 2067.59 268.36 2067.59 269.45 2052.8 267.1"/>
+                    <polygon points="2067.59 283.15 2066.51 282.98 2066.51 268.19 2067.59 268.36 2067.59 283.15"/>
+                    <polygon points="2067.59 283.63 2066.51 283.46 2066.51 268.67 2067.59 268.84 2067.59 283.63"/>
+                  </g>
+                  <g>
+                    <polygon points="2052.8 579.58 2052.8 580.67 2067.59 583.01 2067.59 581.93 2052.8 579.58"/>
+                    <polygon points="2067.59 568.22 2066.51 568.05 2066.51 582.84 2067.59 583.01 2067.59 568.22"/>
+                    <polygon points="2067.59 567.74 2066.51 567.57 2066.51 582.36 2067.59 582.53 2067.59 567.74"/>
+                  </g>
+                  <g>
+                    <polygon points="1767.65 534.42 1767.65 535.51 1752.86 533.16 1752.86 532.08 1767.65 534.42"/>
+                    <polygon points="1752.86 518.37 1753.95 518.54 1753.95 533.33 1752.86 533.16 1752.86 518.37"/>
+                    <polygon points="1752.86 517.89 1753.95 518.06 1753.95 532.86 1752.86 532.68 1752.86 517.89"/>
+                  </g>
+                </g>
+                <!-- Right card 2 -->
+                <g class="sq-roll" style="opacity:0;transform:translateX(50px);transition:all 1.4s cubic-bezier(0.16,1,0.3,1) 0.5s;" opacity="0.20">
+                  <polygon points="1959.91 621.48 1646.27 571.8 1646.27 258.29 1959.91 307.97 1959.91 621.48" fill="#f8f7f5"/>
+                  <line x1="1646.27" y1="258.29" x2="1646.27" y2="571.8" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".25"/>
+                  <line x1="1646.26" y1="258.16" x2="1959.91" y2="307.84" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".25"/>
+                  <line x1="1646.26" y1="571.8" x2="1959.91" y2="621.48" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".25"/>
+                  <line x1="1959.91" y1="307.97" x2="1959.91" y2="621.58" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".25"/>
+                  <g>
+                    <polygon points="1646.82 272.55 1645.74 272.38 1645.74 257.58 1646.82 257.76 1646.82 272.55"/>
+                    <polygon points="1660.53 259.93 1660.53 261.01 1645.74 258.67 1645.74 257.58 1660.53 259.93"/>
+                    <polygon points="1646.82 273.03 1645.74 272.85 1645.74 258.06 1646.82 258.23 1646.82 273.03"/>
+                  </g>
+                  <g>
+                    <polygon points="1945.67 306.17 1945.67 305.09 1960.46 307.43 1960.46 308.52 1945.67 306.17"/>
+                    <polygon points="1960.46 322.22 1959.37 322.05 1959.37 307.26 1960.46 307.43 1960.46 322.22"/>
+                    <polygon points="1960.46 322.7 1959.37 322.53 1959.37 307.74 1960.46 307.91 1960.46 322.7"/>
+                  </g>
+                  <g>
+                    <polygon points="1945.67 618.65 1945.67 619.74 1960.46 622.08 1960.46 621 1945.67 618.65"/>
+                    <polygon points="1960.46 607.29 1959.37 607.12 1959.37 621.91 1960.46 622.08 1960.46 607.29"/>
+                    <polygon points="1960.46 606.81 1959.37 606.64 1959.37 621.43 1960.46 621.6 1960.46 606.81"/>
+                  </g>
+                  <g>
+                    <polygon points="1660.52 573.49 1660.52 574.58 1645.73 572.23 1645.73 571.15 1660.52 573.49"/>
+                    <polygon points="1645.73 557.44 1646.81 557.61 1646.81 572.41 1645.73 572.23 1645.73 557.44"/>
+                    <polygon points="1645.73 556.96 1646.81 557.14 1646.81 571.93 1645.73 571.76 1645.73 556.96"/>
+                  </g>
+                </g>
+                <!-- Right card 3 -->
+                <g class="sq-roll" style="opacity:0;transform:translateX(40px);transition:all 1.4s cubic-bezier(0.16,1,0.3,1) 0.4s;" opacity="0.30">
+                  <polygon points="1869.81 664.41 1556.17 614.73 1556.17 301.22 1869.81 350.9 1869.81 664.41" fill="#f8f7f5"/>
+                  <line x1="1556.17" y1="301.22" x2="1556.17" y2="614.73" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".25"/>
+                  <line x1="1556.16" y1="301.09" x2="1869.81" y2="350.77" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".25"/>
+                  <line x1="1556.16" y1="614.73" x2="1869.81" y2="664.41" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".25"/>
+                  <line x1="1869.81" y1="350.9" x2="1869.81" y2="664.51" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".25"/>
+                  <g>
+                    <polygon points="1556.72 315.48 1555.63 315.31 1555.63 300.52 1556.72 300.69 1556.72 315.48"/>
+                    <polygon points="1570.42 302.86 1570.42 303.94 1555.63 301.6 1555.63 300.52 1570.42 302.86"/>
+                    <polygon points="1556.72 315.96 1555.63 315.79 1555.63 300.99 1556.72 301.17 1556.72 315.96"/>
+                  </g>
+                  <g>
+                    <polygon points="1855.56 349.11 1855.56 348.02 1870.35 350.36 1870.35 351.45 1855.56 349.11"/>
+                    <polygon points="1870.35 365.15 1869.27 364.98 1869.27 350.19 1870.35 350.36 1870.35 365.15"/>
+                    <polygon points="1870.35 365.63 1869.27 365.46 1869.27 350.67 1870.35 350.84 1870.35 365.63"/>
+                  </g>
+                  <g>
+                    <polygon points="1855.56 661.59 1855.56 662.67 1870.35 665.01 1870.35 663.93 1855.56 661.59"/>
+                    <polygon points="1870.35 650.22 1869.27 650.05 1869.27 664.84 1870.35 665.01 1870.35 650.22"/>
+                    <polygon points="1870.35 649.74 1869.27 649.57 1869.27 664.36 1870.35 664.54 1870.35 649.74"/>
+                  </g>
+                  <g>
+                    <polygon points="1570.41 616.42 1570.41 617.51 1555.62 615.17 1555.62 614.08 1570.41 616.42"/>
+                    <polygon points="1555.62 600.37 1556.71 600.55 1556.71 615.34 1555.62 615.17 1555.62 600.37"/>
+                    <polygon points="1555.62 599.9 1556.71 600.07 1556.71 614.86 1555.62 614.69 1555.62 599.9"/>
+                  </g>
+                </g>
+                <!-- Right card 4 -->
+                <g class="sq-roll" style="opacity:0;transform:translateX(30px);transition:all 1.4s cubic-bezier(0.16,1,0.3,1) 0.3s;" opacity="0.45">
+                  <polygon points="1793.01 751.95 1445.56 696.92 1445.56 349.61 1793.01 404.64 1793.01 751.95" fill="#f8f7f5"/>
+                  <line x1="1445.56" y1="349.61" x2="1445.56" y2="696.92" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".28"/>
+                  <line x1="1445.55" y1="349.47" x2="1793.01" y2="404.5" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".28"/>
+                  <line x1="1445.55" y1="696.92" x2="1793.01" y2="751.95" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".28"/>
+                  <line x1="1793.01" y1="404.64" x2="1793.01" y2="752.06" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".28"/>
+                  <g>
+                    <polygon points="1446.17 365.41 1444.97 365.22 1444.97 348.83 1446.17 349.02 1446.17 365.41"/>
+                    <polygon points="1461.35 351.43 1461.35 352.63 1444.97 350.03 1444.97 348.83 1461.35 351.43"/>
+                    <polygon points="1446.17 365.94 1444.97 365.75 1444.97 349.36 1446.17 349.55 1446.17 365.94"/>
+                  </g>
+                  <g>
+                    <polygon points="1777.23 402.66 1777.23 401.45 1793.62 404.05 1793.62 405.25 1777.23 402.66"/>
+                    <polygon points="1793.62 420.44 1792.41 420.25 1792.41 403.86 1793.62 404.05 1793.62 420.44"/>
+                    <polygon points="1793.62 420.97 1792.41 420.78 1792.41 404.39 1793.62 404.58 1793.62 420.97"/>
+                  </g>
+                  <g>
+                    <polygon points="1777.23 748.82 1777.23 750.02 1793.62 752.62 1793.62 751.42 1777.23 748.82"/>
+                    <polygon points="1793.62 736.23 1792.41 736.04 1792.41 752.43 1793.62 752.62 1793.62 736.23"/>
+                    <polygon points="1793.62 735.7 1792.41 735.51 1792.41 751.9 1793.62 752.09 1793.62 735.7"/>
+                  </g>
+                  <g>
+                    <polygon points="1461.35 698.79 1461.35 699.99 1444.96 697.4 1444.96 696.19 1461.35 698.79"/>
+                    <polygon points="1444.96 681.01 1446.16 681.2 1446.16 697.59 1444.96 697.4 1444.96 681.01"/>
+                    <polygon points="1444.96 680.48 1446.16 680.67 1446.16 697.06 1444.96 696.87 1444.96 680.48"/>
+                  </g>
+                </g>
+                <!-- Right card 5 -->
+                <g class="sq-roll" style="opacity:0;transform:translateX(20px);transition:all 1.4s cubic-bezier(0.16,1,0.3,1) 0.2s;" opacity="0.60">
+                  <polygon points="1695.67 829.03 1334.74 771.86 1334.74 411.08 1695.67 468.25 1695.67 829.03" fill="#f8f7f5"/>
+                  <line x1="1334.74" y1="411.08" x2="1334.74" y2="771.86" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".29"/>
+                  <line x1="1334.73" y1="410.93" x2="1695.67" y2="468.1" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".29"/>
+                  <line x1="1334.73" y1="771.86" x2="1695.67" y2="829.03" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".29"/>
+                  <line x1="1695.67" y1="468.25" x2="1695.67" y2="829.14" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".29"/>
+                  <g>
+                    <polygon points="1335.37 427.49 1334.12 427.29 1334.12 410.27 1335.37 410.46 1335.37 427.49"/>
+                    <polygon points="1351.14 412.96 1351.14 414.21 1334.12 411.51 1334.12 410.27 1351.14 412.96"/>
+                    <polygon points="1335.37 428.04 1334.12 427.84 1334.12 410.82 1335.37 411.01 1335.37 428.04"/>
+                  </g>
+                  <g>
+                    <polygon points="1679.28 466.18 1679.28 464.93 1696.3 467.63 1696.3 468.88 1679.28 466.18"/>
+                    <polygon points="1696.3 484.65 1695.05 484.45 1695.05 467.43 1696.3 467.63 1696.3 484.65"/>
+                    <polygon points="1696.3 485.2 1695.05 485 1695.05 467.98 1696.3 468.18 1696.3 485.2"/>
+                  </g>
+                  <g>
+                    <polygon points="1679.28 825.78 1679.28 827.03 1696.3 829.72 1696.3 828.47 1679.28 825.78"/>
+                    <polygon points="1696.3 812.7 1695.05 812.5 1695.05 829.53 1696.3 829.72 1696.3 812.7"/>
+                    <polygon points="1696.3 812.15 1695.05 811.95 1695.05 828.98 1696.3 829.17 1696.3 812.15"/>
+                  </g>
+                  <g>
+                    <polygon points="1351.13 773.81 1351.13 775.05 1334.11 772.36 1334.11 771.11 1351.13 773.81"/>
+                    <polygon points="1334.11 755.34 1335.36 755.53 1335.36 772.56 1334.11 772.36 1334.11 755.34"/>
+                    <polygon points="1334.11 754.79 1335.36 754.98 1335.36 772.01 1334.11 771.81 1334.11 754.79"/>
+                  </g>
+                </g>
+                <!-- Right card 6 -->
+                <g class="sq-roll" style="opacity:0;transform:translateX(10px);transition:all 1.4s cubic-bezier(0.16,1,0.3,1) 0.1s;" opacity="0.80">
+                  <polygon points="1582.07 918.07 1191.94 856.28 1191.94 466.3 1582.07 528.09 1582.07 918.07" fill="#f8f7f5"/>
+                  <line x1="1191.94" y1="466.3" x2="1191.94" y2="856.28" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".31"/>
+                  <line x1="1191.92" y1="466.14" x2="1582.07" y2="527.93" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".31"/>
+                  <line x1="1191.92" y1="856.27" x2="1582.07" y2="918.07" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".31"/>
+                  <line x1="1582.07" y1="528.09" x2="1582.07" y2="918.19" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".31"/>
+                  <g>
+                    <polygon points="1192.62 484.03 1191.27 483.82 1191.27 465.42 1192.62 465.63 1192.62 484.03"/>
+                    <polygon points="1209.67 468.33 1209.67 469.68 1191.27 466.77 1191.27 465.42 1209.67 468.33"/>
+                    <polygon points="1192.62 484.63 1191.27 484.41 1191.27 466.01 1192.62 466.23 1192.62 484.63"/>
+                  </g>
+                  <g>
+                    <polygon points="1564.35 525.86 1564.35 524.51 1582.75 527.42 1582.75 528.77 1564.35 525.86"/>
+                    <polygon points="1582.75 545.82 1581.4 545.61 1581.4 527.21 1582.75 527.42 1582.75 545.82"/>
+                    <polygon points="1582.75 546.42 1581.4 546.2 1581.4 527.8 1582.75 528.02 1582.75 546.42"/>
+                  </g>
+                  <g>
+                    <polygon points="1564.35 914.56 1564.35 915.91 1582.75 918.82 1582.75 917.47 1564.35 914.56"/>
+                    <polygon points="1582.75 900.42 1581.4 900.21 1581.4 918.61 1582.75 918.82 1582.75 900.42"/>
+                    <polygon points="1582.75 899.83 1581.4 899.61 1581.4 918.01 1582.75 918.23 1582.75 899.83"/>
+                  </g>
+                  <g>
+                    <polygon points="1209.66 858.38 1209.66 859.73 1191.26 856.81 1191.26 855.46 1209.66 858.38"/>
+                    <polygon points="1191.26 838.41 1192.61 838.63 1192.61 857.03 1191.26 856.81 1191.26 838.41"/>
+                    <polygon points="1191.26 837.82 1192.61 838.03 1192.61 856.43 1191.26 856.22 1191.26 837.82"/>
+                  </g>
+                </g>
+                <!-- Right card 7 (front) -->
+                <g class="sq-roll" style="opacity:0;transform:translateX(0);transition:all 1.4s cubic-bezier(0.16,1,0.3,1) 0s;" opacity="1">
+                  <polygon points="1483.02 1032.8 1058.11 965.5 1058.11 540.77 1483.02 608.07 1483.02 1032.8" fill="#f8f7f5"/>
+                  <line x1="1058.11" y1="540.77" x2="1058.11" y2="965.5" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".34"/>
+                  <line x1="1058.1" y1="540.59" x2="1483.02" y2="607.89" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".34"/>
+                  <line x1="1058.1" y1="965.5" x2="1483.02" y2="1032.8" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".34"/>
+                  <line x1="1483.02" y1="608.07" x2="1483.02" y2="1032.94" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".34"/>
+                  <g>
+                    <polygon points="1058.86 560.08 1057.39 559.85 1057.39 539.81 1058.86 540.04 1058.86 560.08"/>
+                    <polygon points="1077.43 542.98 1077.43 544.45 1057.39 541.28 1057.39 539.81 1077.43 542.98"/>
+                    <polygon points="1058.86 560.73 1057.39 560.5 1057.39 540.46 1058.86 540.69 1058.86 560.73"/>
+                  </g>
+                  <g>
+                    <polygon points="1463.73 605.64 1463.73 604.17 1483.77 607.34 1483.77 608.81 1463.73 605.64"/>
+                    <polygon points="1483.77 627.38 1482.3 627.15 1482.3 607.11 1483.77 607.34 1483.77 627.38"/>
+                    <polygon points="1483.77 628.03 1482.3 627.79 1482.3 607.75 1483.77 607.99 1483.77 628.03"/>
+                  </g>
+                  <g>
+                    <polygon points="1463.73 1028.98 1463.73 1030.45 1483.77 1033.62 1483.77 1032.15 1463.73 1028.98"/>
+                    <polygon points="1483.77 1013.58 1482.3 1013.35 1482.3 1033.39 1483.77 1033.62 1483.77 1013.58"/>
+                    <polygon points="1483.77 1012.94 1482.3 1012.7 1482.3 1032.74 1483.77 1032.98 1483.77 1012.94"/>
+                  </g>
+                  <g>
+                    <polygon points="1077.42 967.79 1077.42 969.26 1057.38 966.09 1057.38 964.62 1077.42 967.79"/>
+                    <polygon points="1057.38 946.05 1058.85 946.28 1058.85 966.32 1057.38 966.09 1057.38 946.05"/>
+                    <polygon points="1057.38 945.4 1058.85 945.63 1058.85 965.67 1057.38 965.44 1057.38 945.4"/>
+                  </g>
+                </g>
+              </g>
+            </g>
+          </svg>
+        </div>
+      </div>
+
       <div class="problem-visual reveal" id="graph-container">
         <svg class="graph-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 463.07 463.07">
           <!-- Grid -->
@@ -1629,8 +2237,6 @@ footer {
     </div>
   </div>
 </section>
-
-<div class="divider"><div class="divider-line"></div></div>
 
 <!-- ═══════════════════════════════════
      TIME BLOCK (Section 3)
@@ -1865,23 +2471,144 @@ function startPhoneCycle() {
 }
 startPhoneCycle();
 
+// S2V3 roll-in animation + arrow trim path
+const sqRollObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      // Roll in cards
+      entry.target.querySelectorAll('.sq-roll').forEach(el => {
+        const finalOpacity = el.getAttribute('opacity') || '1';
+        el.style.opacity = finalOpacity;
+        el.style.transform = 'translateX(0)';
+        // After entrance animation completes, enable hover
+        setTimeout(() => el.classList.add('visible-done'), 2200);
+      });
+    }
+  });
+}, { threshold: 0.15 });
+const compEl = document.querySelector('.s2v3-composition');
+if (compEl) sqRollObserver.observe(compEl);
+
+// Arrow trim path animation
+const arrowObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const container = entry.target;
+      const leftLine = container.querySelector('.arrow-trim-left');
+      const rightLine = container.querySelector('.arrow-trim-right');
+      const leftTip = container.querySelector('.arrow-tip-left');
+      const rightTip = container.querySelector('.arrow-tip-right');
+      const leftText = container.querySelector('.reality-text-left');
+      const rightText = container.querySelector('.reality-text-right');
+      if (leftLine) leftLine.style.strokeDashoffset = '0';
+      if (rightLine) rightLine.style.strokeDashoffset = '0';
+      if (leftTip) leftTip.style.opacity = '1';
+      if (rightTip) rightTip.style.opacity = '1';
+      if (leftText) leftText.style.opacity = '1';
+      if (rightText) rightText.style.opacity = '1';
+    }
+  });
+}, { threshold: 0.5 });
+const arrowEl = document.querySelector('.reality-arrow-container');
+if (arrowEl) arrowObserver.observe(arrowEl);
+
 // S2 version toggle
 function setS2Version(v) {
   const copyV1 = document.getElementById('s2CopyV1');
   const copyV2 = document.getElementById('s2CopyV2');
+  const contentV3 = document.getElementById('s2ContentV3');
+  const graphContainer = document.getElementById('graph-container');
   const tabV1 = document.getElementById('s2TabV1');
   const tabV2 = document.getElementById('s2TabV2');
+  const tabV3 = document.getElementById('s2TabV3');
+  const problemSection = document.querySelector('.problem');
+  // Hide all
+  copyV1.style.display = 'none';
+  copyV2.style.display = 'none';
+  contentV3.style.display = 'none';
+  graphContainer.style.display = '';
+  tabV1.classList.remove('active');
+  tabV2.classList.remove('active');
+  tabV3.classList.remove('active');
+  problemSection.classList.remove('s2v3-active');
   if (v === 1) {
-    copyV1.style.display = 'block';
-    copyV2.style.display = 'none';
+    // V1 = composition squares (was v3)
+    contentV3.style.display = 'block';
+    graphContainer.style.display = 'none';
     tabV1.classList.add('active');
-    tabV2.classList.remove('active');
-  } else {
-    copyV1.style.display = 'none';
-    copyV2.style.display = 'block';
+    problemSection.classList.add('s2v3-active');
+  } else if (v === 2) {
+    // V2 = original gap headline + graph (was v1)
+    copyV1.style.display = 'block';
+    graphContainer.style.display = '';
     tabV2.classList.add('active');
-    tabV1.classList.remove('active');
+  } else if (v === 3) {
+    // V3 = alternate headline (was v2)
+    copyV2.style.display = 'block';
+    graphContainer.style.display = '';
+    tabV3.classList.add('active');
   }
+}
+
+// Section 2 (phone intro) version toggle
+function setSec2Version(v) {
+  const v1 = document.getElementById('sec2V1');
+  const v2 = document.getElementById('sec2V2');
+  const t1 = document.getElementById('sec2TabV1');
+  const t2 = document.getElementById('sec2TabV2');
+  v1.style.display = 'none';
+  v2.style.display = 'none';
+  t1.classList.remove('active');
+  t2.classList.remove('active');
+  if (v === 1) {
+    v1.style.display = 'grid';
+    t1.classList.add('active');
+  } else if (v === 2) {
+    v2.style.display = 'grid';
+    t2.classList.add('active');
+  }
+}
+setSec2Version(1);
+
+// Initialize s2 on v1 (composition squares)
+setS2Version(1);
+
+// Phone bar fill animation
+const phoneSvgObj = document.getElementById('phoneSvg');
+if (phoneSvgObj) {
+  phoneSvgObj.addEventListener('load', () => {
+    const svgDoc = phoneSvgObj.contentDocument;
+    if (!svgDoc) return;
+    // Find all solid white fill bars (not the background tracks with opacity 0.1)
+    const allRects = svgDoc.querySelectorAll('rect[fill="white"]:not([fill-opacity])');
+    const bars = [];
+    allRects.forEach(rect => {
+      const w = parseFloat(rect.getAttribute('width'));
+      // Only target narrow bars (height=4), not big white boxes
+      if (parseFloat(rect.getAttribute('height')) === 4 && w < 400) {
+        rect.setAttribute('data-target-width', w);
+        rect.setAttribute('width', '0');
+        rect.style.transition = 'none';
+        bars.push(rect);
+      }
+    });
+    // Observe when phone section enters viewport
+    const phoneObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          bars.forEach((bar, i) => {
+            const targetW = bar.getAttribute('data-target-width');
+            setTimeout(() => {
+              bar.style.transition = 'width 1.2s cubic-bezier(0.16, 1, 0.3, 1)';
+              bar.setAttribute('width', targetW);
+            }, i * 120);
+          });
+          phoneObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.3 });
+    phoneObserver.observe(phoneSvgObj);
+  });
 }
 
 // Parallax on hero squares (v2/v3 only)
