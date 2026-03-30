@@ -1,6 +1,6 @@
 # Existence — Website Project
 
-## Last Updated: March 27, 2026
+## Last Updated: March 30, 2026
 
 ---
 
@@ -18,7 +18,7 @@
 ## Homepage (`homepage.html`)
 
 ### Narrative Structure
-Hook → Problem → Time Block → Solution (Cycle) → Product → Proof → CTA
+Hook → Phone Intro → Problem → Time Block → Solution (Cycle) → Product → CTA
 
 ### Section 1: Hero (5 versions, tabbed)
 | Version | Background | Copy |
@@ -33,45 +33,83 @@ Hook → Problem → Time Block → Solution (Cycle) → Product → Proof → C
 - Site always loads on v1
 - Phone mockup cycles through 5 screen videos with dot navigation
 - DTS square assets: `dts-1.jpg` through `dts-4.jpg`, `dts-v1.mp4`, `dts-v2.mp4`, `dts-v3.mp4`
-- All DTS assets compressed (photos ~100KB, videos ~500KB)
-- Squares have Time Block overlays (Holbrook Pond, Group Jog, Beach Sunset, Farmers Market, Meditation, Project Review)
 
-### Section 2: Problem (2 versions, tabbed)
+### Section 2: Phone Intro (4 versions, tabbed)
 | Version | Content |
 |---------|---------|
-| **s2v1** | "There's a gap..." headline + 3 numbered pain points (.01, .02, .03) + animated graph SVG (intention vs. actual diverging lines) |
+| **v1** | Single phone with video + headline + subhead + CTA |
+| **v2** | Full phone with video + headline + subhead + CTA |
+| **v3** | Two phones image + headline + subhead + CTA |
+| **v4** | 3-column value props with thumbnail images (thumb01/02/03.png) |
+
+- White background with `grid-try.png` grid pattern overlay
+- Headline: "With Existence, time isn't only something you manage, it's something you create."
+- Subhead: "A time intelligence system that captures every dimension of your life — then shows you what it all means."
+- V4 columns: "Account for all of your time" / "See what no calendar can show you" / "A system that gets smarter with you"
+- V4 subtext: Roobert Light, #222, line-height 1.35
+
+### Section 3: Problem (3 versions, tabbed)
+| Version | Content |
+|---------|---------|
+| **s2v1** | "There's a gap..." headline + 3 numbered pain points + animated graph SVG |
 | **s2v2** | Single philosophical headline about patterns |
+| **s2v3** | Stacked time blocks SVG composition |
 
 - White background, inverted tab colors
-- Graph SVG animates: rings fade in smallest→largest, lines trim from bottom, gap arc trims from center
 
-### Section 3: Time Block Flip
-- Scroll-triggered 3D card flip
-- Auto-flips once on scroll into view
-- **Cursor-driven**: continuously rotates as cursor moves across section (left = front, right = back)
+### Section 4: Time Block Flip
+- Scroll-triggered 3D card flip (cursor-driven continuous rotation)
 - Front face: `Editing Time Block.svg` (The Real You)
 - Back face: `NEW-Block.png` with `run-sharp.mp4` playing behind (The Ideal You)
-- Video darkened with 50% black overlay
-- Copy cross-fades: active side = full opacity, inactive = 10%
-- "Every Time Block holds both." tagline after flip
-- Labels in Season Mix italic
 
-### Section 4: Solution — The Cycle
-- Engineer (blue `#8ab4f8`) / Record (amber `#e8a87c`) / Reveal (teal `#82d9c5`)
-- 3-column cards with hover accent bars
-- "See How It Works →" links to `v5.html`
+### Section 5: Time Creation Cycle (scroll-pinned)
+- Background: `runners.jpg` with dark overlay
+- 400vh scroll-pin with sticky inner
+- Left column: "The Time Creation Cycle" title + animated cycle SVG diagram
+- Right column: 3 panels crossfade on scroll (Engineer → Record → Reveal)
 
-### Section 5: Product Showcase
-- Calendar week view (large) + mobile + insights (stacked right)
+#### Engineer Panel (01)
+- Number/subtitle in **Roobert Semi Mono**, uppercase, #A4A7AE
+- Custom SVG icons in fixed 24px containers:
+  - `pillars.svg` → Set your pillar intentions (Work/Life/Health/Sleep split)
+  - `timeblocksi.svg` → Create Time Blocks with tags (Activities, People, Places)
+  - `favu.svg` → Favorites — place your most-used blocks in one touch
+  - `stack.svg` → Recurring blocks = your Rhythm
+- Animated pillar sliders below
 
-### Section 6: Social Proof
-- Founding principle quote + placeholder press logos
+#### Record Panel (02)
+- Same Roobert Semi Mono number/subtitle styling
+- Custom SVG icons at 16px height:
+  - `Aassets/Energy1.svg` → Quality Score — rate intention vs. reality (0–10)
+  - `reflection1.svg` → Reflections — capture meaning while it's fresh
+  - `Media1.svg` → Photos & media — memorialize the moment
+  - `Edit1.svg` → Update what actually happened — when, what, who, where
+- `record-asset.png` below bullet points (80% width, nudged left/up)
+
+#### Reveal Panel (03)
+- Same Roobert Semi Mono number/subtitle styling
+- Custom SVG icons in fixed 24px containers:
+  - `insightys.svg` → Time Insights — weekly, monthly, yearly summaries
+  - `time2.svg` → Time Alignment Score — intention vs. creation
+  - `Aassets/Search + Assistant.svg` → E — your AI time companion
+  - `explorer.svg` → Time Explorer — filter by activity, people, places
+- `reveal-callouts.png` below
+
+### Section 6: Product Showcase
+- Headline: "Every dimension of your time captured in one place." (Season Mix, clamp 29px–50px)
+- Subhead: "What you did, when, where, with whom, and how it felt. Intention on one side, reality on the other." (Roobert Light 16px, #aaa)
+- 3 staggered product images with white glow drop-shadows:
+  - `feat-1.png` — large dashboard (80% width, left)
+  - `feat-3.png` — square card (30% width, top right)
+  - `feat-2.png` — wide card (30% width, bottom right)
+- Staggered reveal animations on each image
 
 ### Section 7: Closing CTA
 - "Your days are already shaping you. It's time to shape them back."
+- "Apply to Join" button
 
 ### Footer
-- Minimal: logo, links, copyright
+- Minimal: logo, links (How It Works, About, Privacy, Terms), copyright
 
 ---
 
@@ -82,17 +120,6 @@ Hook → Problem → Time Block → Solution (Cycle) → Product → Proof → C
 2. **The Cycle** (Frames 6-9) — Engineer → Record → Reveal
 3. **The Compounding** (Frames 10-12) — System in motion, patterns emerge
 4. **The Outcome** (Frames 13-16) — Time Alignment, transformation, CTA
-
----
-
-## 3D Experiment (`homepage-3d.html`)
-
-Stripped version with only:
-- s1v3 (B&W video bg + content squares)
-- s2v1 (gap headline + graph)
-- Minimal footer linking back to main homepage
-
-Purpose: playground for 3D/immersive hero experiments
 
 ---
 
@@ -108,22 +135,25 @@ Purpose: playground for 3D/immersive hero experiments
 ### Fonts
 - Headlines: **Season Mix** Regular/Italic (serif)
 - Body/UI: **Roobert** Light/Regular/Medium (sans)
+- Labels/Tags: **Roobert Semi Mono** Regular (mono) — used for section numbers, subtitles in S5
 
 ### Colors
 - Background: `#050505`
 - Text: `#ffffff` (pure white for headlines/buttons/logo)
 - Body text: `#888` (gray) / `#ccc` (light sections)
+- Section labels: `#A4A7AE` (Roobert Semi Mono elements)
 - Engineer: `#8ab4f8`
 - Record: `#e8a87c`
 - Reveal: `#82d9c5`
 - Problem section: white background, black/dark text
+- S2 V4 subtext: `#222`
 
 ### Design Language
 - Dark mode primary, white sections for contrast
 - Scroll-reveal animations with `cubic-bezier(0.16, 1, 0.3, 1)`
 - Subtle parallax on content squares
-- CSS drop shadows (not baked into SVGs — removed from SVG sources)
-- Grid motif (fullgrid.svg) as structural background element
+- White glow drop-shadows on product images (`drop-shadow(0 0 40px rgba(255,255,255,0.14))`)
+- Grid motif (`grid-try.png`) as Section 2 background
 - DTS lifestyle photography + video for visual proof
 - Phone mockup with cycling screen videos for product demos
 
@@ -135,24 +165,30 @@ Purpose: playground for 3D/immersive hero experiments
 |------|---------|
 | `homepage.html` | **Main homepage** (all versions) |
 | `homepage-3d.html` | 3D experiment (s1v3 + s2v1 only) |
-| `homepage-framework.html` | Framework/wireframe document |
 | `v5.html` | How It Works page |
-| `NEW-Block.png` | Time Block card PNG (transparent image area for video) |
-| `Editing Time Block.svg` | Time Block "lived" face |
-| `TIME_BLOCK_INFO.svg` | Time Block "intended" face (has embedded video foreignObject) |
-| `Graph-New.svg` | Intention vs. actual diverging lines graph |
-| `right-squares.svg` | Hero content square layout |
-| `fullgrid.svg` | Background grid pattern |
-| `logo-existence.svg` | Existence logo |
-| `phone-frame.webp` | iPhone bezel frame |
-| `phone-screen-1-4.mp4` | Phone screen videos |
-| `phone-hero-video.mp4` | Phone hero video |
-| `dts-1.jpg` — `dts-4.jpg` | DTS lifestyle photos (compressed) |
-| `dts-v1.mp4` — `dts-v3.mp4` | DTS lifestyle videos (compressed) |
-| `dts-bg-video.mp4` | B&W DTS background video |
-| `run-sharp.mp4` | Running video for Time Block flip |
-| `hero-bg.mp4` | Hero background video |
-| `fonts/` | Season Mix + Roobert |
+| `feat-1.png` | Product showcase: large dashboard |
+| `feat-2.png` | Product showcase: wide insights card |
+| `feat-3.png` | Product showcase: square time block card |
+| `thumb01.png` | S2 V4: "Account for all of your time" |
+| `thumb02.png` | S2 V4: "See what no calendar can show you" |
+| `thumb03.png` | S2 V4: "A system that gets smarter with you" |
+| `grid-try.png` | Section 2 grid background (3840×2160) |
+| `record-asset.png` | Record panel visual |
+| `pillars.svg` | Icon: pillar intentions |
+| `timeblocksi.svg` | Icon: time blocks |
+| `favu.svg` | Icon: favorites |
+| `stack.svg` | Icon: recurring blocks |
+| `insightys.svg` | Icon: time insights |
+| `time2.svg` | Icon: time alignment |
+| `explorer.svg` | Icon: time explorer |
+| `Edit1.svg` | Icon: edit/update |
+| `reflection1.svg` | Icon: reflections |
+| `Media1.svg` | Icon: photos & media |
+| `Aassets/Energy1.svg` | Icon: quality score |
+| `Aassets/Search + Assistant.svg` | Icon: E AI companion |
+| `Aassets/TB.svg` | Icon: time blocks (alt) |
+| `fonts/RoobertSemiMonoTRIAL-Regular.otf` | Roobert Semi Mono font |
+| `fonts/` | Season Mix + Roobert + Roobert Semi Mono |
 
 ---
 
