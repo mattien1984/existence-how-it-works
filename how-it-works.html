@@ -57,6 +57,7 @@ nav.scrolled {
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   padding: 16px 48px;
+  top: 40px;
 }
 .nav-logo {
   font-family: var(--serif);
@@ -120,35 +121,83 @@ nav.scrolled {
 .reveal-d4 { transition-delay: 0.4s; }
 
 /* ═══════════════════════════════════
-   SECTION PROGRESS INDICATOR
+   HORIZONTAL PROGRESS BAR
    ═══════════════════════════════════ */
-.progress-rail {
+.h-progress {
   position: fixed;
-  right: 32px;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 900;
+  top: 0; left: 0; right: 0;
+  z-index: 999;
   display: flex;
-  flex-direction: column;
-  gap: 12px;
+  align-items: center;
+  height: 40px;
+  padding: 0 48px;
+  background: rgba(5,5,5,0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
   opacity: 0;
-  transition: opacity 0.4s;
+  transform: translateY(-100%);
+  transition: opacity 0.4s, transform 0.4s;
 }
-.progress-rail.visible { opacity: 1; }
-.progress-dot {
+.h-progress.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.h-progress-track {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  position: relative;
+  height: 100%;
+}
+.h-progress-line {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(255,255,255,0.1);
+}
+.h-progress-fill {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  height: 1px;
+  background: rgba(255,255,255,0.5);
+  width: 0%;
+  transition: width 0.3s ease;
+}
+.h-progress-dot {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
   width: 6px;
   height: 6px;
   border-radius: 50%;
   background: rgba(255,255,255,0.15);
   transition: all 0.4s;
+  z-index: 2;
 }
-.progress-dot.active {
-  background: rgba(255,255,255,0.7);
-  box-shadow: 0 0 8px rgba(255,255,255,0.3);
+.h-progress-dot.active {
+  background: #fff;
+  box-shadow: 0 0 6px rgba(255,255,255,0.4);
 }
-.progress-dot.engineer.active { background: var(--c-eng); box-shadow: 0 0 8px rgba(138,180,248,0.4); }
-.progress-dot.record.active { background: var(--c-rec); box-shadow: 0 0 8px rgba(232,168,124,0.4); }
-.progress-dot.reveal-dot.active { background: var(--c-rev); box-shadow: 0 0 8px rgba(130,217,197,0.4); }
+.h-progress-label {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.25);
+  white-space: nowrap;
+  transition: color 0.4s;
+  z-index: 2;
+}
+.h-progress-label.active {
+  color: rgba(255,255,255,0.8);
+}
 
 /* ═══════════════════════════════════
    HERO
@@ -526,9 +575,9 @@ nav.scrolled {
 .step-dot.active {
   background: rgba(255,255,255,0.5);
 }
-.act-engineer .step-dot.active { background: var(--c-eng); opacity: 0.7; }
-.act-record .step-dot.active { background: var(--c-rec); opacity: 0.7; }
-.act-reveal .step-dot.active { background: var(--c-rev); opacity: 0.7; }
+.act-engineer .step-dot.active { background: #fff; opacity: 0.7; }
+.act-record .step-dot.active { background: #fff; opacity: 0.7; }
+.act-reveal .step-dot.active { background: #fff; opacity: 0.7; }
 
 /* ═══════════════════════════════════
    EPILOGUE
@@ -650,7 +699,7 @@ footer {
   .act-inner { grid-template-columns: 1fr; gap: 48px; }
   .act-visual { display: none; }
   .act-copy { max-width: 100%; }
-  .progress-rail { display: none; }
+  .h-progress { display: none; }
   .footer-inner { flex-direction: column; gap: 24px; text-align: center; }
   .footer-links { justify-content: center; }
 }
@@ -674,24 +723,21 @@ footer {
 </nav>
 
 <!-- ═══════════════════════════════════
-     PROGRESS RAIL
+     HORIZONTAL PROGRESS BAR
      ═══════════════════════════════════ -->
-<div class="progress-rail" id="progressRail">
-  <div class="progress-dot" data-section="hero"></div>
-  <div class="progress-dot" data-section="timeblock"></div>
-  <div class="progress-dot" data-section="cycle"></div>
-  <div class="progress-dot engineer" data-section="engineer"></div>
-  <div class="progress-dot engineer" data-section="engineer"></div>
-  <div class="progress-dot engineer" data-section="engineer"></div>
-  <div class="progress-dot engineer" data-section="engineer"></div>
-  <div class="progress-dot record" data-section="record"></div>
-  <div class="progress-dot record" data-section="record"></div>
-  <div class="progress-dot record" data-section="record"></div>
-  <div class="progress-dot record" data-section="record"></div>
-  <div class="progress-dot reveal-dot" data-section="reveal"></div>
-  <div class="progress-dot reveal-dot" data-section="reveal"></div>
-  <div class="progress-dot reveal-dot" data-section="reveal"></div>
-  <div class="progress-dot" data-section="epilogue"></div>
+<div class="h-progress" id="hProgress">
+  <div class="h-progress-track">
+    <div class="h-progress-line"></div>
+    <div class="h-progress-fill" id="hProgressFill"></div>
+    <div class="h-progress-dot" id="hDot0" style="left: 0%;"></div>
+    <div class="h-progress-label" id="hLabel1" style="left: 25%;">Engineer</div>
+    <div class="h-progress-dot" id="hDot1" style="left: 25%;"></div>
+    <div class="h-progress-label" id="hLabel2" style="left: 50%;">Record</div>
+    <div class="h-progress-dot" id="hDot2" style="left: 50%;"></div>
+    <div class="h-progress-label" id="hLabel3" style="left: 75%;">Reveal</div>
+    <div class="h-progress-dot" id="hDot3" style="left: 75%;"></div>
+    <div class="h-progress-dot" id="hDot4" style="left: 100%;"></div>
+  </div>
 </div>
 
 <!-- ═══════════════════════════════════
@@ -739,11 +785,11 @@ footer {
 <section class="transition-section" id="sectionCycle">
   <div class="transition-overline reveal">The Time Creation Cycle</div>
   <div class="cycle-words reveal reveal-d1">
-    <span class="cycle-word" style="color:var(--c-eng);">Engineer</span>
+    <span class="cycle-word" style="color:#fff;">Engineer</span>
     <span class="cycle-arrow">&rarr;</span>
-    <span class="cycle-word" style="color:var(--c-rec);">Record</span>
+    <span class="cycle-word" style="color:#fff;">Record</span>
     <span class="cycle-arrow">&rarr;</span>
-    <span class="cycle-word" style="color:var(--c-rev);">Reveal</span>
+    <span class="cycle-word" style="color:#fff;">Reveal</span>
   </div>
   <p class="transition-body reveal reveal-d2">This cycle turns intention into structured time, lived time into data, and data into self-knowledge.</p>
 </section>
@@ -756,7 +802,7 @@ footer {
     <div class="act-inner">
       <div class="act-copy">
         <div class="act-label">01 Engineer</div>
-        <h2 class="act-headline" style="color:var(--c-eng);">Structure your time before it is experienced</h2>
+        <h2 class="act-headline" style="color:#fff;">Structure your time before it is experienced</h2>
 
         <div class="sub-beat-container" id="engBeats">
           <!-- Sub-beat 0: Pillars -->
@@ -828,7 +874,7 @@ footer {
     <div class="act-inner">
       <div class="act-copy">
         <div class="act-label">02 Record</div>
-        <h2 class="act-headline" style="color:var(--c-rec);">Measure how your time was actually created</h2>
+        <h2 class="act-headline" style="color:#fff;">Measure how your time was actually created</h2>
 
         <div class="sub-beat-container" id="recBeats">
           <div class="sub-beat active" data-beat="0">
@@ -896,7 +942,7 @@ footer {
     <div class="act-inner">
       <div class="act-copy">
         <div class="act-label">03 Reveal</div>
-        <h2 class="act-headline" style="color:var(--c-rev);">Your time, transformed into understanding</h2>
+        <h2 class="act-headline" style="color:#fff;">Your time, transformed into understanding</h2>
         <p class="act-intro">As your record builds, Existence transforms this data into insights — helping you see how you live and what your time is creating.</p>
 
         <div class="sub-beat-container" id="revBeats">
@@ -944,11 +990,11 @@ footer {
      ═══════════════════════════════════ -->
 <section class="transition-section" id="sectionMotion">
   <div class="cycle-words reveal">
-    <span class="cycle-word" style="color:var(--c-eng);">Engineer</span>
+    <span class="cycle-word" style="color:#fff;">Engineer</span>
     <span class="cycle-arrow">&rarr;</span>
-    <span class="cycle-word" style="color:var(--c-rec);">Record</span>
+    <span class="cycle-word" style="color:#fff;">Record</span>
     <span class="cycle-arrow">&rarr;</span>
-    <span class="cycle-word" style="color:var(--c-rev);">Reveal</span>
+    <span class="cycle-word" style="color:#fff;">Reveal</span>
   </div>
   <p class="transition-body reveal reveal-d1">You engineer your time by putting structure to it, record how it was actually created, and Existence transforms that record into knowledge that improves how you create future time.</p>
   <p class="transition-body reveal reveal-d2" style="color:rgba(255,255,255,0.75); font-weight:400;">Each cycle builds on the last.</p>
@@ -1082,76 +1128,73 @@ footer {
     'revBeats', 'revVisuals', 'revSteps', 3
   );
 
-  // ─── Progress rail ───
-  const progressRail = document.getElementById('progressRail');
-  const progressDots = progressRail ? progressRail.querySelectorAll('.progress-dot') : [];
+  // ─── Horizontal progress bar ───
+  const hProgress = document.getElementById('hProgress');
+  const hFill = document.getElementById('hProgressFill');
+  const hDots = [0,1,2,3,4].map(i => document.getElementById('hDot' + i));
+  const hLabels = [1,2,3].map(i => document.getElementById('hLabel' + i));
 
-  // Define sections for progress tracking
-  const trackedSections = [
-    { id: 'sectionHero', dotIndex: 0 },
-    { id: 'sectionTimeblock', dotIndex: 1 },
-    { id: 'sectionCycle', dotIndex: 2 },
-    { id: 'actEngineer', dotStart: 3, dotEnd: 6, numBeats: 4 },
-    { id: 'actRecord', dotStart: 7, dotEnd: 10, numBeats: 4 },
-    { id: 'actReveal', dotStart: 11, dotEnd: 13, numBeats: 3 },
-    { id: 'sectionEpilogue', dotIndex: 14 }
+  // Key sections and their progress positions (0-1)
+  const progressAnchors = [
+    { id: 'sectionHero', pos: 0 },
+    { id: 'actEngineer', pos: 0.25 },
+    { id: 'actRecord', pos: 0.5 },
+    { id: 'actReveal', pos: 0.75 },
+    { id: 'sectionEpilogue', pos: 1 }
   ];
 
-  function updateProgress() {
-    if (!progressRail) return;
-
+  function updateHProgress() {
+    if (!hProgress) return;
     const scrollY = window.scrollY;
     const winH = window.innerHeight;
-    const docH = document.documentElement.scrollHeight;
+    const docH = document.documentElement.scrollHeight - winH;
 
-    // Show/hide rail
-    if (scrollY > winH * 0.5 && scrollY < docH - winH * 2) {
-      progressRail.classList.add('visible');
+    // Show/hide
+    if (scrollY > winH * 0.8) {
+      hProgress.classList.add('visible');
     } else {
-      progressRail.classList.remove('visible');
+      hProgress.classList.remove('visible');
     }
 
-    // Clear all active states
-    progressDots.forEach(d => d.classList.remove('active'));
+    // Overall progress
+    const totalProgress = Math.max(0, Math.min(1, scrollY / docH));
+    hFill.style.width = (totalProgress * 100) + '%';
 
-    // Find which section is in view
-    trackedSections.forEach(sec => {
-      const el = document.getElementById(sec.id);
+    // Activate dots and labels based on scroll position
+    hDots.forEach(d => d.classList.remove('active'));
+    hLabels.forEach(l => l.classList.remove('active'));
+
+    progressAnchors.forEach((anchor, i) => {
+      const el = document.getElementById(anchor.id);
       if (!el) return;
       const rect = el.getBoundingClientRect();
-      const inView = rect.top < winH * 0.6 && rect.bottom > winH * 0.3;
-
-      if (inView) {
-        if (sec.dotIndex !== undefined) {
-          progressDots[sec.dotIndex].classList.add('active');
-        } else if (sec.dotStart !== undefined) {
-          // For act sections, determine which sub-beat dot
-          const outerH = el.offsetHeight;
-          const scrolled = -rect.top;
-          const scrollRange = outerH - winH;
-          const progress = Math.max(0, Math.min(1, scrolled / scrollRange));
-          const beatIndex = Math.min(sec.numBeats - 1, Math.floor(progress * sec.numBeats));
-          const dotIdx = sec.dotStart + beatIndex;
-          if (dotIdx <= sec.dotEnd) {
-            progressDots[dotIdx].classList.add('active');
-          }
-        }
+      if (rect.top < winH * 0.5) {
+        hDots[i].classList.add('active');
       }
     });
+
+    // Activate labels based on which act is in view
+    const engRect = document.getElementById('actEngineer').getBoundingClientRect();
+    const recRect = document.getElementById('actRecord').getBoundingClientRect();
+    const revRect = document.getElementById('actReveal').getBoundingClientRect();
+
+    if (engRect.top < winH * 0.5 && engRect.bottom > 0) hLabels[0].classList.add('active');
+    if (recRect.top < winH * 0.5 && recRect.bottom > 0) hLabels[1].classList.add('active');
+    if (revRect.top < winH * 0.5 && revRect.bottom > 0) hLabels[2].classList.add('active');
   }
 
   let progressTicking = false;
   window.addEventListener('scroll', () => {
     if (!progressTicking) {
       requestAnimationFrame(() => {
-        updateProgress();
+        updateHProgress();
         progressTicking = false;
       });
       progressTicking = true;
     }
   }, { passive: true });
 
-  updateProgress();
+  updateHProgress();
 
 })();
 </script>
