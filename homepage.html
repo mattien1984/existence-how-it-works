@@ -1651,6 +1651,7 @@ footer {
     <div class="version-tab version-tab-light active" id="sec2TabV1" onclick="setSec2Version(1)">v1</div>
     <div class="version-tab version-tab-light" id="sec2TabV2" onclick="setSec2Version(2)">v2</div>
     <div class="version-tab version-tab-light" id="sec2TabV3" onclick="setSec2Version(3)">v3</div>
+    <div class="version-tab version-tab-light" id="sec2TabV4" onclick="setSec2Version(4)">v4</div>
   </div>
 
   <!-- S2 V1: Single phone with video -->
@@ -1689,6 +1690,29 @@ footer {
       <img src="two-phones.png" alt="Existence app" style="width: 145%; height: auto; margin-left: auto; margin-right: -340px;">
     </div>
   </div>
+
+  <!-- S2 V4: Value propositions — 3-column typography layout -->
+  <div id="s2ContentV4" style="display: none; max-width: 1200px; margin: 0 auto;">
+    <h2 class="reveal" style="font-family: var(--serif); font-size: clamp(26px, 3vw, 42px); font-weight: 400; line-height: 1.1; letter-spacing: -0.5px; color: var(--black); max-width: 720px; margin: 0 auto 72px; text-align: center;">With Existence, time isn't only something you manage, it's something you create.</h2>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; justify-items: center;">
+      <div class="reveal" style="padding: 40px 24px; cursor: default;">
+        <div style="width: 240px; height: 240px; background: #f0efed; border-radius: 8px; margin-bottom: 24px;"></div>
+        <h3 style="font-family: var(--serif); font-size: clamp(20px, 1.8vw, 26px); font-weight: 400; line-height: 1.15; letter-spacing: -0.2px; color: var(--black); margin-bottom: 16px;">Account for all<br>of your time.</h3>
+        <p style="font-family: var(--sans); font-size: 14px; font-weight: 300; line-height: 1.65; color: #777; max-width: 320px;">Not just meetings and tasks — everything. Work, life, health, sleep. Every dimension captured in Time Blocks.</p>
+      </div>
+      <div class="reveal reveal-delay-2" style="padding: 40px 24px; border-left: 1px solid rgba(0,0,0,0.08); cursor: default;">
+        <div style="width: 240px; height: 240px; background: #f0efed; border-radius: 8px; margin-bottom: 24px;"></div>
+        <h3 style="font-family: var(--serif); font-size: clamp(20px, 1.8vw, 26px); font-weight: 400; line-height: 1.15; letter-spacing: -0.2px; color: var(--black); margin-bottom: 16px;">See what no calendar<br>can show you.</h3>
+        <p style="font-family: var(--sans); font-size: 14px; font-weight: 300; line-height: 1.65; color: #777; max-width: 320px;">Intention vs. reality, side by side. Quality Scores, reflections, patterns across weeks and months.</p>
+      </div>
+      <div class="reveal reveal-delay-3" style="padding: 40px 24px; border-left: 1px solid rgba(0,0,0,0.08); cursor: default;">
+        <div style="width: 240px; height: 240px; background: #f0efed; border-radius: 8px; margin-bottom: 24px;"></div>
+        <h3 style="font-family: var(--serif); font-size: clamp(20px, 1.8vw, 26px); font-weight: 400; line-height: 1.15; letter-spacing: -0.2px; color: var(--black); margin-bottom: 16px;">A system that gets<br>smarter with you.</h3>
+        <p style="font-family: var(--sans); font-size: 14px; font-weight: 300; line-height: 1.65; color: #777; max-width: 320px;">Each cycle builds on the last. The more you use it, the more it reveals.</p>
+      </div>
+    </div>
+  </div>
+
 </section>
 
 <!-- ═══════════════════════════════════
@@ -2722,15 +2746,19 @@ function setSec2Version(v) {
   const v1 = document.getElementById('sec2V1');
   const v2 = document.getElementById('sec2V2');
   const v3 = document.getElementById('sec2V3');
+  const v4 = document.getElementById('s2ContentV4');
   const t1 = document.getElementById('sec2TabV1');
   const t2 = document.getElementById('sec2TabV2');
   const t3 = document.getElementById('sec2TabV3');
+  const t4 = document.getElementById('sec2TabV4');
   v1.style.display = 'none';
   v2.style.display = 'none';
   v3.style.display = 'none';
+  v4.style.display = 'none';
   t1.classList.remove('active');
   t2.classList.remove('active');
   t3.classList.remove('active');
+  t4.classList.remove('active');
   if (v === 1) {
     v1.style.display = 'grid';
     t1.classList.add('active');
@@ -2740,6 +2768,9 @@ function setSec2Version(v) {
   } else if (v === 3) {
     v3.style.display = 'grid';
     t3.classList.add('active');
+  } else if (v === 4) {
+    v4.style.display = 'block';
+    t4.classList.add('active');
   }
 }
 setSec2Version(1);
