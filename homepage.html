@@ -127,7 +127,7 @@ nav.scrolled {
   min-height: 100vh;
 }
 .hero.text-right-shift .hero-content {
-  margin-left: 6vw;
+  margin-left: 2vw;
 }
 /* Version toggle tabs */
 .version-tabs {
@@ -581,7 +581,7 @@ section {
    TIME BLOCK SCROLL FLIP
    ═══════════════════════════════════ */
 .tb-flip-section {
-  padding-top: 40px;
+  padding-top: 10px;
 }
 .tb-flip-layout {
   display: grid;
@@ -608,7 +608,6 @@ section {
   font-family: var(--serif);
   font-size: 22px;
   font-weight: 400;
-  font-style: italic;
   color: #000;
   margin-bottom: 8px;
 }
@@ -616,7 +615,7 @@ section {
   font-family: var(--sans);
   font-size: 16px;
   font-weight: 300;
-  line-height: 1.65;
+  line-height: 1.35;
   color: #222;
 }
 .tb-flip-card-container {
@@ -696,9 +695,8 @@ section {
 .tb-book-tagline {
   font-family: var(--serif);
   font-size: clamp(20px, 2.5vw, 32px);
-  font-style: italic;
   text-align: center;
-  color: var(--black);
+  color: #000;
   opacity: 0;
   margin-top: 48px;
   transition: opacity 0.6s ease;
@@ -784,6 +782,37 @@ section {
 
 /* Solid dark card for deepest back card */
 .s2v3-filled-dark { background: #1a1a1a; }
+
+/* Cycle highlight states */
+#arcgroup-engineer, #arcgroup-record, #arcgroup-reveal { transition: all 0.5s ease; }
+#arcgroup-engineer path, #arcgroup-engineer polygon,
+#arcgroup-record path, #arcgroup-record polygon,
+#arcgroup-reveal path, #arcgroup-reveal polygon { transition: all 0.5s ease; }
+.arc-active path { stroke: #fff !important; stroke-width: 2.5 !important; }
+.arc-active polygon { fill: #fff !important; }
+.arc-active { filter: drop-shadow(0 0 14px rgba(255,255,255,0.7)) drop-shadow(0 0 30px rgba(255,255,255,0.3)); }
+.arc-dim path { stroke: #333 !important; stroke-width: 1 !important; }
+.arc-dim polygon { fill: #333 !important; }
+#label-engineer, #label-record, #label-reveal { transition: all 0.5s ease; }
+.label-active path { fill: #fff !important; }
+.label-active { filter: drop-shadow(0 0 12px rgba(255,255,255,0.6)) drop-shadow(0 0 24px rgba(255,255,255,0.25)); }
+.label-dim path { fill: #444 !important; }
+#cycleHeadEngineer, #cycleHeadRecord, #cycleHeadReveal { transition: text-shadow 0.5s ease; }
+.cycle-head-glow { text-shadow: 0 0 8px rgba(255,255,255,0.35), 0 0 18px rgba(255,255,255,0.12); }
+
+/* Homepage pillar sliders */
+.hp-islider { margin-bottom: 16px; }
+.hp-islider-header { display: flex; align-items: center; gap: 8px; margin-bottom: 2px; }
+.hp-islider-dot { display: inline-block; width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+.hp-islider-name { font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: 2px; color: #fff; }
+.hp-islider-sub { font-family: var(--sans); font-size: 10px; color: rgb(100,100,100); margin-bottom: 6px; margin-left: 16px; }
+.hp-islider-track { position: relative; height: 5px; background: rgba(255,255,255,0.06); border-radius: 3px; }
+.hp-islider-fill { position: absolute; top: 0; left: 0; height: 100%; border-radius: 3px; transition: width 1.4s cubic-bezier(0.25,0.46,0.45,0.94); }
+.hp-islider-thumb { position: absolute; top: 50%; width: 14px; height: 14px; border-radius: 50%; background: #0c0c0c; border: 2.5px solid; transform: translate(-50%, -50%); transition: left 1.4s cubic-bezier(0.25,0.46,0.45,0.94); }
+.hp-ibar { display: flex; height: 28px; border-radius: 5px; overflow: hidden; margin-top: 20px; }
+.hp-ibar-seg { height: 100%; transition: width 1.4s cubic-bezier(0.25,0.46,0.45,0.94); }
+.hp-ibar-labels { display: flex; gap: 14px; margin-top: 6px; font-family: var(--sans); font-size: 9px; letter-spacing: 1.5px; color: rgb(120,120,120); align-items: center; }
+.hp-ibar-labels span { display: flex; align-items: center; gap: 4px; }
 
 /* Hover lift on individual squares */
 .sq-roll {
@@ -1621,6 +1650,7 @@ footer {
   <div class="version-tabs version-tabs-light">
     <div class="version-tab version-tab-light active" id="sec2TabV1" onclick="setSec2Version(1)">v1</div>
     <div class="version-tab version-tab-light" id="sec2TabV2" onclick="setSec2Version(2)">v2</div>
+    <div class="version-tab version-tab-light" id="sec2TabV3" onclick="setSec2Version(3)">v3</div>
   </div>
 
   <!-- S2 V1: Single phone with video -->
@@ -1636,7 +1666,20 @@ footer {
   </div>
 
   <!-- S2 V2: Two phones image -->
-  <div id="sec2V2" style="display: none; max-width: 1200px; margin: -100px auto -80px; grid-template-columns: 0.8fr 1.2fr; gap: 40px; align-items: center; padding-left: 90px; margin-left: 0;">
+  <!-- S2 V2: Full phone with video -->
+  <div id="sec2V2" style="display: none; max-width: 1200px; margin: -40px auto -60px; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;">
+    <div>
+      <h2 class="reveal" style="font-family: var(--serif); font-size: clamp(32px, 3.5vw, 48px); font-weight: 400; line-height: 1.05; color: var(--black); margin-bottom: 20px;">The first tool that treats time as something you create and not just something you manage.</h2>
+      <p class="reveal reveal-delay-1" style="font-family: var(--sans); font-size: 16px; font-weight: 300; line-height: 1.6; color: #555; margin-bottom: 32px;">This is placeholder text. More text to come when we come up with it.</p>
+      <a class="reveal reveal-delay-2" href="v5.html" style="display: inline-block; font-family: var(--sans); font-size: 12px; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; color: var(--white); background: var(--black); padding: 14px 32px; border-radius: 100px; text-decoration: none;">See How It Works</a>
+    </div>
+    <div class="reveal reveal-delay-1" style="position: relative; display: flex; justify-content: center; overflow: visible;">
+      <object data="phone-video-2.svg" type="image/svg+xml" style="width: 75%; height: auto; margin-left: 120px; margin-top: 60px;"></object>
+    </div>
+  </div>
+
+  <!-- S2 V3: Two phones image -->
+  <div id="sec2V3" style="display: none; max-width: 1200px; margin: -100px auto -80px; grid-template-columns: 0.8fr 1.2fr; gap: 40px; align-items: center; padding-left: 90px; margin-left: 0;">
     <div>
       <h2 style="font-family: var(--serif); font-size: clamp(32px, 3.5vw, 48px); font-weight: 400; line-height: 1.05; color: var(--black); margin-bottom: 20px;">With Existence, time isn't only something you manage, it's something you create.</h2>
       <p style="font-family: var(--sans); font-size: 16px; font-weight: 300; line-height: 1.6; color: #555; margin-bottom: 32px;">This is placeholder text. More text to come when we come up with it.</p>
@@ -1685,7 +1728,8 @@ footer {
       </div>
       <!-- S2V3: Stacked time blocks (SVG composition) -->
       <div id="s2ContentV3" style="display: none; grid-column: 1 / -1;">
-        <h2 class="section-headline reveal" style="font-size: clamp(29px, 3.6vw, 50px); text-align: center; max-width: 700px; margin: 0 auto 12px;">There's a gap between the life you're living and the life you intend to live.</h2>
+        <h2 class="section-headline reveal" style="font-size: clamp(24px, 2.8vw, 38px); text-align: center; max-width: 700px; margin: 60px auto 16px;">There's a gap between the life you're living and the life you intend to live.</h2>
+        <p class="reveal reveal-delay-1" style="font-family: var(--sans); font-size: 16px; font-weight: 300; line-height: 1.5; text-align: center; max-width: 520px; margin: 0 auto 40px; color: #aaa;">The time you spent and the time you intended don't quite match. The gap is subtle and it compounds.</p>
         <div class="reality-arrow-container" style="text-align: center; margin-top: 60px; margin-bottom: 16px;">
           <svg class="reality-arrow-svg" viewBox="0 0 434.03 23.41" style="width: 320px; opacity: 0.7;" xmlns="http://www.w3.org/2000/svg">
             <!-- Left text: Reality -->
@@ -1741,7 +1785,7 @@ footer {
             <g clip-path="url(#clippath)">
               <g>
                 <!-- Card 1 (back): dts-4.jpg -->
-                <g class="sq-roll" style="opacity:0;transform:translateX(-60px);transition:all 1.4s cubic-bezier(0.16,1,0.3,1) 0.6s;">
+                <g class="sq-roll" style="opacity:0;transform:translateX(-60px);transition:all 4.5s cubic-bezier(0.16,1,0.3,1) 2.1s;">
                   <g clip-path="url(#cq1)"><image href="dts-4.jpg" x="-250" y="120" width="700" height="700" preserveAspectRatio="xMidYMid slice"/></g>
                   <line x1="164.23" y1="220.14" x2="164.23" y2="533.65" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".25"/>
                   <line x1="164.24" y1="220.01" x2="-149.41" y2="269.69" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".25"/>
@@ -1769,7 +1813,7 @@ footer {
                   </g>
                 </g>
                 <!-- Card 2: dts-1.jpg -->
-                <g class="sq-roll" style="opacity:0;transform:translateX(-50px);transition:all 1.4s cubic-bezier(0.16,1,0.3,1) 0.5s;">
+                <g class="sq-roll" style="opacity:0;transform:translateX(-50px);transition:all 4.5s cubic-bezier(0.16,1,0.3,1) 1.75s;">
                   <g clip-path="url(#cq2)"><image href="dts-1.jpg" x="-150" y="160" width="700" height="700" preserveAspectRatio="xMidYMid slice"/></g>
                   <line x1="268.91" y1="261.29" x2="268.91" y2="574.8" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".25"/>
                   <line x1="268.92" y1="261.16" x2="-44.73" y2="310.84" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".25"/>
@@ -1797,7 +1841,7 @@ footer {
                   </g>
                 </g>
                 <!-- Card 3: dts-3.jpg -->
-                <g class="sq-roll" style="opacity:0;transform:translateX(-40px);transition:all 1.4s cubic-bezier(0.16,1,0.3,1) 0.4s;">
+                <g class="sq-roll" style="opacity:0;transform:translateX(-40px);transition:all 4.5s cubic-bezier(0.16,1,0.3,1) 1.4s;">
                   <g clip-path="url(#cq3)"><image href="dts-3.jpg" x="-70" y="200" width="700" height="700" preserveAspectRatio="xMidYMid slice"/></g>
                   <line x1="349.02" y1="304.22" x2="349.02" y2="617.73" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".25"/>
                   <line x1="349.03" y1="304.09" x2="35.38" y2="353.77" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".25"/>
@@ -1825,7 +1869,7 @@ footer {
                   </g>
                 </g>
                 <!-- Card 4: dts-2.jpg -->
-                <g class="sq-roll" style="opacity:0;transform:translateX(-30px);transition:all 1.4s cubic-bezier(0.16,1,0.3,1) 0.3s;">
+                <g class="sq-roll" style="opacity:0;transform:translateX(-30px);transition:all 4.5s cubic-bezier(0.16,1,0.3,1) 1.05s;">
                   <g clip-path="url(#cq4)"><image href="dts-2.jpg" x="10" y="250" width="700" height="700" preserveAspectRatio="xMidYMid slice"/></g>
                   <line x1="459.62" y1="352.61" x2="459.62" y2="699.92" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".28"/>
                   <line x1="459.63" y1="352.47" x2="112.18" y2="407.5" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".28"/>
@@ -1853,7 +1897,7 @@ footer {
                   </g>
                 </g>
                 <!-- Card 5: dts-4.jpg -->
-                <g class="sq-roll" style="opacity:0;transform:translateX(-20px);transition:all 1.4s cubic-bezier(0.16,1,0.3,1) 0.2s;">
+                <g class="sq-roll" style="opacity:0;transform:translateX(-20px);transition:all 4.5s cubic-bezier(0.16,1,0.3,1) 0.7s;">
                   <g clip-path="url(#cq5)"><image href="dts-4.jpg" x="100" y="310" width="700" height="700" preserveAspectRatio="xMidYMid slice"/></g>
                   <line x1="570.44" y1="414.08" x2="570.44" y2="774.86" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".29"/>
                   <line x1="570.46" y1="413.93" x2="209.52" y2="471.1" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".29"/>
@@ -1881,7 +1925,7 @@ footer {
                   </g>
                 </g>
                 <!-- Card 6: dts-1.jpg -->
-                <g class="sq-roll" style="opacity:0;transform:translateX(-10px);transition:all 1.4s cubic-bezier(0.16,1,0.3,1) 0.1s;">
+                <g class="sq-roll" style="opacity:0;transform:translateX(-10px);transition:all 4.5s cubic-bezier(0.16,1,0.3,1) 0.35s;">
                   <g clip-path="url(#cq6)"><image href="dts-1.jpg" x="210" y="370" width="700" height="700" preserveAspectRatio="xMidYMid slice"/></g>
                   <line x1="713.25" y1="469.3" x2="713.25" y2="859.28" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".31"/>
                   <line x1="713.26" y1="469.14" x2="323.11" y2="530.93" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".31"/>
@@ -1909,7 +1953,7 @@ footer {
                   </g>
                 </g>
                 <!-- Card 7 (front): video dts-v4.mp4 -->
-                <g class="sq-roll" style="opacity:0;transform:translateX(0);transition:all 1.4s cubic-bezier(0.16,1,0.3,1) 0s;">
+                <g class="sq-roll" style="opacity:0;transform:translateX(0);transition:all 4.5s cubic-bezier(0.16,1,0.3,1) 0s;">
                   <g clip-path="url(#cq7)"><foreignObject x="320" y="440" width="630" height="700"><video xmlns="http://www.w3.org/1999/xhtml" autoplay="" muted="" loop="" playsinline="" style="width:100%;height:100%;object-fit:cover;display:block;"><source src="dts-v4.mp4" type="video/mp4"/></video></foreignObject></g>
                   <line x1="847.07" y1="543.77" x2="847.07" y2="968.5" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".34"/>
                   <line x1="847.08" y1="543.59" x2="422.16" y2="610.89" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".34"/>
@@ -1942,7 +1986,7 @@ footer {
             <g clip-path="url(#clippath-1)">
               <g>
                 <!-- Right card 1 (back) -->
-                <g class="sq-roll" style="opacity:0;transform:translateX(60px);transition:all 1.4s cubic-bezier(0.16,1,0.3,1) 0.6s;" opacity="0.10">
+                <g class="sq-roll" style="opacity:0;transform:translateX(60px);transition:all 4.5s cubic-bezier(0.16,1,0.3,1) 2.1s;" opacity="0.10">
                   <polygon points="2067.05 582.41 1753.41 532.73 1753.41 219.22 2067.05 268.9 2067.05 582.41" fill="#f8f7f5"/>
                   <line x1="1753.41" y1="219.22" x2="1753.41" y2="532.73" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".25"/>
                   <line x1="1753.4" y1="219.09" x2="2067.05" y2="268.77" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".25"/>
@@ -1970,7 +2014,7 @@ footer {
                   </g>
                 </g>
                 <!-- Right card 2 -->
-                <g class="sq-roll" style="opacity:0;transform:translateX(50px);transition:all 1.4s cubic-bezier(0.16,1,0.3,1) 0.5s;" opacity="0.20">
+                <g class="sq-roll" style="opacity:0;transform:translateX(50px);transition:all 4.5s cubic-bezier(0.16,1,0.3,1) 1.75s;" opacity="0.20">
                   <polygon points="1959.91 621.48 1646.27 571.8 1646.27 258.29 1959.91 307.97 1959.91 621.48" fill="#f8f7f5"/>
                   <line x1="1646.27" y1="258.29" x2="1646.27" y2="571.8" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".25"/>
                   <line x1="1646.26" y1="258.16" x2="1959.91" y2="307.84" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".25"/>
@@ -1998,7 +2042,7 @@ footer {
                   </g>
                 </g>
                 <!-- Right card 3 -->
-                <g class="sq-roll" style="opacity:0;transform:translateX(40px);transition:all 1.4s cubic-bezier(0.16,1,0.3,1) 0.4s;" opacity="0.30">
+                <g class="sq-roll" style="opacity:0;transform:translateX(40px);transition:all 4.5s cubic-bezier(0.16,1,0.3,1) 1.4s;" opacity="0.30">
                   <polygon points="1869.81 664.41 1556.17 614.73 1556.17 301.22 1869.81 350.9 1869.81 664.41" fill="#f8f7f5"/>
                   <line x1="1556.17" y1="301.22" x2="1556.17" y2="614.73" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".25"/>
                   <line x1="1556.16" y1="301.09" x2="1869.81" y2="350.77" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".25"/>
@@ -2026,7 +2070,7 @@ footer {
                   </g>
                 </g>
                 <!-- Right card 4 -->
-                <g class="sq-roll" style="opacity:0;transform:translateX(30px);transition:all 1.4s cubic-bezier(0.16,1,0.3,1) 0.3s;" opacity="0.45">
+                <g class="sq-roll" style="opacity:0;transform:translateX(30px);transition:all 4.5s cubic-bezier(0.16,1,0.3,1) 1.05s;" opacity="0.45">
                   <polygon points="1793.01 751.95 1445.56 696.92 1445.56 349.61 1793.01 404.64 1793.01 751.95" fill="#f8f7f5"/>
                   <line x1="1445.56" y1="349.61" x2="1445.56" y2="696.92" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".28"/>
                   <line x1="1445.55" y1="349.47" x2="1793.01" y2="404.5" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".28"/>
@@ -2054,7 +2098,7 @@ footer {
                   </g>
                 </g>
                 <!-- Right card 5 -->
-                <g class="sq-roll" style="opacity:0;transform:translateX(20px);transition:all 1.4s cubic-bezier(0.16,1,0.3,1) 0.2s;" opacity="0.60">
+                <g class="sq-roll" style="opacity:0;transform:translateX(20px);transition:all 4.5s cubic-bezier(0.16,1,0.3,1) 0.7s;" opacity="0.60">
                   <polygon points="1695.67 829.03 1334.74 771.86 1334.74 411.08 1695.67 468.25 1695.67 829.03" fill="#f8f7f5"/>
                   <line x1="1334.74" y1="411.08" x2="1334.74" y2="771.86" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".29"/>
                   <line x1="1334.73" y1="410.93" x2="1695.67" y2="468.1" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".29"/>
@@ -2082,7 +2126,7 @@ footer {
                   </g>
                 </g>
                 <!-- Right card 6 -->
-                <g class="sq-roll" style="opacity:0;transform:translateX(10px);transition:all 1.4s cubic-bezier(0.16,1,0.3,1) 0.1s;" opacity="0.80">
+                <g class="sq-roll" style="opacity:0;transform:translateX(10px);transition:all 4.5s cubic-bezier(0.16,1,0.3,1) 0.35s;" opacity="0.80">
                   <polygon points="1582.07 918.07 1191.94 856.28 1191.94 466.3 1582.07 528.09 1582.07 918.07" fill="#f8f7f5"/>
                   <line x1="1191.94" y1="466.3" x2="1191.94" y2="856.28" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".31"/>
                   <line x1="1191.92" y1="466.14" x2="1582.07" y2="527.93" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".31"/>
@@ -2110,7 +2154,7 @@ footer {
                   </g>
                 </g>
                 <!-- Right card 7 (front) -->
-                <g class="sq-roll" style="opacity:0;transform:translateX(0);transition:all 1.4s cubic-bezier(0.16,1,0.3,1) 0s;" opacity="1">
+                <g class="sq-roll" style="opacity:0;transform:translateX(0);transition:all 4.5s cubic-bezier(0.16,1,0.3,1) 0s;" opacity="1">
                   <polygon points="1483.02 1032.8 1058.11 965.5 1058.11 540.77 1483.02 608.07 1483.02 1032.8" fill="#f8f7f5"/>
                   <line x1="1058.11" y1="540.77" x2="1058.11" y2="965.5" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".34"/>
                   <line x1="1058.1" y1="540.59" x2="1483.02" y2="607.89" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width=".34"/>
@@ -2241,8 +2285,9 @@ footer {
 <!-- ═══════════════════════════════════
      TIME BLOCK (Section 3)
      ═══════════════════════════════════ -->
-<section class="timeblock-section" style="background: var(--white); padding: 160px 48px;">
+<section class="timeblock-section" style="background: var(--white); padding: 80px 48px 100px;">
   <div class="section-inner">
+    <h2 class="reveal" style="font-family: var(--serif); font-size: clamp(24px, 2.8vw, 38px); font-weight: 400; line-height: 1.1; color: #000; text-align: center; max-width: 700px; margin: 40px auto 36px;">Existence is Time Intelligence: a system that captures both sides — the life you planned and the life you live.</h2>
     <div class="tb-flip-section" id="s2v1-timeblock">
       <div class="tb-flip-layout">
         <div class="tb-flip-copy tb-flip-copy-left" id="tbCopyLeft">
@@ -2279,54 +2324,190 @@ footer {
 <!-- ═══════════════════════════════════
      SOLUTION — THE CYCLE
      ═══════════════════════════════════ -->
-<section class="solution">
-  <div class="section-inner">
-    <div class="solution-header">
-      <p class="section-tag reveal">The Solution</p>
-      <h2 class="section-headline reveal reveal-delay-1" style="margin: 0 auto 24px;">The Time Creation Cycle</h2>
-      <p class="section-body reveal reveal-delay-2" style="margin: 0 auto; color: #ccc;">Three steps that make your time visible, measurable, and continuously improving — closing the gap between intention and reality.</p>
-    </div>
+<!-- SECTION 5: TIME CREATION CYCLE — scroll-pinned -->
+<section class="solution" id="cycleSection" style="padding: 0; position: relative; overflow: visible;">
+  <div style="height: 400vh; position: relative;">
+    <div id="cycleStickyInner" style="position: sticky; top: 0; height: 100vh; display: flex; align-items: center; overflow: hidden;">
+      <!-- Background image -->
+      <div style="position: absolute; inset: 0; z-index: 0;">
+        <img src="runners.jpg" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.4; filter: brightness(0.4);">
+      </div>
+      <div style="max-width: 1400px; margin: 0 auto; padding: 120px 60px 0; width: 100%; position: relative; z-index: 1;">
+        <!-- Top row: Title left, Step details right -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start;">
 
-    <div class="cycle-steps">
-      <!-- ENGINEER -->
-      <div class="cycle-step reveal">
-        <p class="step-num">Step 01</p>
-        <h3 class="step-name">Engineer</h3>
-        <p class="step-desc">Give your time structure and purpose before it's experienced. Design your days with intention.</p>
-        <div class="step-features">
-          <span class="step-feature">Set pillar intentions</span>
-          <span class="step-feature">Tag activities, people, places</span>
-          <span class="step-feature">Build recurring rhythms</span>
+          <!-- LEFT COLUMN -->
+          <div>
+            <!-- Title -->
+            <h2 style="font-family: var(--serif); font-size: clamp(36px, 4vw, 60px); font-weight: 400; color: var(--cream); margin-bottom: 60px; line-height: 1.1;">The Time<br>Creation Cycle</h2>
+            <!-- Cycle diagram -->
+            <div style="max-width: 480px;">
+              <svg id="cycleCircleSVG" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 574.6 470.67">
+  <!-- Generator: Adobe Illustrator 30.2.1, SVG Export Plug-In . SVG Version: 2.1.1 Build 1)  -->
+  <g id="arcgroup-reveal">
+    <path id="arc-reveal" d="M273.88,444.5c-92.15-8.88-164.19-86.53-164.19-181,0-26.57,5.7-51.81,15.94-74.57" fill="none" stroke="#fff" stroke-miterlimit="10" stroke-width="1.36"/>
+    <polygon points="129.01 195.28 127.72 195.74 125.46 189.42 119.32 192.14 118.77 190.89 126.25 187.58 129.01 195.28" fill="#fff"/>
+  </g>
+  <g id="arcgroup-engineer">
+    <path id="arc-engineer" d="M456.2,186.21c11.03,23.45,17.19,49.65,17.19,77.28,0,94.21-71.64,171.69-163.42,180.93" fill="none" stroke="#fff" stroke-miterlimit="10" stroke-width="1.36"/>
+    <polygon points="313.81 438.34 314.84 439.22 310.49 444.33 315.9 448.3 315.1 449.4 308.5 444.56 313.81 438.34" fill="#fff"/>
+  </g>
+  <g id="arcgroup-record">
+    <path id="arc-record" d="M143.17,158.33c32.95-46.41,87.13-76.69,148.37-76.69s112.56,28.7,145.72,73.04" fill="none" stroke="#fff" stroke-miterlimit="10" stroke-width="1.36"/>
+    <polygon points="430.07 154.58 430.28 153.23 436.91 154.3 437.49 147.61 438.84 147.73 438.14 155.87 430.07 154.58" fill="#fff"/>
+  </g>
+  <g id="label-engineer">
+    <path d="M246.11,34.19v-10.64h6.66v1.17h-5.35v3.39h4.36v1.17h-4.36v3.74h5.52v1.17h-6.83Z" fill="#fff"/>
+    <path d="M256.18,34.19v-10.64h1.49l5.47,8.66v-8.66h1.31v10.64h-1.49l-5.47-8.63v8.63h-1.31Z" fill="#fff"/>
+    <path d="M272.84,34.31c-.65,0-1.27-.11-1.88-.34-.6-.23-1.14-.57-1.61-1.02-.47-.45-.85-1.02-1.12-1.69s-.42-1.47-.42-2.39c0-.73.09-1.38.27-1.96.18-.58.44-1.08.76-1.52.32-.44.7-.8,1.13-1.09.43-.29.9-.51,1.41-.65.51-.15,1.03-.22,1.58-.22.82,0,1.56.15,2.22.44.66.29,1.2.7,1.61,1.22.42.52.67,1.13.76,1.82h-1.41c-.09-.47-.28-.87-.57-1.22-.29-.34-.66-.61-1.1-.81s-.95-.29-1.52-.29c-.43,0-.83.06-1.21.18-.38.12-.73.3-1.05.53-.32.23-.59.52-.82.87-.23.34-.41.74-.53,1.19-.13.45-.19.95-.19,1.5,0,.92.16,1.7.49,2.34.33.64.78,1.12,1.35,1.44.57.32,1.22.49,1.95.49.45,0,.87-.06,1.26-.17.4-.12.74-.28,1.05-.5s.54-.47.71-.77.26-.61.26-.96c0-.29-.07-.52-.21-.67-.14-.15-.35-.23-.63-.23h-2.4v-1.12h2.74c.36,0,.68.07.95.22.27.15.48.35.62.62s.22.58.22.95v3.68h-1.22v-1.61c-.14.24-.32.47-.55.68-.22.21-.48.4-.77.55-.29.15-.62.27-.98.36-.36.09-.75.14-1.16.14Z" fill="#fff"/>
+    <path d="M281.04,34.19v-10.64h1.31v10.64h-1.31ZM282.35,24.72h-1.31v-1.17h1.31v1.17ZM282.35,34.19h-1.31v-1.17h1.31v1.17Z" fill="#fff"/>
+    <path d="M286.3,34.19v-10.64h1.49l5.47,8.66v-8.66h1.31v10.64h-1.49l-5.47-8.63v8.63h-1.31Z" fill="#fff"/>
+    <path d="M298.52,34.19v-10.64h6.66v1.17h-5.35v3.39h4.36v1.17h-4.36v3.74h5.52v1.17h-6.83Z" fill="#fff"/>
+    <path d="M308.59,34.19v-10.64h6.66v1.17h-5.35v3.39h4.36v1.17h-4.36v3.74h5.52v1.17h-6.83Z" fill="#fff"/>
+    <path d="M318.65,34.19v-10.64h4.04c.7,0,1.3.12,1.81.36.51.24.89.57,1.16,1s.4.94.4,1.55c0,.73-.17,1.33-.52,1.79-.34.46-.81.8-1.39,1.02-.58.22-1.22.33-1.92.33h-2.28v4.61h-1.31ZM324.73,34.19l-.18-2.57c-.04-.52-.21-.94-.52-1.27-.3-.33-.7-.49-1.2-.49h-3.12v-1.06h3.24c.56,0,1.04.12,1.46.35.42.23.75.56.99.97s.38.89.43,1.43l.18,2.65h-1.28ZM319.96,28.69h2.72c.51,0,.91-.1,1.21-.29.3-.19.52-.44.65-.74.14-.3.21-.63.21-.99s-.07-.67-.21-.97c-.14-.3-.35-.54-.65-.72-.3-.18-.7-.27-1.21-.27h-2.72v3.98Z" fill="#fff"/>
+  </g>
+  <g id="label-record">
+    <path d="M482.33,400.36v-10.64h4.04c.7,0,1.3.12,1.81.36s.89.57,1.16,1,.4.94.4,1.55c0,.73-.17,1.33-.52,1.79s-.81.8-1.39,1.02c-.58.22-1.22.33-1.92.33h-2.28v4.61h-1.31ZM488.41,400.36l-.18-2.57c-.04-.52-.21-.94-.52-1.27-.3-.33-.7-.49-1.2-.49h-3.12v-1.06h3.24c.56,0,1.04.12,1.46.35.42.23.74.56.99.97.24.42.39.89.43,1.43l.18,2.65h-1.28ZM483.64,394.85h2.72c.51,0,.91-.1,1.21-.29.3-.19.52-.44.65-.74.14-.3.21-.63.21-.99s-.07-.67-.21-.97c-.14-.3-.35-.54-.65-.72-.3-.18-.7-.27-1.21-.27h-2.72v3.98Z" fill="#fff"/>
+    <path d="M493.29,400.36v-10.64h6.66v1.17h-5.35v3.39h4.36v1.17h-4.36v3.74h5.52v1.17h-6.83Z" fill="#fff"/>
+    <path d="M507.57,400.48c-.67,0-1.31-.11-1.92-.33s-1.16-.56-1.65-1.01-.87-1.02-1.15-1.7c-.28-.68-.42-1.48-.42-2.39,0-.73.09-1.39.27-1.97.18-.58.44-1.09.76-1.53s.7-.8,1.14-1.09c.44-.29.9-.5,1.41-.65.5-.14,1.02-.21,1.56-.21.77,0,1.48.15,2.12.45s1.18.71,1.6,1.22c.42.52.68,1.1.77,1.76h-1.35c-.06-.44-.24-.82-.54-1.16-.3-.34-.67-.61-1.12-.8-.45-.2-.95-.3-1.48-.3-.44,0-.85.06-1.24.18-.39.12-.74.3-1.05.53-.31.23-.58.52-.8.87-.22.34-.4.74-.52,1.19-.12.45-.18.95-.18,1.5,0,.92.16,1.7.49,2.34.32.64.77,1.12,1.34,1.44s1.22.49,1.95.49c.56,0,1.06-.1,1.52-.3.46-.2.83-.47,1.12-.81.29-.34.46-.73.52-1.16h1.34c-.08.66-.33,1.25-.75,1.76-.42.52-.95.92-1.59,1.22s-1.36.45-2.15.45Z" fill="#fff"/>
+    <path d="M519.96,400.48c-.75,0-1.44-.13-2.08-.4-.63-.27-1.19-.65-1.66-1.14-.47-.49-.84-1.07-1.09-1.73-.26-.66-.39-1.39-.39-2.17,0-.63.08-1.22.25-1.77.17-.55.4-1.05.71-1.5.31-.45.68-.83,1.12-1.16.44-.32.92-.57,1.44-.75.53-.18,1.09-.27,1.69-.27.75,0,1.44.13,2.07.4.63.27,1.19.65,1.66,1.14.47.49.84,1.07,1.1,1.73s.4,1.39.4,2.17c0,.63-.08,1.22-.25,1.77-.17.55-.41,1.05-.72,1.5-.31.45-.69.83-1.12,1.16-.43.33-.91.58-1.44.75-.53.18-1.09.27-1.7.27ZM519.96,399.31c.46,0,.88-.07,1.27-.21.39-.14.75-.34,1.06-.59s.59-.55.83-.9.41-.74.54-1.18c.13-.44.19-.9.19-1.38,0-.82-.17-1.55-.5-2.2-.33-.64-.8-1.15-1.38-1.52s-1.26-.55-2.01-.55c-.45,0-.87.07-1.26.21-.4.14-.75.34-1.07.59s-.59.55-.82.9c-.23.35-.41.74-.53,1.18-.13.44-.19.9-.19,1.38,0,.82.17,1.55.5,2.2.33.64.8,1.15,1.38,1.52.59.37,1.25.55,1.99.55Z" fill="#fff"/>
+    <path d="M528.53,400.36v-10.64h4.04c.7,0,1.3.12,1.81.36s.89.57,1.16,1,.4.94.4,1.55c0,.73-.17,1.33-.52,1.79s-.81.8-1.39,1.02c-.58.22-1.22.33-1.92.33h-2.28v4.61h-1.31ZM534.61,400.36l-.18-2.57c-.04-.52-.21-.94-.52-1.27-.3-.33-.7-.49-1.2-.49h-3.12v-1.06h3.24c.56,0,1.04.12,1.46.35.42.23.74.56.99.97.24.42.39.89.43,1.43l.18,2.65h-1.28ZM529.84,394.85h2.72c.51,0,.91-.1,1.21-.29.3-.19.52-.44.65-.74.14-.3.21-.63.21-.99s-.07-.67-.21-.97c-.14-.3-.35-.54-.65-.72-.3-.18-.7-.27-1.21-.27h-2.72v3.98Z" fill="#fff"/>
+    <path d="M539.49,400.36v-10.64h3.13c.75,0,1.45.12,2.09.36.64.24,1.21.58,1.69,1.03.49.45.86,1.01,1.13,1.67.27.66.4,1.41.4,2.26s-.13,1.61-.4,2.26c-.27.66-.65,1.21-1.13,1.67-.49.45-1.05.79-1.69,1.03-.64.24-1.34.36-2.09.36h-3.13ZM540.8,399.18h1.79c.52,0,1.01-.08,1.49-.24.48-.16.9-.41,1.28-.74.38-.33.68-.76.9-1.28.22-.53.33-1.16.33-1.88,0-.98-.19-1.78-.56-2.39-.38-.61-.87-1.05-1.48-1.34-.61-.28-1.26-.42-1.95-.42h-1.79v8.3Z" fill="#fff"/>
+  </g>
+  <g id="label-reveal">
+    <path d="M27.26,400.36v-10.64h4.04c.7,0,1.3.12,1.81.36s.89.57,1.16,1,.4.94.4,1.55c0,.73-.17,1.33-.52,1.79-.34.46-.81.8-1.39,1.02-.58.22-1.22.33-1.92.33h-2.28v4.61h-1.31ZM33.34,400.36l-.18-2.57c-.04-.52-.21-.94-.52-1.27-.3-.33-.7-.49-1.2-.49h-3.12v-1.06h3.24c.56,0,1.04.12,1.46.35.42.23.74.56.99.97.24.42.39.89.43,1.43l.18,2.65h-1.28ZM28.56,394.85h2.72c.51,0,.91-.1,1.21-.29.3-.19.52-.44.65-.74.14-.3.21-.63.21-.99s-.07-.67-.21-.97c-.14-.3-.35-.54-.65-.72-.3-.18-.7-.27-1.21-.27h-2.72v3.98Z" fill="#fff"/>
+    <path d="M38.22,400.36v-10.64h6.66v1.17h-5.35v3.39h4.36v1.17h-4.36v3.74h5.52v1.17h-6.83Z" fill="#fff"/>
+    <path d="M51.24,400.36l-4.03-10.64h1.34l3.34,9.14,3.37-9.14h1.32l-4.03,10.64h-1.32Z" fill="#fff"/>
+    <path d="M59.48,400.36v-10.64h6.66v1.17h-5.35v3.39h4.36v1.17h-4.36v3.74h5.52v1.17h-6.83Z" fill="#fff"/>
+    <path d="M68.44,400.36l4.24-10.64h1.19l4.23,10.64h-1.35l-3.47-9.04-3.48,9.04h-1.35ZM70.52,397.48l.27-1.16h4.94l.27,1.16h-5.49Z" fill="#fff"/>
+    <path d="M80.94,400.36v-10.64h1.31v9.47h5.32v1.17h-6.63Z" fill="#fff"/>
+  </g>
+  <text transform="translate(213.37 257.48)" fill="#fff" font-family="SeasonMixTRIAL-Regular, &apos;Season Mix TRIAL&apos;" font-size="24.92"><tspan x="0" y="0">Time Creation</tspan><tspan x="45.89" y="24.92">Cycle</tspan></text>
+</svg>
+            </div>
+          </div>
+
+          <!-- RIGHT COLUMN: step content (crossfades) -->
+          <div style="position: relative;">
+            <!-- ENGINEER PANEL -->
+            <div class="cycle-panel" id="cyclePanel1" style="opacity: 1; transition: opacity 0.5s ease;">
+              <p style="font-family: var(--serif); font-size: 14px; color: #666; margin-bottom: 12px;">01</p>
+              <h3 style="font-family: var(--sans); font-size: clamp(30px, 3.5vw, 49px); font-weight: 500; color: var(--cream); margin-bottom: 12px; line-height: 1;" id="cycleHeadEngineer">Engineer</h3>
+              <p style="font-family: var(--sans); font-size: 13px; font-weight: 400; color: #666; margin-bottom: 36px;">Structure your time with intention.</p>
+              <div style="display: flex; flex-direction: column; gap: 16px;">
+                <div style="display: flex; align-items: center; gap: 18px;">
+                  <svg width="34" height="22" viewBox="0 0 48 32" fill="none"><rect x="0" y="8" width="12" height="24" fill="#fff"/><rect x="16" y="4" width="12" height="28" fill="#fff"/><rect x="32" y="0" width="12" height="32" fill="#fff"/></svg>
+                  <p style="font-family: var(--sans); font-size: clamp(12px, 1.3vw, 15px); font-weight: 400; color: var(--cream);">Set your pillar intentions (Work/Life/Health/Sleep split)</p>
+                </div>
+                <div style="display: flex; align-items: center; gap: 18px;">
+                  <svg width="34" height="22" viewBox="0 0 48 32" fill="none"><rect x="0" y="4" width="12" height="24" fill="#888"/><rect x="16" y="4" width="12" height="24" fill="#aaa"/><rect x="32" y="4" width="12" height="24" fill="#fff"/></svg>
+                  <p style="font-family: var(--sans); font-size: clamp(12px, 1.3vw, 15px); font-weight: 400; color: var(--cream);">Create Time Blocks with tags (Activities, People, Places)</p>
+                </div>
+                <div style="display: flex; align-items: center; gap: 18px;">
+                  <svg width="34" height="22" viewBox="0 0 48 32" fill="none"><rect x="1" y="5" width="10" height="22" stroke="#666" stroke-width="1"/><rect x="17" y="5" width="10" height="22" stroke="#888" stroke-width="1" stroke-dasharray="2 2"/><rect x="33" y="5" width="10" height="22" stroke="#aaa" stroke-width="1" stroke-dasharray="2 2"/></svg>
+                  <p style="font-family: var(--sans); font-size: clamp(12px, 1.3vw, 15px); font-weight: 400; color: var(--cream);">Favorites — place your most-used blocks in one touch</p>
+                </div>
+                <div style="display: flex; align-items: center; gap: 18px;">
+                  <svg width="34" height="22" viewBox="0 0 48 32" fill="none"><rect x="1" y="5" width="10" height="22" stroke="#666" stroke-width="1"/><rect x="17" y="5" width="10" height="22" stroke="#666" stroke-width="1"/><rect x="33" y="5" width="10" height="22" stroke="#666" stroke-width="1"/></svg>
+                  <p style="font-family: var(--sans); font-size: clamp(12px, 1.3vw, 15px); font-weight: 400; color: var(--cream);">Recurring blocks = your Rhythm</p>
+                </div>
+              </div>
+              <!-- Pillar sliders (animated) -->
+              <div id="engineerCanvas" style="margin-top: 12px; position: relative; width: 106%; margin-left: -8%; transform-origin: center;">
+                <img src="framey.png" style="width: 100%; height: auto; display: block; transform: scaleY(1.08); transform-origin: top;">
+                <div style="position: absolute; top: 10%; left: 5%; right: 5%; bottom: 2%; padding: 20px 24px; overflow: hidden;">
+                <div class="hp-islider">
+                  <div class="hp-islider-header"><span class="hp-islider-dot" style="background:#424b5a;"></span><span class="hp-islider-name">SLEEP</span></div>
+                  <div class="hp-islider-sub">8h / day · 56h / week</div>
+                  <div class="hp-islider-track"><div class="hp-islider-fill" id="hpFill0" style="background:#424b5a;width:0%;"></div><div class="hp-islider-thumb" id="hpThumb0" style="border-color:#424b5a;left:0%;"></div></div>
+                </div>
+                <div class="hp-islider">
+                  <div class="hp-islider-header"><span class="hp-islider-dot" style="background:#2a3d7c;"></span><span class="hp-islider-name">WORK</span></div>
+                  <div class="hp-islider-sub">5.2h / work day · 26h / week</div>
+                  <div class="hp-islider-track"><div class="hp-islider-fill" id="hpFill1" style="background:#2a3d7c;width:0%;"></div><div class="hp-islider-thumb" id="hpThumb1" style="border-color:#2a3d7c;left:0%;"></div></div>
+                </div>
+                <div class="hp-islider">
+                  <div class="hp-islider-header"><span class="hp-islider-dot" style="background:#32694f;"></span><span class="hp-islider-name">HEALTH</span></div>
+                  <div class="hp-islider-sub">7.0h / day · 49h / week</div>
+                  <div class="hp-islider-track"><div class="hp-islider-fill" id="hpFill2" style="background:#32694f;width:0%;"></div><div class="hp-islider-thumb" id="hpThumb2" style="border-color:#32694f;left:0%;"></div></div>
+                </div>
+                <div class="hp-islider">
+                  <div class="hp-islider-header"><span class="hp-islider-dot" style="background:#896a1f;"></span><span class="hp-islider-name">LIFE</span></div>
+                  <div class="hp-islider-sub">5.3h / day · 37h / week</div>
+                  <div class="hp-islider-track"><div class="hp-islider-fill" id="hpFill3" style="background:#896a1f;width:0%;"></div><div class="hp-islider-thumb" id="hpThumb3" style="border-color:#896a1f;left:0%;"></div></div>
+                </div>
+                <div class="hp-ibar" id="hpBar">
+                  <div class="hp-ibar-seg" id="hpSeg0" style="background:#424b5a;width:0%;"></div>
+                  <div class="hp-ibar-seg" id="hpSeg1" style="background:#2a3d7c;width:0%;"></div>
+                  <div class="hp-ibar-seg" id="hpSeg2" style="background:#32694f;width:0%;"></div>
+                  <div class="hp-ibar-seg" id="hpSeg3" style="background:#896a1f;width:0%;"></div>
+                </div>
+                <div class="hp-ibar-labels">
+                  <span><span class="hp-islider-dot" style="background:#424b5a;"></span> SLEEP 33%</span>
+                  <span><span class="hp-islider-dot" style="background:#2a3d7c;"></span> WORK 15%</span>
+                  <span><span class="hp-islider-dot" style="background:#32694f;"></span> HEALTH 29%</span>
+                  <span><span class="hp-islider-dot" style="background:#896a1f;"></span> LIFE 22%</span>
+                </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- RECORD PANEL -->
+            <div class="cycle-panel" id="cyclePanel2" style="position: absolute; top: 0; left: 0; right: 0; opacity: 0; pointer-events: none; transition: opacity 0.5s ease;">
+              <p style="font-family: var(--serif); font-size: 14px; color: #666; margin-bottom: 12px;">02</p>
+              <h3 style="font-family: var(--sans); font-size: clamp(30px, 3.5vw, 49px); font-weight: 500; color: var(--cream); margin-bottom: 12px; line-height: 1;" id="cycleHeadRecord">Record</h3>
+              <p style="font-family: var(--sans); font-size: 13px; font-weight: 400; color: #666; margin-bottom: 36px;">Capture how it was actually lived.</p>
+              <div style="display: flex; flex-direction: column; gap: 16px;">
+                <div style="display: flex; align-items: center; gap: 18px;">
+                  <svg width="34" height="22" viewBox="0 0 48 32" fill="none"><circle cx="24" cy="16" r="12" stroke="#fff" stroke-width="1.5" fill="none"/><circle cx="24" cy="16" r="4" fill="#fff"/></svg>
+                  <p style="font-family: var(--sans); font-size: clamp(12px, 1.3vw, 15px); font-weight: 400; color: var(--cream);">Quality Score — rate intention vs. reality (0–10)</p>
+                </div>
+                <div style="display: flex; align-items: center; gap: 18px;">
+                  <svg width="34" height="22" viewBox="0 0 48 32" fill="none"><path d="M8 8 L40 8 L36 24 L12 24 Z" stroke="#fff" stroke-width="1.5" fill="none"/></svg>
+                  <p style="font-family: var(--sans); font-size: clamp(12px, 1.3vw, 15px); font-weight: 400; color: var(--cream);">Reflections — capture meaning while it's fresh</p>
+                </div>
+                <div style="display: flex; align-items: center; gap: 18px;">
+                  <svg width="34" height="22" viewBox="0 0 48 32" fill="none"><rect x="8" y="4" width="32" height="24" rx="3" stroke="#fff" stroke-width="1.5" fill="none"/><circle cx="20" cy="14" r="4" stroke="#fff" stroke-width="1" fill="none"/><path d="M8 24 L18 18 L26 22 L36 12 L40 16" stroke="#fff" stroke-width="1" fill="none"/></svg>
+                  <p style="font-family: var(--sans); font-size: clamp(12px, 1.3vw, 15px); font-weight: 400; color: var(--cream);">Photos & media — memorialize the moment</p>
+                </div>
+                <div style="display: flex; align-items: center; gap: 18px;">
+                  <svg width="34" height="22" viewBox="0 0 48 32" fill="none"><path d="M10 16 L20 6 L38 6" stroke="#fff" stroke-width="1.5" fill="none"/><path d="M10 16 L20 26 L38 26" stroke="#fff" stroke-width="1.5" fill="none"/></svg>
+                  <p style="font-family: var(--sans); font-size: clamp(12px, 1.3vw, 15px); font-weight: 400; color: var(--cream);">Update what actually happened — when, what, who, where</p>
+                </div>
+              </div>
+              <div style="margin-top: 36px; background: #0c0c0c; border-radius: 12px; height: 200px; width: 100%;"></div>
+            </div>
+
+            <!-- REVEAL PANEL -->
+            <div class="cycle-panel" id="cyclePanel3" style="position: absolute; top: 0; left: 0; right: 0; opacity: 0; pointer-events: none; transition: opacity 0.5s ease;">
+              <p style="font-family: var(--serif); font-size: 14px; color: #666; margin-bottom: 12px;">03</p>
+              <h3 style="font-family: var(--sans); font-size: clamp(30px, 3.5vw, 49px); font-weight: 500; color: var(--cream); margin-bottom: 12px; line-height: 1;" id="cycleHeadReveal">Reveal</h3>
+              <p style="font-family: var(--sans); font-size: 13px; font-weight: 400; color: #666; margin-bottom: 36px;">Turn your record into intelligence.</p>
+              <div style="display: flex; flex-direction: column; gap: 16px;">
+                <div style="display: flex; align-items: center; gap: 18px;">
+                  <svg width="34" height="22" viewBox="0 0 48 32" fill="none"><path d="M4 28 L14 12 L24 20 L34 4 L44 16" stroke="#fff" stroke-width="1.5" fill="none"/></svg>
+                  <p style="font-family: var(--sans); font-size: clamp(12px, 1.3vw, 15px); font-weight: 400; color: var(--cream);">Time Insights — weekly, monthly, yearly summaries</p>
+                </div>
+                <div style="display: flex; align-items: center; gap: 18px;">
+                  <svg width="34" height="22" viewBox="0 0 48 32" fill="none"><circle cx="24" cy="16" r="10" stroke="#fff" stroke-width="1.5" fill="none"/><path d="M24 10 L24 16 L30 16" stroke="#fff" stroke-width="1.5" fill="none"/></svg>
+                  <p style="font-family: var(--sans); font-size: clamp(12px, 1.3vw, 15px); font-weight: 400; color: var(--cream);">Time Alignment Score — intention vs. creation</p>
+                </div>
+                <div style="display: flex; align-items: center; gap: 18px;">
+                  <svg width="34" height="22" viewBox="0 0 48 32" fill="none"><rect x="6" y="4" width="36" height="24" rx="12" stroke="#fff" stroke-width="1.5" fill="none"/><circle cx="30" cy="16" r="6" fill="#fff"/></svg>
+                  <p style="font-family: var(--sans); font-size: clamp(12px, 1.3vw, 15px); font-weight: 400; color: var(--cream);">E — your AI time companion</p>
+                </div>
+                <div style="display: flex; align-items: center; gap: 18px;">
+                  <svg width="34" height="22" viewBox="0 0 48 32" fill="none"><rect x="4" y="4" width="16" height="24" stroke="#fff" stroke-width="1" fill="none"/><rect x="24" y="4" width="20" height="10" stroke="#fff" stroke-width="1" fill="none"/><rect x="24" y="18" width="20" height="10" stroke="#fff" stroke-width="1" fill="none"/></svg>
+                  <p style="font-family: var(--sans); font-size: clamp(12px, 1.3vw, 15px); font-weight: 400; color: var(--cream);">Time Explorer — filter by activity, people, places</p>
+                </div>
+              </div>
+              <div style="margin-top: 24px;">
+                <img src="reveal-callouts.png" alt="Reveal callouts" style="width: 100%; height: auto; display: block; border-radius: 8px; margin-left: -24px;">
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-
-      <!-- RECORD -->
-      <div class="cycle-step reveal reveal-delay-1">
-        <p class="step-num">Step 02</p>
-        <h3 class="step-name">Record</h3>
-        <p class="step-desc">Capture how your time was actually created. Rate it. Reflect on it. Memorialize the moment.</p>
-        <div class="step-features">
-          <span class="step-feature">Quality Score — intention vs. reality</span>
-          <span class="step-feature">Reflections while it's fresh</span>
-          <span class="step-feature">Photos and media capture</span>
-        </div>
-      </div>
-
-      <!-- REVEAL -->
-      <div class="cycle-step reveal reveal-delay-2">
-        <p class="step-num">Step 03</p>
-        <h3 class="step-name">Reveal</h3>
-        <p class="step-desc">Transform your record into intelligence. See your patterns. Understand your time. Improve it.</p>
-        <div class="step-features">
-          <span class="step-feature">Insights and summaries</span>
-          <span class="step-feature">Time Alignment Score</span>
-          <span class="step-feature">E — your AI time companion</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="cycle-link reveal">
-      <a href="#" class="btn-ghost">See the full system <span class="arrow">→</span></a>
     </div>
   </div>
 </section>
@@ -2476,16 +2657,19 @@ const sqRollObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
       // Roll in cards
-      entry.target.querySelectorAll('.sq-roll').forEach(el => {
-        const finalOpacity = el.getAttribute('opacity') || '1';
-        el.style.opacity = finalOpacity;
-        el.style.transform = 'translateX(0)';
-        // After entrance animation completes, enable hover
-        setTimeout(() => el.classList.add('visible-done'), 2200);
-      });
+      // Delay before starting so user has settled into the section
+      setTimeout(() => {
+        entry.target.querySelectorAll('.sq-roll').forEach(el => {
+          const finalOpacity = el.getAttribute('opacity') || '1';
+          el.style.opacity = finalOpacity;
+          el.style.transform = 'translateX(0)';
+          // After entrance animation completes, enable hover
+          setTimeout(() => el.classList.add('visible-done'), 6000);
+        });
+      }, 600);
     }
   });
-}, { threshold: 0.15 });
+}, { threshold: 0.5 });
 const compEl = document.querySelector('.s2v3-composition');
 if (compEl) sqRollObserver.observe(compEl);
 
@@ -2554,18 +2738,25 @@ function setS2Version(v) {
 function setSec2Version(v) {
   const v1 = document.getElementById('sec2V1');
   const v2 = document.getElementById('sec2V2');
+  const v3 = document.getElementById('sec2V3');
   const t1 = document.getElementById('sec2TabV1');
   const t2 = document.getElementById('sec2TabV2');
+  const t3 = document.getElementById('sec2TabV3');
   v1.style.display = 'none';
   v2.style.display = 'none';
+  v3.style.display = 'none';
   t1.classList.remove('active');
   t2.classList.remove('active');
+  t3.classList.remove('active');
   if (v === 1) {
     v1.style.display = 'grid';
     t1.classList.add('active');
   } else if (v === 2) {
     v2.style.display = 'grid';
     t2.classList.add('active');
+  } else if (v === 3) {
+    v3.style.display = 'grid';
+    t3.classList.add('active');
   }
 }
 setSec2Version(1);
@@ -2697,6 +2888,125 @@ if (tbCard && tbSection) {
     });
   }
 }
+
+// ═══════════════════════════════════
+// CYCLE SECTION — scroll-driven step progression
+// ═══════════════════════════════════
+(function() {
+  const cycleSection = document.getElementById('cycleSection');
+  if (!cycleSection) return;
+
+  const panels = [
+    document.getElementById('cyclePanel1'),
+    document.getElementById('cyclePanel2'),
+    document.getElementById('cyclePanel3')
+  ];
+
+  let currentPanel = 0;
+  let pillarAnimDone = false;
+
+  function animatePillarSliders() {
+    if (pillarAnimDone) return;
+    pillarAnimDone = true;
+    const data = [
+      { fill: 'hpFill0', thumb: 'hpThumb0', seg: 'hpSeg0', pct: 33 },
+      { fill: 'hpFill1', thumb: 'hpThumb1', seg: 'hpSeg1', pct: 15 },
+      { fill: 'hpFill2', thumb: 'hpThumb2', seg: 'hpSeg2', pct: 29 },
+      { fill: 'hpFill3', thumb: 'hpThumb3', seg: 'hpSeg3', pct: 22 }
+    ];
+    data.forEach((d, i) => {
+      setTimeout(() => {
+        const fill = document.getElementById(d.fill);
+        const thumb = document.getElementById(d.thumb);
+        const seg = document.getElementById(d.seg);
+        if (fill) fill.style.width = d.pct + '%';
+        if (thumb) thumb.style.left = d.pct + '%';
+        if (seg) seg.style.width = d.pct + '%';
+      }, i * 200);
+    });
+  }
+
+  function resetPillarSliders() {
+    pillarAnimDone = false;
+    ['hpFill0','hpFill1','hpFill2','hpFill3'].forEach(id => { const e = document.getElementById(id); if(e) e.style.width = '0%'; });
+    ['hpThumb0','hpThumb1','hpThumb2','hpThumb3'].forEach(id => { const e = document.getElementById(id); if(e) e.style.left = '0%'; });
+    ['hpSeg0','hpSeg1','hpSeg2','hpSeg3'].forEach(id => { const e = document.getElementById(id); if(e) e.style.width = '0%'; });
+  }
+
+
+function highlightCycleStep(step) {
+  // Map step names to correct arc IDs:
+  // Engineer label is at top → top arc is 'arc-record' (SVG naming is by destination)
+  // Record label is at bottom-right → right arc is 'arc-engineer'
+  // Reveal label is at bottom-left → left arc is 'arc-reveal'
+  const arcMap = {
+    'engineer': 'arc-record',   // top arc near Engineer label
+    'record': 'arc-engineer',   // right arc near Record label
+    'reveal': 'arc-reveal'      // left arc near Reveal label
+  };
+  const steps = ['engineer', 'record', 'reveal'];
+  steps.forEach(s => {
+    const arc = document.getElementById('arcgroup-' + arcMap[s].replace('arc-',''));
+    const label = document.getElementById('label-' + s);
+    if (arc && label) {
+      if (s === step) {
+        arc.classList.add('arc-active');
+        arc.classList.remove('arc-dim');
+        label.classList.add('label-active');
+        label.classList.remove('label-dim');
+      } else {
+        arc.classList.remove('arc-active');
+        arc.classList.add('arc-dim');
+        label.classList.remove('label-active');
+        label.classList.add('label-dim');
+      }
+    }
+  });
+}
+
+function showPanel(index) {
+    if (index === currentPanel) return;
+    const heads = [
+      document.getElementById('cycleHeadEngineer'),
+      document.getElementById('cycleHeadRecord'),
+      document.getElementById('cycleHeadReveal')
+    ];
+    panels.forEach((p, i) => {
+      if (i === index) {
+        p.style.opacity = '1';
+        p.style.pointerEvents = 'auto';
+      } else {
+        p.style.opacity = '0';
+        p.style.pointerEvents = 'none';
+      }
+    });
+    heads.forEach((h, i) => {
+      if (h) h.classList.toggle('cycle-head-glow', i === index);
+    });
+    currentPanel = index;
+  }
+
+  window.addEventListener('scroll', () => {
+    const rect = cycleSection.getBoundingClientRect();
+    const sectionHeight = cycleSection.offsetHeight;
+    const scrolled = -rect.top;
+    const progress = Math.max(0, Math.min(1, scrolled / (sectionHeight - window.innerHeight)));
+
+    // 3 phases: 0-0.33 = Engineer, 0.33-0.66 = Record, 0.66-1 = Reveal
+    if (progress < 0.33) {
+      showPanel(0);
+      highlightCycleStep('engineer');
+      animatePillarSliders();
+    } else if (progress < 0.66) {
+      showPanel(1);
+      highlightCycleStep('record');
+      resetPillarSliders();
+    } else {
+      showPanel(2);
+      highlightCycleStep('reveal');
+    }
+  }, { passive: true });
+})();
 
 </script>
 
