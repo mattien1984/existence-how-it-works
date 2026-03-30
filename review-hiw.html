@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Existence — How It Works Structure Review</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'><text y='28' font-size='28'>⏳</text></svg>">
+<style>
+@font-face{font-family:'Season Mix';src:url('fonts/SeasonMixTRIAL-Regular.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap;}
+@font-face{font-family:'Season Mix';src:url('fonts/SeasonMixTRIAL-RegularItalic.woff2') format('woff2');font-weight:400;font-style:italic;font-display:swap;}
+@font-face{font-family:'Roobert';src:url('fonts/RoobertTRIAL-Light.otf') format('opentype');font-weight:300;font-style:normal;font-display:swap;}
+@font-face{font-family:'Roobert';src:url('fonts/RoobertTRIAL-Regular.otf') format('opentype'),url('fonts/RoobertTRIAL-Regular.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap;}
+@font-face{font-family:'Roobert';src:url('fonts/RoobertTRIAL-Medium.otf') format('opentype');font-weight:500;font-style:normal;font-display:swap;}
+@font-face{font-family:'Roobert Semi Mono';src:url('fonts/RoobertSemiMonoTRIAL-Regular.otf') format('opentype');font-weight:400;font-style:normal;font-display:swap;}
+
+:root {
+  --black: #050505;
+  --white: #ffffff;
+  --serif: 'Season Mix', Georgia, 'Times New Roman', serif;
+  --sans: 'Roobert', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --mono: 'Roobert Semi Mono', monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--sans);
+  background: var(--black);
+  color: var(--white);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 48px;
+  background: rgba(5,5,5,0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+.nav-logo img { filter: brightness(0) invert(1); }
+.nav-link {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #fff;
+  text-decoration: none;
+  transition: opacity 0.3s;
+}
+.nav-link:hover { opacity: 0.6; }
+
+.frame {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 120px 48px;
+  text-align: center;
+}
+.frame-dark { background: #1a1a1a; color: var(--white); }
+.frame-light { background: #2a2a2a; color: #ddd; }
+.frame-label {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  opacity: 0.5;
+}
+.frame-headline {
+  font-family: var(--serif);
+  font-size: clamp(40px, 5vw, 72px);
+  font-weight: 400;
+  line-height: 1.1;
+  max-width: 800px;
+}
+
+footer {
+  padding: 64px 48px 40px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  background: var(--black);
+}
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.footer-logo img { filter: brightness(0) invert(1); }
+.footer-links { display: flex; gap: 32px; }
+.footer-links a {
+  font-family: var(--sans);
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #fff;
+  text-decoration: none;
+}
+.footer-links a:hover { color: #ccc; }
+.footer-copy {
+  font-family: var(--sans);
+  font-size: 11px;
+  color: #fff;
+  text-align: center;
+  margin-top: 48px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.divider { padding: 0 48px; max-width: 1200px; margin: 0 auto; }
+.divider-line { height: 1px; background: linear-gradient(to right, transparent, rgba(255,255,255,0.06), transparent); }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="review-hiw.html" class="nav-logo"><img src="logo-existence.svg" alt="existence" style="height: 56px; width: auto; display: block;"></a>
+  <a href="review.html" class="nav-link">Homepage Review</a>
+</nav>
+
+<section class="frame frame-dark">
+  <p class="frame-label">Frame 1</p>
+  <h1 class="frame-headline">Hero Intro</h1>
+</section>
+
+<section class="frame frame-light">
+  <p class="frame-label">Frame 2</p>
+  <h1 class="frame-headline">Intro Time Block</h1>
+</section>
+
+<section class="frame frame-dark">
+  <p class="frame-label">Frame 3</p>
+  <h1 class="frame-headline">Inside the Intended Time Block</h1>
+</section>
+
+<section class="frame frame-light">
+  <p class="frame-label">Frame 4</p>
+  <h1 class="frame-headline">Time Block Transforms to Experience</h1>
+</section>
+
+<section class="frame frame-dark">
+  <p class="frame-label">Frame 5</p>
+  <h1 class="frame-headline">Multiplying Time Blocks</h1>
+</section>
+
+<section class="frame frame-light">
+  <p class="frame-label">Frame 6</p>
+  <h1 class="frame-headline">Time Creation Cycle</h1>
+</section>
+
+<section class="frame frame-dark">
+  <p class="frame-label">Frame 7</p>
+  <h1 class="frame-headline">Engineer</h1>
+</section>
+
+<section class="frame frame-light">
+  <p class="frame-label">Frame 8</p>
+  <h1 class="frame-headline">Record</h1>
+</section>
+
+<section class="frame frame-dark">
+  <p class="frame-label">Frame 9</p>
+  <h1 class="frame-headline">Reveal</h1>
+</section>
+
+<section class="frame frame-light">
+  <p class="frame-label">Frame 10</p>
+  <h1 class="frame-headline">The Cycle in Motion</h1>
+</section>
+
+<section class="frame frame-dark">
+  <p class="frame-label">Frame 11</p>
+  <h1 class="frame-headline">Compounding</h1>
+</section>
+
+<section class="frame frame-light">
+  <p class="frame-label">Frame 12</p>
+  <h1 class="frame-headline">Intended vs. Actual Distribution</h1>
+</section>
+
+<section class="frame frame-dark">
+  <p class="frame-label">Frame 13</p>
+  <h1 class="frame-headline">Everything Resolves</h1>
+</section>
+
+<section class="frame frame-light">
+  <p class="frame-label">Frame 14</p>
+  <h1 class="frame-headline">The Transformation</h1>
+</section>
+
+<section class="frame frame-dark">
+  <p class="frame-label">Frame 15</p>
+  <h1 class="frame-headline">CTA</h1>
+</section>
+
+<div class="divider"><div class="divider-line"></div></div>
+
+<footer>
+  <div class="footer-inner">
+    <img src="logo-existence.svg" alt="existence" class="footer-logo" style="height: 39px; width: auto; display: block;">
+    <div class="footer-links">
+      <a href="v5.html">How It Works</a>
+      <a href="#">About</a>
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+    </div>
+  </div>
+  <p class="footer-copy">&copy; 2026 Existence. All rights reserved.</p>
+</footer>
+
+</body>
+</html>
