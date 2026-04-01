@@ -895,11 +895,11 @@ footer {
 <div class="h-progress" id="hProgress">
   <div class="h-progress-track">
     <div class="h-progress-segment" style="left: 0%; right: 78.5%;"></div>
-    <div class="h-progress-label" id="hLabel1" style="left: 25%;">Engineer</div>
+    <div class="h-progress-label" id="hLabel1" style="left: calc(25% - 7px);">Engineer</div>
     <div class="h-progress-segment" style="left: 27.2%; right: 53.2%;"></div>
-    <div class="h-progress-label" id="hLabel2" style="left: 50%;">Record</div>
+    <div class="h-progress-label" id="hLabel2" style="left: calc(50% - 5px);">Record</div>
     <div class="h-progress-segment" style="left: 52%; right: 27.8%;"></div>
-    <div class="h-progress-label" id="hLabel3" style="left: 75%;">Reveal</div>
+    <div class="h-progress-label" id="hLabel3" style="left: calc(75% - 4px);">Reveal</div>
     <div class="h-progress-segment" style="left: 77%; right: 0%;"></div>
     <div class="h-progress-traveler" id="hTraveler"></div>
   </div>
@@ -913,6 +913,9 @@ footer {
 
     <!-- Background grid -->
     <div id="heroGrid" style="position:absolute;top:0;left:0;width:100%;height:100%;background:url('grid-15-v3.svg') center center / cover no-repeat;pointer-events:none;transform-origin:50% 74%;opacity:0.15;"></div>
+
+    <!-- Ambient glow -->
+    <div id="ambientGlow" style="position:absolute; top:5%; left:50%; transform:translateX(-50%); width:160vw; height:120vh; border-radius:50%; background:radial-gradient(ellipse at center, rgba(255,255,255,0.025) 0%, rgba(255,255,255,0.01) 30%, transparent 65%); pointer-events:none; z-index:0;"></div>
 
     <!-- 3D flip wrapper -->
     <div id="heroFlipWrapper" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;">
@@ -933,7 +936,21 @@ footer {
                 <feMergeNode in="SourceGraphic"/>
               </feMerge>
             </filter>
+            <!-- Trim path surge filter -->
+            <filter id="surgeGlow" x="-10%" y="-10%" width="120%" height="120%">
+              <feGaussianBlur stdDeviation="1" result="blur"/>
+              <feMerge>
+                <feMergeNode in="blur"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
           </defs>
+          <!-- Traveling light surge — short glowing segment races around frame once -->
+          <g id="trimPathGroup" opacity="0">
+            <path d="M890.75,620.48 L1026.84,620.48 L1026.84,756.48 L890.75,756.48 Z" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="0.35" filter="url(#surgeGlow)" stroke-dasharray="140 404.36" stroke-dashoffset="544.36">
+              <animate id="surgeAnim" attributeName="stroke-dashoffset" from="544.36" to="0" dur="1.2s" fill="freeze" begin="indefinite" calcMode="spline" keySplines="0.25 0 0.2 1"/>
+            </path>
+          </g>
           <!-- Interior gradient fill -->
           <rect id="blockGradRect" x="891" y="620.7" width="135.6" height="135.5" fill="url(#blockGrad)"/>
           <!-- Edge lines with glow -->
@@ -1009,7 +1026,7 @@ footer {
         <img class="pillar-pill" src="Sleep-filled.svg" style="height:24px; width:auto; opacity:0; transform:translateY(6px);" alt="Sleep"/>
       </div>
       <p style="font-family:'Roobert',var(--sans); font-size:clamp(13px,1.1vw,15px); font-weight:300; color:rgba(255,255,255,0.7); line-height:1.5; margin:0 0 24px 0;">You define how much of your time you want to dedicate to each. This is your intention.</p>
-      <div id="intentionsUI" style="width:100%; height:340px; border:1px solid rgba(255,255,255,0.15); border-radius:12px; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.03); opacity:0; box-shadow:0 0 60px 20px rgba(255,255,255,0.06), 0 0 120px 40px rgba(255,255,255,0.03);">
+      <div id="intentionsUI" style="width:100%; height:340px; border:1px solid rgba(255,255,255,0.15); border-radius:12px; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.03); opacity:0; ">
         <span style="font-family:var(--mono); font-size:11px; color:rgba(255,255,255,0.25); letter-spacing:1.5px; text-transform:uppercase;">Intentions UI</span>
       </div>
     </div>
@@ -1641,7 +1658,7 @@ footer {
       scrollInd.style.opacity = Math.max(0, 0.35 - heroExitP * 1.5);
     }
     if (heroGrid) {
-      heroGrid.style.opacity = Math.max(0, 0.15 - heroExitP * 0.15);
+      heroGrid.style.opacity = Math.max(0.04, 0.15 - heroExitP * 0.11);
       heroGrid.style.transform = 'scale(' + (1 + heroExitP * 0.8) + ')';
     }
 
@@ -1652,6 +1669,23 @@ footer {
       var fadeIn = (pi >= 1) ? 1 : clamp01(heroExitP * 3);
       heroBlock.style.opacity = fadeIn;
       heroBlock.style.filter = 'none';
+    }
+    // Trim path surge — one-time light trace around frame
+    var trimPathGroup = document.getElementById('trimPathGroup');
+    var surgeAnim = document.getElementById('surgeAnim');
+    if (trimPathGroup && surgeAnim) {
+      if (pi === 1 && p > 0.1 && !trimPathGroup._started) {
+        trimPathGroup.setAttribute('opacity', '1');
+        surgeAnim.beginElement();
+        trimPathGroup._started = true;
+      } else if (pi === 2) {
+        trimPathGroup.setAttribute('opacity', Math.max(0, 1 - p * 4).toFixed(2));
+      } else if (pi > 2) {
+        trimPathGroup.setAttribute('opacity', '0');
+      } else if (pi < 1) {
+        trimPathGroup.setAttribute('opacity', '0');
+        trimPathGroup._started = false;
+      }
     }
     currentBlockScale = 1 + heroExitP * 0.8; // 1.0→1.8 during hero exit
     // beat 0 text
@@ -2292,6 +2326,7 @@ footer {
   syncProgressTop();
   updatePrologue();
 
+
   // ─── Reveal on scroll ───
   var reveals = document.querySelectorAll('.reveal');
   var revealObserver = new IntersectionObserver(function(entries) {
@@ -2350,8 +2385,26 @@ footer {
     var docH = document.documentElement.scrollHeight - winH;
 
     if (hTraveler && docH > 0) {
-      var totalProgress = Math.max(0, Math.min(1, scrollY / docH));
-      hTraveler.style.left = (totalProgress * 100) + '%';
+      // Map scroll to traveler position based on content milestones:
+      // Phase 5 start (block-anatomy, 800vh scroll) → 25% (Engineer label)
+      // Phase 10 end (laptop done, ~1950vh scroll) → 40% (60% between Eng and Record)
+      var heroH = heroOuter ? heroOuter.offsetHeight : 0;
+      var vh = winH;
+      var phase5Start = 800 * vh / 100; // 800vh in pixels
+      var phase10End = 1950 * vh / 100; // 1950vh in pixels
+      var travelerPct;
+      if (scrollY <= phase5Start) {
+        // 0% → 25% during phases 0-4
+        travelerPct = (scrollY / phase5Start) * 25;
+      } else if (scrollY <= phase10End) {
+        // 25% → 40% during phases 5-10
+        travelerPct = 25 + ((scrollY - phase5Start) / (phase10End - phase5Start)) * 15;
+      } else {
+        // 40% → 100% for the rest of the page
+        var remaining = docH - phase10End;
+        travelerPct = 40 + ((scrollY - phase10End) / (remaining || 1)) * 60;
+      }
+      hTraveler.style.left = Math.max(0, Math.min(100, travelerPct)) + '%';
     }
 
     hLabels.forEach(function(l) { l.classList.remove('active'); });
