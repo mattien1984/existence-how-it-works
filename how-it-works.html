@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>How It Works — Existence</title>
+<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
 <style>
 @font-face{font-family:'Season Mix';src:url('fonts/SeasonMixTRIAL-Regular.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap;}
 @font-face{font-family:'Season Mix';src:url('fonts/SeasonMixTRIAL-RegularItalic.woff2') format('woff2');font-weight:400;font-style:italic;font-display:swap;}
@@ -23,13 +24,15 @@
   --serif: 'Season Mix', Georgia, 'Times New Roman', serif;
   --sans: 'Roobert', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --mono: 'Roobert Semi Mono', 'SF Mono', 'Fira Code', monospace;
+  --ease-power2-inOut: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+  --ease-power2-out: cubic-bezier(0.22, 1, 0.36, 1);
   --c-eng: #8ab4f8;
   --c-rec: #e8a87c;
   --c-rev: #82d9c5;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: auto; }
 body {
   font-family: var(--sans);
   background: var(--black);
@@ -50,14 +53,9 @@ nav {
   align-items: center;
   justify-content: space-between;
   padding: 24px 48px;
-  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-}
-nav.scrolled {
-  background: rgba(5,5,5,0.85);
+  background: rgba(5,5,5,0.95);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  padding: 16px 48px;
-  top: 40px;
 }
 .nav-logo {
   font-family: var(--serif);
@@ -109,7 +107,7 @@ nav.scrolled {
 .reveal {
   opacity: 0;
   transform: translateY(32px);
-  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.8s var(--ease-power2-out), transform 0.8s var(--ease-power2-out);
 }
 .reveal.visible {
   opacity: 1;
@@ -125,23 +123,20 @@ nav.scrolled {
    ═══════════════════════════════════ */
 .h-progress {
   position: fixed;
-  top: 0; left: 0; right: 0;
+  top: 80px; left: 0; right: 0;
   z-index: 999;
   display: flex;
   align-items: center;
   height: 40px;
   padding: 0 48px;
-  background: rgba(5,5,5,0.95);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: linear-gradient(to right, rgba(5,5,5,0.55), rgba(30,30,30,0.55), rgba(5,5,5,0.55));
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border-top: 1px solid rgba(255,255,255,0.06);
   border-bottom: 1px solid rgba(255,255,255,0.04);
-  opacity: 0;
-  transform: translateY(-100%);
-  transition: opacity 0.4s, transform 0.4s;
-}
-.h-progress.visible {
+  box-shadow: 0 4px 24px rgba(0,0,0,0.55);
   opacity: 1;
-  transform: translateY(0);
+  transition: opacity 0.4s;
 }
 .h-progress-track {
   flex: 1;
@@ -150,53 +145,42 @@ nav.scrolled {
   position: relative;
   height: 100%;
 }
-.h-progress-line {
+.h-progress-line { display: none; }
+.h-progress-fill { display: none; }
+.h-progress-dot { display: none; }
+.h-progress-segment {
   position: absolute;
   top: 50%;
-  left: 0;
-  right: 0;
   height: 1px;
   background: rgba(255,255,255,0.1);
-}
-.h-progress-fill {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  height: 1px;
-  background: rgba(255,255,255,0.5);
-  width: 0%;
-  transition: width 0.3s ease;
-}
-.h-progress-dot {
-  position: absolute;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.15);
-  transition: all 0.4s;
-  z-index: 2;
-}
-.h-progress-dot.active {
-  background: #fff;
-  box-shadow: 0 0 6px rgba(255,255,255,0.4);
 }
 .h-progress-label {
   position: absolute;
   top: 50%;
   transform: translate(-50%, -50%);
-  font-family: var(--mono);
+  font-family: 'Roobert Semi Mono', var(--mono);
   font-size: 9px;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.25);
+  color: rgba(255,255,255,0.3);
   white-space: nowrap;
   transition: color 0.4s;
   z-index: 2;
 }
 .h-progress-label.active {
-  color: rgba(255,255,255,0.8);
+  color: rgba(255,255,255,0.9);
+}
+.h-progress-traveler {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 5px;
+  height: 5px;
+  border-radius: 1px;
+  background: #fff;
+  box-shadow: 0 0 8px rgba(255,255,255,0.6), 0 0 16px rgba(255,255,255,0.3);
+  z-index: 3;
+  left: 0%;
 }
 
 /* ═══════════════════════════════════
@@ -211,6 +195,7 @@ nav.scrolled {
   align-items: center;
   text-align: center;
   padding: 0 48px;
+  overflow: hidden;
 }
 .hero-headline {
   font-family: var(--serif);
@@ -258,7 +243,7 @@ nav.scrolled {
 }
 
 /* ═══════════════════════════════════
-   BEAT SECTIONS (Prologue)
+   BEAT SECTIONS (legacy)
    ═══════════════════════════════════ */
 .beat {
   min-height: 100vh;
@@ -435,6 +420,12 @@ nav.scrolled {
   padding: 0 48px;
   width: 100%;
 }
+.act-inner.reversed {
+  direction: rtl;
+}
+.act-inner.reversed > * {
+  direction: ltr;
+}
 .act-copy {
   max-width: 500px;
 }
@@ -469,7 +460,7 @@ nav.scrolled {
   width: 100%;
   opacity: 0;
   transform: translateY(16px);
-  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.5s var(--ease-power2-out), transform 0.5s var(--ease-power2-out);
   pointer-events: none;
 }
 .sub-beat.active {
@@ -546,7 +537,7 @@ nav.scrolled {
   right: 0;
   transform: translateY(-50%);
   opacity: 0;
-  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.5s var(--ease-power2-out);
 }
 .act-visual-placeholder.active {
   opacity: 1;
@@ -578,6 +569,86 @@ nav.scrolled {
 .act-engineer .step-dot.active { background: #fff; opacity: 0.7; }
 .act-record .step-dot.active { background: #fff; opacity: 0.7; }
 .act-reveal .step-dot.active { background: #fff; opacity: 0.7; }
+
+/* ═══════════════════════════════════
+   PHONE MOCKUP
+   ═══════════════════════════════════ */
+.phone-mockup {
+  width: 260px;
+  height: 530px;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 36px;
+  background: #0a0a0a;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.6);
+  position: relative;
+  overflow: hidden;
+  padding: 40px 8px 8px;
+}
+.phone-mockup::before {
+  content: '';
+  position: absolute;
+  top: 12px; left: 50%;
+  transform: translateX(-50%);
+  width: 80px; height: 24px;
+  background: #111;
+  border-radius: 12px;
+}
+.phone-screen {
+  width: 100%; height: 100%;
+  border-radius: 28px;
+  background: #111;
+  overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.phone-screen span {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: rgba(255,255,255,0.15);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+/* ═══════════════════════════════════
+   DESKTOP MOCKUP
+   ═══════════════════════════════════ */
+.desktop-mockup {
+  width: 100%;
+  aspect-ratio: 16/10;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  background: #0d0d0d;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.desktop-toolbar {
+  height: 32px;
+  background: #0a0a0a;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  gap: 6px;
+}
+.desktop-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+}
+.desktop-screen {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.desktop-screen span {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: rgba(255,255,255,0.15);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
 
 /* ═══════════════════════════════════
    EPILOGUE
@@ -692,6 +763,101 @@ footer {
 }
 
 /* ═══════════════════════════════════
+   BRIDGE SECTION (shorter transition)
+   ═══════════════════════════════════ */
+.bridge-section {
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 120px 48px;
+  position: relative;
+}
+.bridge-section::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 1px;
+  height: 120px;
+  background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.08));
+}
+.bridge-section::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 1px;
+  height: 120px;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.08), transparent);
+}
+.bridge-headline {
+  font-family: var(--serif);
+  font-size: clamp(28px, 3.5vw, 48px);
+  font-weight: 400;
+  line-height: 1.2;
+  max-width: 700px;
+}
+
+/* ═══════════════════════════════════
+   CYCLE OUTCOMES
+   ═══════════════════════════════════ */
+.cycle-section {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 120px 48px;
+  position: relative;
+}
+.cycle-section .cycle-words {
+  margin-bottom: 32px;
+}
+.cycle-body {
+  font-family: var(--sans);
+  font-weight: 300;
+  font-size: 17px;
+  line-height: 1.75;
+  color: rgba(255,255,255,0.55);
+  max-width: 640px;
+  margin-bottom: 24px;
+}
+.cycle-emphasis {
+  font-family: var(--serif);
+  font-size: clamp(28px, 3vw, 44px);
+  font-weight: 400;
+  line-height: 1.2;
+  margin-bottom: 24px;
+}
+
+/* ═══════════════════════════════════
+   TAG CHIPS
+   ═══════════════════════════════════ */
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 100px;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 400;
+  color: rgba(255,255,255,0.7);
+  background: rgba(255,255,255,0.04);
+  white-space: nowrap;
+}
+.tag-chip-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+/* ═══════════════════════════════════
    RESPONSIVE
    ═══════════════════════════════════ */
 @media (max-width: 960px) {
@@ -702,6 +868,7 @@ footer {
   .h-progress { display: none; }
   .footer-inner { flex-direction: column; gap: 24px; text-align: center; }
   .footer-links { justify-content: center; }
+  .phone-mockup { width: 200px; height: 408px; }
 }
 </style>
 </head>
@@ -727,158 +894,267 @@ footer {
      ═══════════════════════════════════ -->
 <div class="h-progress" id="hProgress">
   <div class="h-progress-track">
-    <div class="h-progress-line"></div>
-    <div class="h-progress-fill" id="hProgressFill"></div>
-    <div class="h-progress-dot" id="hDot0" style="left: 0%;"></div>
+    <div class="h-progress-segment" style="left: 0%; right: 78.5%;"></div>
     <div class="h-progress-label" id="hLabel1" style="left: 25%;">Engineer</div>
-    <div class="h-progress-dot" id="hDot1" style="left: 25%;"></div>
+    <div class="h-progress-segment" style="left: 27.2%; right: 53.2%;"></div>
     <div class="h-progress-label" id="hLabel2" style="left: 50%;">Record</div>
-    <div class="h-progress-dot" id="hDot2" style="left: 50%;"></div>
+    <div class="h-progress-segment" style="left: 52%; right: 27.8%;"></div>
     <div class="h-progress-label" id="hLabel3" style="left: 75%;">Reveal</div>
-    <div class="h-progress-dot" id="hDot3" style="left: 75%;"></div>
-    <div class="h-progress-dot" id="hDot4" style="left: 100%;"></div>
+    <div class="h-progress-segment" style="left: 77%; right: 0%;"></div>
+    <div class="h-progress-traveler" id="hTraveler"></div>
   </div>
 </div>
 
 <!-- ═══════════════════════════════════
-     PROLOGUE — BEAT 1: HERO
+     SECTION 1: PROLOGUE (sticky scroll)
      ═══════════════════════════════════ -->
-<section class="hero" id="sectionHero">
-  <h1 class="hero-headline reveal">How It Works</h1>
-  <p class="hero-sub reveal reveal-d1">Existence is a Time Intelligence System that enables you to structure your time, record all aspects of how it is lived, and turn that record into insight that improves how you create your time.</p>
-  <div class="scroll-indicator">
-    <span>Scroll</span>
-    <div class="scroll-arrow"></div>
-  </div>
-</section>
+<div class="hero-outer" id="heroOuter" style="height: 1950vh; position: relative;">
+  <section class="hero" id="sectionHero" style="position: sticky; top: 0;">
 
-<!-- ═══════════════════════════════════
-     PROLOGUE — BEAT 2: TIME BLOCK
-     ═══════════════════════════════════ -->
-<section class="beat" id="sectionTimeblock">
-  <div class="beat-split">
-    <div class="beat-copy">
-      <h2 class="reveal">Everything begins with a Time Block</h2>
-      <p class="reveal reveal-d1">A Time Block is a structured unit of time that captures both what you intended to do and how it was actually lived — what you did, when, where, who with, and how it was experienced.</p>
-      <p class="reveal reveal-d2">Calendars record what was scheduled. Time Blocks record everything.</p>
-    </div>
-    <div class="reveal reveal-d2">
-      <div class="visual-placeholder">
-        <span>Time Block Visual</span>
+    <!-- Background grid -->
+    <div id="heroGrid" style="position:absolute;top:0;left:0;width:100%;height:100%;background:url('grid-15-v3.svg') center center / cover no-repeat;pointer-events:none;transform-origin:50% 74%;opacity:0.15;"></div>
+
+    <!-- 3D flip wrapper -->
+    <div id="heroFlipWrapper" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;">
+      <div id="heroBlock" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;transform-origin:50% 74%;opacity:0;">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" style="position:absolute;top:0;left:0;pointer-events:none;">
+          <defs>
+            <!-- Subtle interior gradient -->
+            <linearGradient id="blockGrad" x1="0" y1="0" x2="0.4" y2="1">
+              <stop offset="0%" stop-color="rgba(255,255,255,0.04)"/>
+              <stop offset="50%" stop-color="rgba(255,255,255,0.01)"/>
+              <stop offset="100%" stop-color="rgba(255,255,255,0.03)"/>
+            </linearGradient>
+            <!-- Soft white glow for edges -->
+            <filter id="edgeGlow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="blur"/>
+              <feMerge>
+                <feMergeNode in="blur"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+          </defs>
+          <!-- Interior gradient fill -->
+          <rect id="blockGradRect" x="891" y="620.7" width="135.6" height="135.5" fill="url(#blockGrad)"/>
+          <!-- Edge lines with glow -->
+          <g id="edgeGlowLines" filter="url(#edgeGlow)">
+            <line x1="897.15" y1="620.715" x2="1020.44" y2="620.715" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width=".25"/>
+            <line x1="897.15" y1="756.245" x2="1020.44" y2="756.245" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width=".25"/>
+            <line x1="890.985" y1="626.88" x2="890.985" y2="750.08" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width=".25"/>
+            <line x1="1026.605" y1="626.88" x2="1026.605" y2="750.08" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width=".25"/>
+          </g>
+          <!-- Bracket corners with glow -->
+          <g id="edgeGlowBrackets" filter="url(#edgeGlow)">
+            <rect x="890.75" y="620.28" width="6.4" height="0.8" fill="#fff"/>
+            <rect x="890.75" y="620.28" width="0.8" height="6.4" fill="#fff"/>
+            <rect x="1020.44" y="620.28" width="6.4" height="0.8" fill="#fff"/>
+            <rect x="1026.04" y="620.28" width="0.8" height="6.4" fill="#fff"/>
+            <rect x="890.75" y="755.88" width="6.4" height="0.8" fill="#fff"/>
+            <rect x="890.75" y="750.08" width="0.8" height="6.4" fill="#fff"/>
+            <rect x="1020.44" y="755.88" width="6.4" height="0.8" fill="#fff"/>
+            <rect x="1026.04" y="750.08" width="0.8" height="6.4" fill="#fff"/>
+          </g>
+          <!-- Block content overlay (inside SVG for pixel-perfect alignment with cover/slice) -->
+          <!-- Block content: 5 horizontal bands that stagger in -->
+          <clipPath id="band0Clip"><rect x="891" y="620.7" width="135.6" height="27.1"/></clipPath>
+          <clipPath id="band1Clip"><rect x="891" y="647.8" width="135.6" height="27.1"/></clipPath>
+          <clipPath id="band2Clip"><rect x="891" y="674.9" width="135.6" height="27.1"/></clipPath>
+          <clipPath id="band3Clip"><rect x="891" y="702.0" width="135.6" height="27.1"/></clipPath>
+          <clipPath id="band4Clip"><rect x="891" y="729.1" width="135.6" height="27.3"/></clipPath>
+          <image class="content-band" href="placeholder.svg" x="891" y="620.7" width="135.6" height="135.5" opacity="0" pointer-events="none" clip-path="url(#band0Clip)"/>
+          <image class="content-band" href="placeholder.svg" x="891" y="620.7" width="135.6" height="135.5" opacity="0" pointer-events="none" clip-path="url(#band1Clip)"/>
+          <image class="content-band" href="placeholder.svg" x="891" y="620.7" width="135.6" height="135.5" opacity="0" pointer-events="none" clip-path="url(#band2Clip)"/>
+          <image class="content-band" href="placeholder.svg" x="891" y="620.7" width="135.6" height="135.5" opacity="0" pointer-events="none" clip-path="url(#band3Clip)"/>
+          <image class="content-band" href="placeholder.svg" x="891" y="620.7" width="135.6" height="135.5" opacity="0" pointer-events="none" clip-path="url(#band4Clip)"/>
+          <!-- Keep a single reference for JS fade-out during morph -->
+          <rect id="blockContentOverlay" x="891" y="620.7" width="135.6" height="135.5" fill="none" opacity="0" pointer-events="none"/>
+        </svg>
       </div>
+      <div id="heroBlockBack" style="display:none;"></div>
     </div>
-  </div>
-</section>
 
-<!-- ═══════════════════════════════════
-     PROLOGUE — BEAT 3: TIME BLOCK DEPTH
-     ═══════════════════════════════════ -->
-<section class="beat beat-centered" id="sectionTimeblockDepth">
-  <p class="reveal" style="font-size:18px; color:rgba(255,255,255,0.65); max-width:700px;">On a typical day, you create 15–20 Time Blocks. Each begins as a projection of what you intend to do — the ideal you. After it's lived, it becomes a record of what actually happened — the real you.</p>
-  <p class="reveal reveal-d1" style="font-size:22px; color:rgba(255,255,255,0.85); font-weight:400; margin-top:12px;">Every Time Block holds both.</p>
-  <p class="reveal reveal-d2" style="font-size:17px; color:rgba(255,255,255,0.5); margin-top:16px; max-width:640px;">Strung together across a day, they become a complete picture of how that time was created.</p>
-</section>
+    <!-- Hero headline + sub -->
+    <h1 class="hero-headline" id="heroHL" style="position:relative; z-index:1;">How It Works</h1>
+    <p class="hero-sub" id="heroSub" style="position:relative; z-index:1;">Existence is a Time Intelligence System that enables you to structure your time, record all aspects of how it is lived, and turn that record into insight that improves how you create your time.</p>
+    <div class="scroll-indicator" style="z-index:1;">
+      <span>Scroll</span>
+      <div class="scroll-arrow"></div>
+    </div>
 
-<!-- ═══════════════════════════════════
-     TRANSITION: THE TIME CREATION CYCLE
-     ═══════════════════════════════════ -->
-<section class="transition-section" id="sectionCycle">
-  <div class="transition-overline reveal">The Time Creation Cycle</div>
-  <div class="cycle-words reveal reveal-d1">
-    <span class="cycle-word" style="color:#fff;">Engineer</span>
-    <span class="cycle-arrow">&rarr;</span>
-    <span class="cycle-word" style="color:#fff;">Record</span>
-    <span class="cycle-arrow">&rarr;</span>
-    <span class="cycle-word" style="color:#fff;">Reveal</span>
-  </div>
-  <p class="transition-body reveal reveal-d2">This cycle turns intention into structured time, lived time into data, and data into self-knowledge.</p>
-</section>
+    <!-- Beat 0: centered text above block -->
+    <p id="phaseBeat0" style="position:absolute; top:calc(50% - 200px); left:0; right:0; margin:0 auto; font-family:var(--serif); font-size:clamp(24px,2.5vw,36px); font-weight:400; color:#fff; opacity:0; text-align:center; line-height:1.2; white-space:nowrap; z-index:2;">Everything begins<br>with a Time Block.</p>
 
-<!-- ═══════════════════════════════════
-     ACT 1: ENGINEER
-     ═══════════════════════════════════ -->
-<section class="act-outer act-engineer" id="actEngineer" style="height: 500vh;">
-  <div class="act-sticky">
-    <div class="act-inner">
-      <div class="act-copy">
-        <div class="act-label">01 Engineer</div>
-        <h2 class="act-headline" style="color:#fff;">Structure your time before it is experienced</h2>
-
-        <div class="sub-beat-container" id="engBeats">
-          <!-- Sub-beat 0: Pillars -->
-          <div class="sub-beat active" data-beat="0">
-            <div class="sub-beat-title">Pillars</div>
-            <div class="sub-beat-body">
-              <p>Define how you want to distribute your time across four core pillars — Work, Life, Health, and Sleep. This sets the foundation of your intention.</p>
-            </div>
-          </div>
-          <!-- Sub-beat 1: Creating Time Blocks -->
-          <div class="sub-beat" data-beat="1">
-            <div class="sub-beat-title">Creating Time Blocks</div>
-            <div class="sub-beat-body">
-              <p>Each block defines:</p>
-              <ul>
-                <li>When it occurs</li>
-                <li>What you plan to do</li>
-                <li>Where it will take place</li>
-                <li>Who it will be with</li>
-              </ul>
-              <p>Based on your Time Block title, the system automatically organizes each block into the right pillar.</p>
-            </div>
-          </div>
-          <!-- Sub-beat 2: Tags -->
-          <div class="sub-beat" data-beat="2">
-            <div class="sub-beat-title">Tags</div>
-            <div class="sub-beat-body">
-              <p>You build a catalog of tags across three dimensions:</p>
-              <ul>
-                <li>Activities — what you do</li>
-                <li>People — who you spend your time with</li>
-                <li>Places — where your time is created</li>
-              </ul>
-            </div>
-          </div>
-          <!-- Sub-beat 3: Efficiency Tools -->
-          <div class="sub-beat" data-beat="3">
-            <div class="sub-beat-title">Efficiency Tools</div>
-            <div class="sub-beat-body">
-              <p>Engineering your time is designed to be effortless.</p>
-              <p>Favorite your most-used blocks and place them in a single touch. Create recurring blocks to establish your Rhythm — the time you want to consistently create.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="step-indicators" id="engSteps">
-          <div class="step-dot active"></div>
-          <div class="step-dot"></div>
-          <div class="step-dot"></div>
-          <div class="step-dot"></div>
+    <!-- Phase 2: text beats layout (right side only, crossfading) -->
+    <div id="heroColumns" style="position:absolute; top:calc(50% - 20px); left:50%; transform:translate(-50%,-50%); display:grid; grid-template-columns:1fr auto 1fr; align-items:center; width:90%; max-width:1400px; z-index:2; pointer-events:none;">
+      <div id="heroColLeft" style="padding-left:80px; padding-right:180px; text-align:left;">
+        <!-- Left column intentionally empty during text-beats -->
+      </div>
+      <div id="heroColCenter" style="width:200px;"></div>
+      <div id="heroColRight" style="padding-right:80px; padding-left:180px; text-align:left; position:relative;">
+        <!-- Beat A: "Time Blocks are structured..." -->
+        <div id="textBeatA" style="opacity:0;">
+          <p id="phaseRightTextA" style="font-family:var(--serif); font-size:clamp(20px,2vw,28px); font-weight:400; color:#fff; line-height:1.2;">Time Blocks are structured<br>units of time.</p>
+          <p id="phaseRightSubA" style="font-family:'Roobert',var(--sans); font-size:clamp(13px,1.1vw,15px); font-weight:300; color:rgba(255,255,255,0.7); line-height:1.5; margin-top:16px;">They capture both what you intended to do and how it was actually lived — what you did, when, where, who with, and how it was experienced.</p>
         </div>
       </div>
+    </div>
 
-      <div class="act-visual" id="engVisuals">
-        <div class="act-visual-placeholder active" data-beat="0"><span>Pillar Allocation UI</span></div>
-        <div class="act-visual-placeholder" data-beat="1"><span>Time Block Creation UI</span></div>
-        <div class="act-visual-placeholder" data-beat="2"><span>Tag System UI</span></div>
-        <div class="act-visual-placeholder" data-beat="3"><span>Favorites &amp; Rhythm UI</span></div>
+    <!-- Phase 4: Intentions content (text on right, UI placeholder on left) -->
+    <div id="intentionsContent" style="position:absolute; top:calc(50% + 70px); right:calc(20% - 100px); transform:translateY(-50%); z-index:6; pointer-events:none; opacity:0; max-width:22%; text-align:left;">
+      <p style="font-family:var(--serif); font-size:clamp(18px,2vw,26px); font-weight:400; color:#fff; line-height:1.3; margin:0 0 20px 0;">Every Time Block belongs to one of four pillars — Work, Life, Health, and Sleep.</p>
+      <div id="pillarPills" style="display:flex; flex-direction:row; gap:8px; align-items:flex-start; margin:0 0 20px 0;">
+        <img class="pillar-pill" src="Work-Filled.svg" style="height:24px; width:auto; opacity:0; transform:translateY(6px);" alt="Work"/>
+        <img class="pillar-pill" src="Life-filled.svg" style="height:24px; width:auto; opacity:0; transform:translateY(6px);" alt="Life"/>
+        <img class="pillar-pill" src="Health-Filled.svg" style="height:24px; width:auto; opacity:0; transform:translateY(6px);" alt="Health"/>
+        <img class="pillar-pill" src="Sleep-filled.svg" style="height:24px; width:auto; opacity:0; transform:translateY(6px);" alt="Sleep"/>
+      </div>
+      <p style="font-family:'Roobert',var(--sans); font-size:clamp(13px,1.1vw,15px); font-weight:300; color:rgba(255,255,255,0.7); line-height:1.5; margin:0 0 24px 0;">You define how much of your time you want to dedicate to each. This is your intention.</p>
+      <div id="intentionsUI" style="width:100%; height:340px; border:1px solid rgba(255,255,255,0.15); border-radius:12px; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.03); opacity:0; box-shadow:0 0 60px 20px rgba(255,255,255,0.06), 0 0 120px 40px rgba(255,255,255,0.03);">
+        <span style="font-family:var(--mono); font-size:11px; color:rgba(255,255,255,0.25); letter-spacing:1.5px; text-transform:uppercase;">Intentions UI</span>
       </div>
     </div>
-  </div>
+
+    <!-- Phase 6: Block anatomy detail card -->
+    <div id="zoomBlockDetail" style="position:absolute; left:35%; top:50%; transform:translate(-50%,-50%) translateY(20px); z-index:10; pointer-events:none; opacity:0; width:280px; border-radius:16px; border:1px solid rgba(255,255,255,0.1); background:rgba(15,15,15,0.92); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); overflow:hidden;">
+      <div id="detailColorBar" style="background:#3C5999; padding:14px 18px; display:flex; justify-content:space-between; align-items:center; transition:background 0.6s;">
+        <span style="font-family:var(--sans); font-size:14px; font-weight:500; color:#fff;">Deep Work</span>
+        <span style="font-family:var(--mono); font-size:10px; color:rgba(255,255,255,0.7); letter-spacing:0.5px;">8:00 AM</span>
+      </div>
+      <div style="padding:16px 18px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.06);">
+          <span style="font-family:var(--mono); font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:rgba(255,255,255,0.35);">When</span>
+          <span style="font-family:var(--sans); font-size:13px; font-weight:300; color:rgba(255,255,255,0.8);">8:00 AM – 11:00 AM</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.06);">
+          <span style="font-family:var(--mono); font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:rgba(255,255,255,0.35);">What</span>
+          <span style="font-family:var(--sans); font-size:13px; font-weight:300; color:rgba(255,255,255,0.8);">Deep Work</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.06);">
+          <span style="font-family:var(--mono); font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:rgba(255,255,255,0.35);">Where</span>
+          <span style="font-family:var(--sans); font-size:13px; font-weight:300; color:rgba(255,255,255,0.8);">Home Office</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 0;">
+          <span style="font-family:var(--mono); font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:rgba(255,255,255,0.35);">Who</span>
+          <span style="font-family:var(--sans); font-size:13px; font-weight:300; color:rgba(255,255,255,0.8);">Solo</span>
+        </div>
+      </div>
+      <!-- Pillar indicator (auto-pillar phase) -->
+      <div id="pillarIndicator" style="padding:0 18px 14px; opacity:0; transition:opacity 0.5s;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div style="width:8px; height:8px; border-radius:2px; background:#3C5999;"></div>
+          <span style="font-family:var(--mono); font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:rgba(255,255,255,0.5);">Work</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 6: anatomy text -->
+    <div id="anatomyText" style="position:absolute; left:22%; top:50%; transform:translateY(-50%); z-index:10; pointer-events:none; opacity:0; max-width:18%; padding-right:60px; text-align:left;">
+      <p style="font-family:var(--serif); font-size:clamp(18px,2vw,26px); font-weight:400; color:#fff; line-height:1.3; margin:0 0 20px 0;">Each block defines</p>
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <img src="Time.svg" style="width:14px; height:14px; opacity:0.5; flex-shrink:0;" alt=""/>
+          <span style="font-family:var(--sans); font-size:clamp(12px,1vw,14px); font-weight:300; color:rgba(255,255,255,0.6);">When it occurs</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <img src="what.svg" style="width:14px; height:14px; opacity:0.5; flex-shrink:0;" alt=""/>
+          <span style="font-family:var(--sans); font-size:clamp(12px,1vw,14px); font-weight:300; color:rgba(255,255,255,0.6);">What you plan to do</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <img src="Where.svg" style="width:14px; height:14px; opacity:0.5; flex-shrink:0;" alt=""/>
+          <span style="font-family:var(--sans); font-size:clamp(12px,1vw,14px); font-weight:300; color:rgba(255,255,255,0.6);">Where it will take place</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <img src="whowith.svg" style="width:14px; height:14px; opacity:0.5; flex-shrink:0;" alt=""/>
+          <span style="font-family:var(--sans); font-size:clamp(12px,1vw,14px); font-weight:300; color:rgba(255,255,255,0.6);">Who it will be with</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 7: auto-pillar text -->
+    <div id="autoPillarText" style="position:absolute; left:22%; top:50%; transform:translateY(-50%); z-index:10; pointer-events:none; opacity:0; max-width:18%; padding-right:60px; text-align:left;">
+      <p style="font-family:var(--serif); font-size:clamp(18px,2vw,26px); font-weight:400; color:#fff; line-height:1.3; margin:0 0 16px 0;">Automatic pillaring</p>
+      <p style="font-family:var(--sans); font-size:clamp(13px,1.1vw,15px); font-weight:300; color:rgba(255,255,255,0.7); line-height:1.5; margin:0 0 32px 0;">Based on your Time Block title, the system automatically organizes each block into the right pillar and learns your patterns over time.</p>
+      <div style="display:inline-block; padding:6px 16px; border:1px solid rgba(255,255,255,0.12); border-radius:20px; background:rgba(255,255,255,0.03);">
+        <span style="font-family:var(--mono); font-size:9px; color:rgba(255,255,255,0.25); letter-spacing:1.5px; text-transform:uppercase;">Demonstration</span>
+      </div>
+    </div>
+
+    <!-- Phase 8: tags text + chips -->
+    <div id="tagsText" style="position:absolute; left:22%; top:50%; transform:translateY(-50%); z-index:10; pointer-events:none; opacity:0; max-width:18%; padding-right:60px; text-align:left;">
+      <p style="font-family:var(--serif); font-size:clamp(18px,2vw,26px); font-weight:400; color:#fff; line-height:1.3; margin:0 0 16px 0;">Tags add context</p>
+      <p style="font-family:var(--sans); font-size:clamp(13px,1.1vw,15px); font-weight:300; color:rgba(255,255,255,0.7); line-height:1.5; margin:0 0 20px 0;">Activities, people, and places — the dimensions that turn structured time into meaningful, trackable data.</p>
+      <div id="inlineTagChips" style="display:flex; flex-direction:column; gap:10px; align-items:flex-start;">
+        <div class="inline-tag" style="display:flex; align-items:center; gap:8px; padding:4px 12px; border:1px solid rgba(255,255,255,0.1); border-radius:16px; background:rgba(255,255,255,0.03); opacity:0; transform:translateY(8px);">
+          <div style="width:6px; height:6px; border-radius:50%; background:#6BAA83;"></div>
+          <span style="font-family:var(--sans); font-size:10px; font-weight:300; color:rgba(255,255,255,0.5);">Running</span>
+        </div>
+        <div class="inline-tag" style="display:flex; align-items:center; gap:8px; padding:4px 12px; border:1px solid rgba(255,255,255,0.1); border-radius:16px; background:rgba(255,255,255,0.03); opacity:0; transform:translateY(8px);">
+          <div style="width:6px; height:6px; border-radius:50%; background:#3C5999;"></div>
+          <span style="font-family:var(--sans); font-size:10px; font-weight:300; color:rgba(255,255,255,0.5);">Focus</span>
+        </div>
+        <div class="inline-tag" style="display:flex; align-items:center; gap:8px; padding:4px 12px; border:1px solid rgba(255,255,255,0.1); border-radius:16px; background:rgba(255,255,255,0.03); opacity:0; transform:translateY(8px);">
+          <div style="width:6px; height:6px; border-radius:50%; background:#A38523;"></div>
+          <span style="font-family:var(--sans); font-size:10px; font-weight:300; color:rgba(255,255,255,0.5);">Home Office</span>
+        </div>
+        <div class="inline-tag" style="display:flex; align-items:center; gap:8px; padding:4px 12px; border:1px solid rgba(255,255,255,0.1); border-radius:16px; background:rgba(255,255,255,0.03); opacity:0; transform:translateY(8px);">
+          <div style="width:6px; height:6px; border-radius:50%; background:#6BAA83;"></div>
+          <span style="font-family:var(--sans); font-size:10px; font-weight:300; color:rgba(255,255,255,0.5);">Park</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 9: stack date header -->
+    <div id="stackDateHeader" style="position:absolute; left:50%; transform:translateX(-50%); top:calc(30vh - 50px); z-index:6; text-align:center; opacity:0; pointer-events:none;">
+      <div style="font-family:'Roobert Semi Mono',var(--mono); font-size:10px; letter-spacing:2px; color:#A4A7AE; text-transform:uppercase;">WED</div>
+      <div style="font-family:'Roobert Semi Mono',var(--mono); font-size:10px; letter-spacing:2px; color:#A4A7AE; margin-top:4px; position:relative; display:inline-block;">16
+        <img src="calendar.svg" style="position:absolute; right:-55px; top:50%; transform:translateY(-50%); width:16px; height:auto; filter:brightness(10);" alt=""/>
+      </div>
+    </div>
+
+    <!-- Phase 9: block stack -->
+    <div id="blockStack" style="position:absolute; top:0; left:0; width:100%; height:100%; display:flex; flex-direction:column; align-items:center; padding-top:30vh; gap:3px; pointer-events:none; z-index:5; opacity:0;"></div>
+
+    <!-- Phase 9: stack beat text -->
+    <p id="stackBeatText" style="position:absolute; top:calc(58% - 58px); right:calc(20% - 100px); transform:translateY(-50%); font-family:var(--serif); font-size:clamp(18px,2vw,26px); font-weight:400; color:#fff; opacity:0; text-align:left; line-height:1.3; z-index:6; max-width:20%;">On a typical day, you create 15–20 Time Blocks.</p>
+
+    <!-- Phase 10: effortless engineering -->
+
+    <!-- Phase 9: week columns LEFT of WED (SUN, MON, TUE — displayed right-to-left so TUE is closest to WED) -->
+    <div id="weekViewLeft" style="position:absolute; top:0; height:100%; display:flex; flex-direction:row; align-items:flex-start; padding-top:calc(30vh - 42px); gap:3px; pointer-events:none; z-index:4; opacity:0;">
+    </div>
+    <!-- Phase 9: week columns RIGHT of WED (THU, FRI, SAT — displayed left-to-right so THU is closest to WED) -->
+    <div id="weekViewRight" style="position:absolute; top:0; height:100%; display:flex; flex-direction:row; align-items:flex-start; padding-top:calc(30vh - 42px); gap:3px; pointer-events:none; z-index:4; opacity:0;">
+    </div>
+    <!-- Phase 10: week beat text (kept but not shown in phase 9) -->
+    <p id="weekBeatText" style="position:absolute; top:calc(58% - 58px); right:calc(20% - 100px); transform:translateY(-50%); font-family:var(--serif); font-size:clamp(18px,2vw,26px); font-weight:400; color:#fff; opacity:0; text-align:left; line-height:1.3; z-index:8; max-width:16%;">And in a typical week, you create over 100 Time Blocks.</p>
+
+    <!-- Phase 12: engineer closer -->
+    <div id="engineerCloser" style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); z-index:12; pointer-events:none; opacity:0; text-align:center; max-width:700px;">
+      <p style="font-family:var(--serif); font-style:italic; font-size:clamp(22px,2.5vw,36px); font-weight:400; color:rgba(255,255,255,0.85); line-height:1.4;">By creating Time Blocks, you give structure to your time, turning intention into something visible and measurable.</p>
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════════════════════
+     SECTION 2: BRIDGE
+     ═══════════════════════════════════ -->
+<section class="bridge-section" id="sectionBridge">
+  <p class="bridge-headline reveal">Time Blocks engineered.<br>Now they're lived.</p>
 </section>
 
 <!-- ═══════════════════════════════════
-     ACT 2: RECORD
+     SECTION 3: RECORD ACT
      ═══════════════════════════════════ -->
-<section class="act-outer act-record" id="actRecord" style="height: 500vh;">
+<section class="act-outer act-record" id="actRecord" style="height: 400vh;">
   <div class="act-sticky">
-    <div class="act-inner">
+    <div class="act-inner reversed">
       <div class="act-copy">
-        <div class="act-label">02 Record</div>
+        <div class="act-label">Record</div>
         <h2 class="act-headline" style="color:#fff;">Measure how your time was actually created</h2>
 
         <div class="sub-beat-container" id="recBeats">
           <div class="sub-beat active" data-beat="0">
-            <div class="sub-beat-title">Update Reality</div>
+            <div class="sub-beat-title">Update what happened</div>
             <div class="sub-beat-body">
               <p>After time is experienced, you update each Time Block to reflect what actually happened:</p>
               <ul>
@@ -890,28 +1166,17 @@ footer {
             </div>
           </div>
           <div class="sub-beat" data-beat="1">
-            <div class="sub-beat-title">Quality Score</div>
+            <div class="sub-beat-title">Capture the experience</div>
             <div class="sub-beat-body">
-              <p>The Quality Score is a signal (0–10) of how your created time compared to your intention.</p>
-              <ul>
-                <li>How closely that time matched what you intended</li>
-                <li>Did this time move you forward toward your goals</li>
-                <li>How it felt as it was experienced</li>
-              </ul>
+              <p>The Quality Score is a signal (0-10) of how your created time compared to your intention.</p>
+              <p>Reflections capture what that time meant. Photos and media memorialize the lived experience inside the system forever.</p>
             </div>
           </div>
           <div class="sub-beat" data-beat="2">
-            <div class="sub-beat-title">Reflections &amp; Media</div>
+            <div class="sub-beat-title">Both sides</div>
             <div class="sub-beat-body">
-              <p>Reflections capture what that time meant — what you learned, what stood out, or what you want to remember.</p>
-              <p>Photos or media memorialize the lived experience inside the system forever.</p>
-            </div>
-          </div>
-          <div class="sub-beat" data-beat="3">
-            <div class="sub-beat-title">Both Sides</div>
-            <div class="sub-beat-body">
-              <p>Each Time Block now contains both the projection and the reality: what you intended and what was actually created.</p>
-              <p>Over time, this becomes the truest record of you.</p>
+              <p>Each Time Block now holds both the projection and the reality of that time.</p>
+              <p>What you intended and what was actually created — over time, this becomes the truest record of you.</p>
             </div>
           </div>
         </div>
@@ -920,50 +1185,72 @@ footer {
           <div class="step-dot active"></div>
           <div class="step-dot"></div>
           <div class="step-dot"></div>
-          <div class="step-dot"></div>
         </div>
       </div>
 
       <div class="act-visual" id="recVisuals">
-        <div class="act-visual-placeholder active" data-beat="0"><span>Time Block Update UI</span></div>
-        <div class="act-visual-placeholder" data-beat="1"><span>Quality Score UI</span></div>
-        <div class="act-visual-placeholder" data-beat="2"><span>Reflections UI</span></div>
-        <div class="act-visual-placeholder" data-beat="3"><span>Intention vs Reality UI</span></div>
+        <div class="act-visual-placeholder active" data-beat="0">
+          <div class="phone-mockup" style="margin:0 auto;">
+            <div class="phone-screen"><span>Time Block Update UI</span></div>
+          </div>
+        </div>
+        <div class="act-visual-placeholder" data-beat="1">
+          <div class="phone-mockup" style="margin:0 auto;">
+            <div class="phone-screen"><span>Quality Score + Reflections</span></div>
+          </div>
+        </div>
+        <div class="act-visual-placeholder" data-beat="2">
+          <div style="display:flex; gap:16px; align-items:center; justify-content:center; width:100%;">
+            <div style="flex:1; max-width:180px; border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:24px; background:rgba(255,255,255,0.02); text-align:center;">
+              <span style="font-family:var(--mono); font-size:9px; color:rgba(255,255,255,0.25); letter-spacing:1.5px; text-transform:uppercase;">Intended</span>
+            </div>
+            <span style="font-family:var(--serif); font-size:20px; color:rgba(255,255,255,0.2);">vs</span>
+            <div style="flex:1; max-width:180px; border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:24px; background:rgba(255,255,255,0.02); text-align:center;">
+              <span style="font-family:var(--mono); font-size:9px; color:rgba(255,255,255,0.25); letter-spacing:1.5px; text-transform:uppercase;">Actual</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- ═══════════════════════════════════
-     ACT 3: REVEAL
+     SECTION 4: TRANSITION
+     ═══════════════════════════════════ -->
+<section class="bridge-section" id="sectionTransition2">
+  <p class="bridge-headline reveal" style="font-style:italic;">Your time, turned into understanding.</p>
+</section>
+
+<!-- ═══════════════════════════════════
+     SECTION 5: REVEAL ACT
      ═══════════════════════════════════ -->
 <section class="act-outer act-reveal" id="actReveal" style="height: 400vh;">
   <div class="act-sticky">
     <div class="act-inner">
       <div class="act-copy">
-        <div class="act-label">03 Reveal</div>
+        <div class="act-label">Reveal</div>
         <h2 class="act-headline" style="color:#fff;">Your time, transformed into understanding</h2>
-        <p class="act-intro">As your record builds, Existence transforms this data into insights — helping you see how you live and what your time is creating.</p>
 
         <div class="sub-beat-container" id="revBeats">
           <div class="sub-beat active" data-beat="0">
             <div class="sub-beat-title">Time Insights</div>
             <div class="sub-beat-body">
-              <p>Summaries transform your recorded time into clear overviews across a week, month, or year. They synthesize what you did, how your time was distributed, and how it was experienced.</p>
-              <p>Your Quality Score reflects how aligned your time was with your goals and values.</p>
+              <p>Summaries transform your recorded time into clear overviews. Your Quality Score reflects how aligned your time was with your goals and values.</p>
+              <p>Trend lines reveal patterns — where you're improving, where you're drifting.</p>
             </div>
           </div>
           <div class="sub-beat" data-beat="1">
             <div class="sub-beat-title">Time Explorer</div>
             <div class="sub-beat-body">
-              <p>A structured view of how your time was created. See how much of your time was accounted for, how it was distributed across pillars, and how closely it matched your intention.</p>
-              <p>Break time down by activities, people, and places. Filter to view specific dimensions.</p>
+              <p>A structured view of how your time was created. See 7-day and 30-day views, filter by activities, people, and places.</p>
+              <p>Break time down by dimensions. The grid view reveals the full texture of your time.</p>
             </div>
           </div>
           <div class="sub-beat" data-beat="2">
             <div class="sub-beat-title">Time Agent</div>
             <div class="sub-beat-body">
-              <p>Converse directly with your data through E, your AI time companion. Ask open-ended questions across your full record and get on-demand insight.</p>
+              <p>Converse directly with your data through E, your AI time companion. Ask open-ended questions across your full record.</p>
               <p>The more you use Existence, the more E learns — building a deeper understanding of how you create your time.</p>
             </div>
           </div>
@@ -977,50 +1264,63 @@ footer {
       </div>
 
       <div class="act-visual" id="revVisuals">
-        <div class="act-visual-placeholder active" data-beat="0"><span>Time Insights Dashboard</span></div>
-        <div class="act-visual-placeholder" data-beat="1"><span>Time Explorer Grid</span></div>
-        <div class="act-visual-placeholder" data-beat="2"><span>E Agent Interface</span></div>
+        <div class="act-visual-placeholder active" data-beat="0">
+          <div class="desktop-mockup" style="max-width:480px; margin:0 auto;">
+            <div class="desktop-toolbar">
+              <div class="desktop-dot"></div>
+              <div class="desktop-dot"></div>
+              <div class="desktop-dot"></div>
+            </div>
+            <div class="desktop-screen"><span>Time Insights Dashboard</span></div>
+          </div>
+        </div>
+        <div class="act-visual-placeholder" data-beat="1">
+          <div class="desktop-mockup" style="max-width:480px; margin:0 auto;">
+            <div class="desktop-toolbar">
+              <div class="desktop-dot"></div>
+              <div class="desktop-dot"></div>
+              <div class="desktop-dot"></div>
+            </div>
+            <div class="desktop-screen"><span>Time Explorer Grid</span></div>
+          </div>
+        </div>
+        <div class="act-visual-placeholder" data-beat="2">
+          <div class="phone-mockup" style="margin:0 auto;">
+            <div class="phone-screen"><span>E Agent Chat</span></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- ═══════════════════════════════════
-     TRANSITION: SYSTEM IN MOTION
+     SECTION 6: THE CYCLE + OUTCOMES
      ═══════════════════════════════════ -->
-<section class="transition-section" id="sectionMotion">
-  <div class="cycle-words reveal">
+<section class="cycle-section" id="sectionCycle">
+  <div class="transition-overline reveal">The Time Creation Cycle</div>
+  <div class="cycle-words reveal reveal-d1">
     <span class="cycle-word" style="color:#fff;">Engineer</span>
     <span class="cycle-arrow">&rarr;</span>
     <span class="cycle-word" style="color:#fff;">Record</span>
     <span class="cycle-arrow">&rarr;</span>
     <span class="cycle-word" style="color:#fff;">Reveal</span>
   </div>
-  <p class="transition-body reveal reveal-d1">You engineer your time by putting structure to it, record how it was actually created, and Existence transforms that record into knowledge that improves how you create future time.</p>
-  <p class="transition-body reveal reveal-d2" style="color:rgba(255,255,255,0.75); font-weight:400;">Each cycle builds on the last.</p>
+  <p class="cycle-body reveal reveal-d2">Each cycle builds on the last. You engineer your time by putting structure to it, record how it was actually created, and Existence transforms that record into knowledge that improves how you create future time.</p>
+  <div style="height:48px;"></div>
+  <h2 class="cycle-emphasis reveal reveal-d3">Time Alignment</h2>
+  <p class="cycle-body reveal reveal-d4" style="color:rgba(255,255,255,0.7); font-weight:400;">When intention and reality converge — when the time you create consistently reflects the life you intend to live.</p>
+  <p class="cycle-body reveal" style="color:rgba(255,255,255,0.75); font-weight:400; font-family:var(--serif); font-size:clamp(20px,2.2vw,30px);">You become who you want to be.</p>
 </section>
 
 <!-- ═══════════════════════════════════
-     EPILOGUE: TIME ALIGNMENT
-     ═══════════════════════════════════ -->
-<section class="epilogue" id="sectionEpilogue">
-  <h2 class="reveal">Time Alignment</h2>
-  <p class="reveal reveal-d1">The result of using Existence is Time Alignment.</p>
-  <p class="reveal reveal-d2">Time Alignment is when the time you create consistently reflects the life you intend to live.</p>
-  <p class="reveal reveal-d3">When sustained, the life you intend and the life you live become the same.</p>
-</section>
-
-<!-- ═══════════════════════════════════
-     CTA
+     SECTION 7: CTA + FOOTER
      ═══════════════════════════════════ -->
 <section class="cta-section">
   <h2 class="reveal">Reimagine Your Time</h2>
   <a href="#" class="cta-btn reveal reveal-d1">Create Your Existence</a>
 </section>
 
-<!-- ═══════════════════════════════════
-     FOOTER
-     ═══════════════════════════════════ -->
 <footer>
   <div class="footer-inner">
     <img src="logo-existence.svg" alt="existence" class="footer-logo" style="height: 39px; width: auto; display: block; filter: brightness(0) invert(1);">
@@ -1041,23 +1341,833 @@ footer {
 (function() {
   'use strict';
 
-  // ─── Nav scroll state ───
-  const nav = document.getElementById('mainNav');
-  let lastScroll = 0;
-  window.addEventListener('scroll', () => {
-    const y = window.scrollY;
-    if (y > 60) {
-      nav.classList.add('scrolled');
-    } else {
-      nav.classList.remove('scrolled');
+  // ─── Lenis smooth scroll ───
+  var lenis = new Lenis({
+    duration: 0.8,
+    easing: function(t) { return 1 - Math.pow(1 - t, 3); },
+    smoothWheel: true,
+    smoothTouch: false,
+    wheelMultiplier: 1.4,
+  });
+
+  function raf(time) {
+    lenis.raf(time);
+    requestAnimationFrame(raf);
+  }
+  requestAnimationFrame(raf);
+
+  // ─── Nav scroll state + progress bar positioning ───
+  var nav = document.getElementById('mainNav');
+  var hBar = document.getElementById('hProgress');
+
+  function syncProgressTop() {
+    if (hBar) hBar.style.top = nav.offsetHeight + 'px';
+  }
+
+  var navRO = new ResizeObserver(function() { syncProgressTop(); });
+  navRO.observe(nav);
+
+  // ─── Block data arrays (reused from v1) ───
+  var blockData = [
+    { name: 'Morning Run', time: '6:30 AM', color: '#6BAA83', h: 49 },
+    { name: 'Deep Work', time: '8 AM', color: '#3C5999', h: 65 },
+    { name: 'Coffee', time: '11 AM', color: '#838C9F', h: 28 },
+    { name: 'Team Sync', time: '11:30 AM', color: '#A38523', h: 48 },
+    { name: 'Lunch', time: '1 PM', color: '#A38523', h: 28 },
+    { name: 'Design Review', time: '2 PM', color: '#3C5999', h: 75 },
+    { name: 'Walk', time: '5 PM', color: '#6BAA83', h: 32 },
+    { name: 'Dinner', time: '6 PM', color: '#838C9F', h: 42 },
+    { name: 'Reading', time: '7:30 PM', color: '#A38523', h: 55 },
+    { name: 'Journal', time: '9:30 PM', color: '#6BAA83', h: 26 }
+  ];
+
+  // Week days split into left (SUN, MON, TUE) and right (THU, FRI, SAT)
+  // Left days ordered LEFT-TO-RIGHT visually: SUN, MON, TUE (TUE closest to WED)
+  // Right days ordered LEFT-TO-RIGHT visually: THU, FRI, SAT (THU closest to WED)
+  // Stagger order: closest to WED first (TUE+THU, then MON+FRI, then SUN+SAT)
+  var weekDaysLeft = [
+    { day: 'SUN', num: '13', staggerIdx: 2, blocks: [
+      { name: 'Meditation', time: '8 AM', color: '#6BAA83', h: 28 },
+      { name: 'Church', time: '9 AM', color: '#A38523', h: 48 },
+      { name: 'Brunch', time: '11 AM', color: '#838C9F', h: 35 },
+      { name: 'Family Time', time: '1 PM', color: '#6BAA83', h: 65 },
+      { name: 'Meal Prep', time: '4 PM', color: '#A38523', h: 40 },
+      { name: 'Walk', time: '6 PM', color: '#6BAA83', h: 30 },
+      { name: 'Reading', time: '7:30 PM', color: '#3C5999', h: 48 },
+      { name: 'Journal', time: '9 PM', color: '#A38523', h: 24 },
+      { name: 'Stretch', time: '9:30 PM', color: '#6BAA83', h: 22 },
+      { name: 'Plan Week', time: '10 PM', color: '#3C5999', h: 30 }
+    ]},
+    { day: 'MON', num: '14', staggerIdx: 1, blocks: [
+      { name: 'Run', time: '6:30 AM', color: '#6BAA83', h: 45 },
+      { name: 'Deep Work', time: '8 AM', color: '#3C5999', h: 70 },
+      { name: 'Standup', time: '10:30 AM', color: '#A38523', h: 26 },
+      { name: '', time: '', color: 'transparent', h: 10 },
+      { name: 'Lunch', time: '12 PM', color: '#838C9F', h: 28 },
+      { name: 'Workshop', time: '1 PM', color: '#3C5999', h: 62 },
+      { name: 'Break', time: '3:30 PM', color: '#838C9F', h: 20 },
+      { name: 'Admin', time: '4 PM', color: '#A38523', h: 38 },
+      { name: 'Gym', time: '5:30 PM', color: '#6BAA83', h: 42 },
+      { name: 'Dinner', time: '7 PM', color: '#838C9F', h: 35 }
+    ]},
+    { day: 'TUE', num: '15', staggerIdx: 0, blocks: [
+      { name: 'Swim', time: '6 AM', color: '#6BAA83', h: 40 },
+      { name: 'Focus Time', time: '8 AM', color: '#3C5999', h: 65 },
+      { name: 'Coffee Chat', time: '10:30 AM', color: '#838C9F', h: 25 },
+      { name: 'Design Review', time: '11 AM', color: '#3C5999', h: 50 },
+      { name: 'Lunch', time: '1 PM', color: '#A38523', h: 30 },
+      { name: 'Meetings', time: '2 PM', color: '#A38523', h: 55 },
+      { name: 'Walk', time: '4:30 PM', color: '#6BAA83', h: 28 },
+      { name: 'Dinner', time: '6 PM', color: '#838C9F', h: 40 },
+      { name: 'Reading', time: '8 PM', color: '#A38523', h: 45 }
+    ]}
+  ];
+
+  var weekDaysRight = [
+    { day: 'THU', num: '10', staggerIdx: 0, blocks: [
+      { name: 'Yoga', time: '7 AM', color: '#6BAA83', h: 42 },
+      { name: 'Standup', time: '9 AM', color: '#A38523', h: 24 },
+      { name: 'Deep Work', time: '9:30 AM', color: '#3C5999', h: 72 },
+      { name: 'Lunch', time: '12 PM', color: '#838C9F', h: 30 },
+      { name: '', time: '', color: 'transparent', h: 12 },
+      { name: 'Client Call', time: '1 PM', color: '#A38523', h: 45 },
+      { name: 'Code Review', time: '3 PM', color: '#3C5999', h: 55 },
+      { name: 'Walk', time: '5:30 PM', color: '#6BAA83', h: 28 },
+      { name: 'Dinner', time: '6:30 PM', color: '#838C9F', h: 38 },
+      { name: 'Piano', time: '8 PM', color: '#A38523', h: 48 }
+    ]},
+    { day: 'FRI', num: '11', staggerIdx: 1, blocks: [
+      { name: 'Run', time: '6 AM', color: '#6BAA83', h: 52 },
+      { name: 'Planning', time: '8 AM', color: '#A38523', h: 35 },
+      { name: 'Deep Work', time: '9:30 AM', color: '#3C5999', h: 68 },
+      { name: 'Team Lunch', time: '12 PM', color: '#838C9F', h: 42 },
+      { name: 'Design', time: '2 PM', color: '#3C5999', h: 60 },
+      { name: 'Coffee', time: '4 PM', color: '#838C9F', h: 22 },
+      { name: 'Errands', time: '5 PM', color: '#A38523', h: 35 },
+      { name: 'Dinner Out', time: '7 PM', color: '#838C9F', h: 50 },
+      { name: 'Live Music', time: '9 PM', color: '#3C5999', h: 45 },
+      { name: 'Walk Home', time: '10:30 PM', color: '#6BAA83', h: 20 }
+    ]},
+    { day: 'SAT', num: '12', staggerIdx: 2, blocks: [
+      { name: 'Sleep In', time: '9 AM', color: '#838C9F', h: 32 },
+      { name: 'Brunch', time: '10 AM', color: '#A38523', h: 38 },
+      { name: '', time: '', color: 'transparent', h: 8 },
+      { name: 'Hike', time: '12 PM', color: '#6BAA83', h: 70 },
+      { name: 'Reading', time: '3 PM', color: '#A38523', h: 45 },
+      { name: 'Cooking', time: '5 PM', color: '#838C9F', h: 42 },
+      { name: 'Date Night', time: '7 PM', color: '#A38523', h: 48 },
+      { name: 'Movie', time: '8 PM', color: '#3C5999', h: 55 },
+      { name: 'Wind Down', time: '10 PM', color: '#838C9F', h: 26 }
+    ]}
+  ];
+
+  // ─── DOM references ───
+  var heroOuter = document.getElementById('heroOuter');
+  var heroHL = document.getElementById('heroHL');
+  var heroSub = document.getElementById('heroSub');
+  var scrollInd = document.querySelector('.scroll-indicator');
+  var heroGrid = document.getElementById('heroGrid');
+  var heroBlock = document.getElementById('heroBlock');
+  var heroBlockBack = document.getElementById('heroBlockBack');
+  var blockStackEl = document.getElementById('blockStack');
+  var STACK_COUNT = 10;
+
+  // ─── Bracket geometry constants (for morph block SVG) ───
+  var BK_L = 890.75, BK_R = 1026.84, BK_T = 620.48;
+  var BK_ARM = 6.4, BK_T_W = 0.47;
+  var BK_VBW = BK_R - BK_L + 8;
+
+  function makeStackBlock(d) {
+    return '<span style="position:absolute;left:8px;top:50%;transform:translateY(-50%);font-family:\'Roobert\',var(--sans);font-size:10px;color:#fff;font-weight:300;">' + d.name + '</span>' +
+      '<span style="position:absolute;right:8px;top:50%;transform:translateY(-50%);font-family:\'Roobert Semi Mono\',var(--mono);font-size:8px;color:rgba(255,255,255,0.7);letter-spacing:0.3px;">' + d.time + '</span>';
+  }
+
+  // Build stack blocks
+  if (blockStackEl) {
+    for (var i = 0; i < STACK_COUNT; i++) {
+      var d = blockData[i];
+      var block = document.createElement('div');
+      block.className = 'stack-block';
+      block.dataset.stack = i;
+      block.style.cssText = 'width:160px; height:' + d.h + 'px; background:' + d.color + '; border-radius:4px; position:relative; opacity:0; transform:translateY(20px); overflow:hidden;';
+      block.innerHTML = makeStackBlock(d);
+      blockStackEl.appendChild(block);
     }
-    lastScroll = y;
+  }
+  var stackBlocks = document.querySelectorAll('.stack-block');
+
+  // Build week view columns into LEFT and RIGHT containers
+  var weekViewLeftEl = document.getElementById('weekViewLeft');
+  var weekViewRightEl = document.getElementById('weekViewRight');
+  var WEEK_BLOCK_W = 160; // same width as the WED stack blocks
+
+  function buildWeekCol(dayData, container) {
+    var col = document.createElement('div');
+    col.className = 'week-col';
+    col.dataset.stagger = dayData.staggerIdx;
+    col.style.cssText = 'display:flex; flex-direction:column; align-items:center; gap:3px; flex-shrink:0; opacity:0;';
+    // Date header (same style as WED stackDateHeader)
+    var header = document.createElement('div');
+    header.className = 'week-col-header';
+    header.style.cssText = 'text-align:center; margin-bottom:8px;';
+    header.innerHTML = '<div style="font-family:\'Roobert Semi Mono\',var(--mono); font-size:10px; letter-spacing:2px; color:#A4A7AE; text-transform:uppercase;">' + dayData.day + '</div>' +
+      '<div style="font-family:\'Roobert Semi Mono\',var(--mono); font-size:10px; letter-spacing:2px; color:#A4A7AE; margin-top:4px; position:relative; display:inline-block;">' + dayData.num +
+      '<img src="calendar.svg" style="position:absolute; right:-55px; top:50%; transform:translateY(-50%); width:16px; height:auto; filter:brightness(10);" alt=""/>' +
+      '</div>';
+    col.appendChild(header);
+    dayData.blocks.forEach(function(b) {
+      var blk = document.createElement('div');
+      blk.className = 'week-block';
+      blk.style.cssText = 'width:' + WEEK_BLOCK_W + 'px; height:' + b.h + 'px; background:' + b.color + '; border-radius:4px; position:relative; overflow:hidden; opacity:0; transform:translateY(12px);';
+      if (b.color !== 'transparent') {
+        blk.innerHTML = '<span style="position:absolute;left:8px;top:50%;transform:translateY(-50%);font-family:\'Roobert\',var(--sans);font-size:10px;color:#fff;font-weight:300;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:90px;">' + b.name + '</span>' +
+          '<span style="position:absolute;right:8px;top:50%;transform:translateY(-50%);font-family:\'Roobert Semi Mono\',var(--mono);font-size:8px;color:rgba(255,255,255,0.7);letter-spacing:0.3px;">' + b.time + '</span>';
+      }
+      col.appendChild(blk);
+    });
+    container.appendChild(col);
+  }
+
+  if (weekViewLeftEl) {
+    weekDaysLeft.forEach(function(dayData) { buildWeekCol(dayData, weekViewLeftEl); });
+  }
+  if (weekViewRightEl) {
+    weekDaysRight.forEach(function(dayData) { buildWeekCol(dayData, weekViewRightEl); });
+  }
+  var weekColsLeft = weekViewLeftEl ? weekViewLeftEl.querySelectorAll('.week-col') : [];
+  var weekColsRight = weekViewRightEl ? weekViewRightEl.querySelectorAll('.week-col') : [];
+  var weekColsAll = document.querySelectorAll('.week-col');
+
+  // ─── Morph block (SVG wireframe → colored block) ───
+  var morphBlock = document.createElement('div');
+  morphBlock.id = 'morphBlock';
+  morphBlock.style.cssText = 'position:absolute; opacity:0; z-index:6; pointer-events:none; overflow:hidden;';
+  var fullB = BK_T + 136;
+  morphBlock.innerHTML = '<svg id="morphSvg" viewBox="' + (BK_L - 4).toFixed(2) + ' ' + (BK_T - 4).toFixed(2) + ' ' + BK_VBW.toFixed(2) + ' 144" width="100%" style="position:relative;z-index:2;" xmlns="http://www.w3.org/2000/svg">' +
+    '<g id="mLines">' +
+    '<line x1="' + (BK_L + BK_ARM).toFixed(2) + '" y1="' + (BK_T + BK_T_W / 2).toFixed(2) + '" x2="' + (BK_R - BK_ARM).toFixed(2) + '" y2="' + (BK_T + BK_T_W / 2).toFixed(2) + '" stroke="#fff" stroke-width=".11" fill="none"/>' +
+    '<line id="mBotLine" x1="' + (BK_L + BK_ARM).toFixed(2) + '" y1="' + (fullB - BK_T_W / 2).toFixed(2) + '" x2="' + (BK_R - BK_ARM).toFixed(2) + '" y2="' + (fullB - BK_T_W / 2).toFixed(2) + '" stroke="#fff" stroke-width=".11" fill="none"/>' +
+    '<line id="mLeftLine" x1="' + (BK_L + BK_T_W / 2).toFixed(2) + '" y1="' + (BK_T + BK_ARM).toFixed(2) + '" x2="' + (BK_L + BK_T_W / 2).toFixed(2) + '" y2="' + (fullB - BK_ARM).toFixed(2) + '" stroke="#fff" stroke-width=".11" fill="none"/>' +
+    '<line id="mRightLine" x1="' + (BK_R - BK_T_W / 2).toFixed(2) + '" y1="' + (BK_T + BK_ARM).toFixed(2) + '" x2="' + (BK_R - BK_T_W / 2).toFixed(2) + '" y2="' + (fullB - BK_ARM).toFixed(2) + '" stroke="#fff" stroke-width=".11" fill="none"/>' +
+    '</g>' +
+    '<g id="mBrackets">' +
+    '<rect x="' + BK_L.toFixed(2) + '" y="' + BK_T.toFixed(2) + '" width="' + BK_ARM + '" height="' + BK_T_W + '" fill="#fff"/>' +
+    '<rect x="' + BK_L.toFixed(2) + '" y="' + BK_T.toFixed(2) + '" width="' + BK_T_W + '" height="' + BK_ARM + '" fill="#fff"/>' +
+    '<rect x="' + (BK_R - BK_ARM).toFixed(2) + '" y="' + BK_T.toFixed(2) + '" width="' + BK_ARM + '" height="' + BK_T_W + '" fill="#fff"/>' +
+    '<rect x="' + (BK_R - BK_T_W).toFixed(2) + '" y="' + BK_T.toFixed(2) + '" width="' + BK_T_W + '" height="' + BK_ARM + '" fill="#fff"/>' +
+    '<g id="mBottomAll" transform="translate(0,0)">' +
+    '<rect x="' + BK_L.toFixed(2) + '" y="' + (fullB - BK_T_W).toFixed(2) + '" width="' + BK_ARM + '" height="' + BK_T_W + '" fill="#fff"/>' +
+    '<rect x="' + BK_L.toFixed(2) + '" y="' + (fullB - BK_ARM).toFixed(2) + '" width="' + BK_T_W + '" height="' + BK_ARM + '" fill="#fff"/>' +
+    '<rect x="' + (BK_R - BK_ARM).toFixed(2) + '" y="' + (fullB - BK_T_W).toFixed(2) + '" width="' + BK_ARM + '" height="' + BK_T_W + '" fill="#fff"/>' +
+    '<rect x="' + (BK_R - BK_T_W).toFixed(2) + '" y="' + (fullB - BK_ARM).toFixed(2) + '" width="' + BK_T_W + '" height="' + BK_ARM + '" fill="#fff"/>' +
+    '</g></g></svg>';
+  var morphColorDiv = document.createElement('div');
+  morphColorDiv.id = 'morphColor';
+  morphColorDiv.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;background:' + blockData[0].color + ';border-radius:4px;opacity:0;z-index:1;display:flex;align-items:center;justify-content:space-between;padding:0 8px;box-sizing:border-box;';
+  morphColorDiv.innerHTML = '<span style="font-family:\'Roobert\',var(--sans);font-size:10px;color:#fff;font-weight:300;">' + blockData[0].name + '</span><span style="font-family:\'Roobert Semi Mono\',var(--mono);font-size:8px;color:rgba(255,255,255,0.7);letter-spacing:0.3px;">' + blockData[0].time + '</span>';
+  morphBlock.appendChild(morphColorDiv);
+  document.getElementById('sectionHero').appendChild(morphBlock);
+
+  // ═══════════════════════════════════════════════════
+  //  PHASE REGISTRY — Prologue scroll system
+  // ═══════════════════════════════════════════════════
+  var phases = [
+    { name: 'hero-exit',       vh: 100 },   // 0
+    { name: 'block-appear',    vh: 150 },   // 1
+    { name: 'text-beats',      vh: 200 },   // 2
+    { name: 'flip',            vh: 150 },   // 3
+    { name: 'intentions',      vh: 200 },   // 4
+    { name: 'block-anatomy',   vh: 200 },   // 5
+    { name: 'auto-pillar',     vh: 150 },   // 6
+    { name: 'tags',            vh: 150 },   // 7
+    { name: 'morph-stack',     vh: 250 },   // 8
+    { name: 'week-expand',     vh: 200 },   // 9
+    { name: 'engineer-closer', vh: 100 }    // 10
+  ];
+
+  // Compute cumulative offsets
+  var totalPrologueVh = 0;
+  for (var pi = 0; pi < phases.length; pi++) {
+    phases[pi].startVh = totalPrologueVh;
+    totalPrologueVh += phases[pi].vh;
+    phases[pi].endVh = totalPrologueVh;
+  }
+  // total = 2050vh of scroll content + 100vh viewport = 2150vh outer
+
+  function getPhaseState(scrollPx) {
+    var vh = window.innerHeight;
+    for (var i = phases.length - 1; i >= 0; i--) {
+      var startPx = phases[i].startVh * vh / 100;
+      var endPx = phases[i].endVh * vh / 100;
+      if (scrollPx >= startPx) {
+        var localP = Math.min(1, (scrollPx - startPx) / (endPx - startPx));
+        return { index: i, name: phases[i].name, progress: localP, globalPx: scrollPx };
+      }
+    }
+    return { index: 0, name: phases[0].name, progress: 0, globalPx: 0 };
+  }
+
+  // Easing helpers
+  function smoothstep(t) { return t * t * (3 - 2 * t); }
+  function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  function clamp01(t) { return Math.max(0, Math.min(1, t)); }
+
+  // Current block scale — shared across phases
+  var currentBlockScale = 1;
+
+  function updatePrologue() {
+    if (!heroOuter) return;
+    var rect = heroOuter.getBoundingClientRect();
+    var scrollTop = -rect.top;
+    if (scrollTop < 0) scrollTop = 0;
+
+    var state = getPhaseState(scrollTop);
+    var pi = state.index;
+    var p = state.progress;
+
+    // ─── PHASE 0: Hero Exit ───
+    var heroExitP = (pi === 0) ? p : (pi > 0 ? 1 : 0);
+    var textP = clamp01(heroExitP * 2.5);
+    if (heroHL) heroHL.style.transform = 'translateY(' + (-textP * 800) + 'px)';
+    if (heroSub) heroSub.style.transform = 'translateY(' + (textP * 800) + 'px)';
+    if (scrollInd) {
+      scrollInd.style.animation = heroExitP > 0 ? 'none' : '';
+      scrollInd.style.opacity = Math.max(0, 0.35 - heroExitP * 1.5);
+    }
+    if (heroGrid) {
+      heroGrid.style.opacity = Math.max(0, 0.15 - heroExitP * 0.15);
+      heroGrid.style.transform = 'scale(' + (1 + heroExitP * 0.8) + ')';
+    }
+
+    // ─── PHASE 1: Block Appears ───
+    var blockAppearP = (pi === 1) ? p : (pi > 1 ? 1 : 0);
+    var beat0El = document.getElementById('phaseBeat0');
+    if (heroBlock) {
+      var fadeIn = (pi >= 1) ? 1 : clamp01(heroExitP * 3);
+      heroBlock.style.opacity = fadeIn;
+      heroBlock.style.filter = 'none';
+    }
+    currentBlockScale = 1 + heroExitP * 0.8; // 1.0→1.8 during hero exit
+    // beat 0 text
+    if (beat0El) {
+      if (pi === 1) {
+        var fadeInP = clamp01(p / 0.3);
+        var fadeOutP = clamp01((p - 0.7) / 0.3);
+        beat0El.style.opacity = fadeInP - fadeOutP;
+        beat0El.style.transform = 'translateY(' + ((1 - fadeInP) * 20 - fadeOutP * 20) + 'px)';
+      } else if (pi > 1) {
+        beat0El.style.opacity = 0;
+      } else {
+        beat0El.style.opacity = 0;
+        beat0El.style.transform = 'translateY(20px)';
+      }
+    }
+
+    // ─── PHASE 2: Text Beats (right side only, crossfade A→B) ───
+    var textBeatsP = (pi === 2) ? p : (pi > 2 ? 1 : 0);
+    var textBeatA = document.getElementById('textBeatA');
+    var textBeatB = document.getElementById('textBeatB');
+
+    // Block scale bump: 1.8 → 2.34 during first part of text-beats
+    if (pi >= 2) {
+      var bumpP = (pi === 2) ? clamp01(p / 0.3) : 1;
+      currentBlockScale = 1.8 + 0.54 * smoothstep(bumpP);
+    }
+
+    if (pi === 2) {
+      // Block content bands stagger in, glow fades out with the scale bump
+      var contentBands = document.querySelectorAll('.content-band');
+      var contentFadeP = clamp01((p - 0.1) / 0.5);
+      for (var bi = 0; bi < contentBands.length; bi++) {
+        var bandP = clamp01((contentFadeP - bi * 0.12) / 0.3);
+        contentBands[bi].setAttribute('opacity', bandP.toFixed(2));
+      }
+      // Fade out glow filter and gradient (keep frame lines visible)
+      var glowLines = document.getElementById('edgeGlowLines');
+      var glowBrackets = document.getElementById('edgeGlowBrackets');
+      var gradRect = document.getElementById('blockGradRect');
+      var glowFadeP = clamp01(p / 0.3);
+      if (glowLines) glowLines.setAttribute('filter', glowFadeP >= 1 ? 'none' : 'url(#edgeGlow)');
+      if (glowBrackets) glowBrackets.setAttribute('filter', glowFadeP >= 1 ? 'none' : 'url(#edgeGlow)');
+      if (gradRect) gradRect.setAttribute('opacity', (1 - glowFadeP).toFixed(2));
+
+      // Beat A fades in 0–0.30, holds through phase
+      var beatAInP = clamp01(p / 0.30);
+      if (textBeatA) {
+        textBeatA.style.opacity = beatAInP;
+        textBeatA.style.transform = 'translateY(' + ((1 - beatAInP) * 20) + 'px)';
+      }
+    } else if (pi === 3) {
+      // Beat A fades out during flip
+      var beatAOutP = clamp01(p / 0.3);
+      if (textBeatA) {
+        textBeatA.style.opacity = 1 - beatAOutP;
+        textBeatA.style.transform = 'translateY(' + (-beatAOutP * 10) + 'px)';
+      }
+    } else if (pi > 3) {
+      if (textBeatA) textBeatA.style.opacity = 0;
+    } else {
+      if (textBeatA) { textBeatA.style.opacity = 0; textBeatA.style.transform = 'translateY(20px)'; }
+    }
+
+    // ─── PHASE 3: No flip — block stays as-is ───
+    // Only apply centered transform for phases 0-4; phases 5+ set their own transform with offsets
+    if (heroBlock && pi < 5) {
+      heroBlock.style.transform = 'scale(' + currentBlockScale + ')';
+    }
+
+    // ─── PHASES 3-4: Flip + Intentions ───
+    // Intentions text fades in DURING the flip (phase 3), holds during phase 4, fades out at end of 4
+    var intentionsContent = document.getElementById('intentionsContent');
+    var intentionsUI = document.getElementById('intentionsUI');
+    if (pi === 3) {
+      // Intentions text fades in during flip (0.3–0.7 of flip)
+      var intInP = clamp01((p - 0.3) / 0.4);
+      if (intentionsContent) { intentionsContent.style.opacity = intInP; intentionsContent.style.transform = 'translateY(' + (-50 + (1 - intInP) * 15) + '%)'; }
+      // Pillar pills stagger in one at a time
+      var pillarPills = document.querySelectorAll('.pillar-pill');
+      var pillStaggerP = clamp01((p - 0.45) / 0.40);
+      for (var ppi = 0; ppi < pillarPills.length; ppi++) {
+        var ppP = clamp01((pillStaggerP - ppi * 0.15) / 0.25);
+        pillarPills[ppi].style.opacity = ppP;
+        pillarPills[ppi].style.transform = 'translateY(' + ((1 - ppP) * 6) + 'px)';
+      }
+      // UI fades in slightly after text
+      var uiInP = clamp01((p - 0.5) / 0.3);
+      if (intentionsUI) { intentionsUI.style.opacity = uiInP; intentionsUI.style.transform = 'translateY(' + ((1 - uiInP) * 10) + 'px)'; }
+      // Dim block as intentions appear — uses filter brightness for smooth dimming
+      // (inline SVG renders crisply at all scales without GPU pre-compositing)
+      var blockDimP = clamp01((p - 0.3) / 0.4);
+      var blockBright = 1 - blockDimP * 0.7;
+      if (heroBlock) { heroBlock.style.opacity = 1; heroBlock.style.filter = 'brightness(' + blockBright + ')'; }
+      if (heroBlockBack) { heroBlockBack.style.opacity = 1; heroBlockBack.style.filter = 'brightness(' + blockBright + ')'; }
+    } else if (pi === 4) {
+      // Hold intentions visible, fade out at end
+      var intOutP = clamp01((p - 0.75) / 0.20);
+      if (intentionsContent) intentionsContent.style.opacity = 1 - intOutP;
+      if (intentionsUI) intentionsUI.style.opacity = 1 - intOutP;
+      // Pills hold visible, fade out with everything
+      var pillarPills4 = document.querySelectorAll('.pillar-pill');
+      for (var pp4 = 0; pp4 < pillarPills4.length; pp4++) {
+        pillarPills4[pp4].style.opacity = 1 - intOutP;
+        pillarPills4[pp4].style.transform = 'translateY(0)';
+      }
+      // Block at 30% brightness, restore as intentions fade out
+      var blockRestoreP = clamp01((p - 0.75) / 0.20);
+      var blockBright2 = 0.3 + blockRestoreP * 0.7;
+      if (heroBlock) { heroBlock.style.opacity = 1; heroBlock.style.filter = 'brightness(' + blockBright2 + ')'; }
+      if (heroBlockBack) { heroBlockBack.style.opacity = 1; heroBlockBack.style.filter = 'brightness(' + blockBright2 + ')'; }
+      // Block stays put (no flip)
+      if (heroBlock) heroBlock.style.transform = 'scale(' + currentBlockScale + ')';
+    } else if (pi < 3) {
+      if (intentionsContent) { intentionsContent.style.opacity = 0; intentionsContent.style.transform = 'translateY(-30%)'; }
+      if (intentionsUI) { intentionsUI.style.opacity = 0; intentionsUI.style.transform = 'translateY(10px)'; }
+      var pillarPillsR = document.querySelectorAll('.pillar-pill');
+      for (var ppr = 0; ppr < pillarPillsR.length; ppr++) { pillarPillsR[ppr].style.opacity = 0; pillarPillsR[ppr].style.transform = 'translateY(6px)'; }
+    } else {
+      // pi > 4: ensure hidden
+      if (intentionsContent) intentionsContent.style.opacity = 0;
+      if (intentionsUI) { intentionsUI.style.opacity = 0; intentionsUI.style.transform = 'translateY(10px)'; }
+    }
+
+    // ─── PHASES 5-7: Block anatomy, auto-pillar, tags ───
+    // Center block stays visible; detail card is hidden; text on right crossfades
+    var anatomyText = document.getElementById('anatomyText');
+    var autoPillarText = document.getElementById('autoPillarText');
+    var tagsText = document.getElementById('tagsText');
+    // tagChips removed — using inline tags now
+    var zoomDetail = document.getElementById('zoomBlockDetail');
+    var pillarIndicator = document.getElementById('pillarIndicator');
+    var detailColorBar = document.getElementById('detailColorBar');
+
+    // Detail card always hidden — center block IS the visual
+    if (zoomDetail) zoomDetail.style.opacity = 0;
+    if (pillarIndicator) pillarIndicator.style.opacity = 0;
+
+    if (pi === 5) {
+      // Block comes back into focus and scales up 30%, expanding to the right
+      if (heroBlock) { heroBlock.style.opacity = 1; heroBlock.style.filter = 'none'; }
+      if (heroBlockBack) { heroBlockBack.style.opacity = 1; heroBlockBack.style.filter = 'none'; }
+
+      // Scale up: 2.34 → 3.04 (30% increase), shift right to keep left edge stable
+      var scaleUpP = clamp01(p / 0.3);
+      var easeScale = smoothstep(scaleUpP);
+      var extraScale = 0.70 * easeScale; // 2.34 + 0.70 = 3.04
+      currentBlockScale = 2.34 + extraScale;
+      // Shift right: half the width growth keeps left edge stationary
+      var shiftX = easeScale * 3.5; // percentage shift to the right
+      var shiftY = easeScale * 1.8; // compensate upward drift from 74% origin
+      if (heroBlock) heroBlock.style.transform = 'scale(' + currentBlockScale + ') translateX(' + shiftX + '%) translateY(' + shiftY + '%)';
+
+      // Block content bands stay visible
+      var bands5 = document.querySelectorAll('.content-band');
+      for (var b5 = 0; b5 < bands5.length; b5++) bands5[b5].setAttribute('opacity', '1');
+
+      // Section dot — points at the "what/when/who/where" area
+      var sectionDot = document.getElementById('sectionDot');
+      if (sectionDot) { sectionDot.style.opacity = contentInP; sectionDot.style.top = '29%'; }
+
+      // Anatomy text fades in on left
+      var anatInP = clamp01((p - 0.15) / 0.25);
+      if (anatomyText) { anatomyText.style.opacity = anatInP; anatomyText.style.transform = 'translateY(' + (-50 + (1 - anatInP) * 15) + '%)'; }
+
+      // Hide others
+      if (autoPillarText) autoPillarText.style.opacity = 0;
+      if (tagsText) tagsText.style.opacity = 0;
+      // tagChips removed
+    } else if (pi === 6) {
+      // Auto-pillar phase — block at enlarged scale, shifted right
+      if (heroBlock) { heroBlock.style.opacity = 1; heroBlock.style.filter = 'none'; heroBlock.style.transform = 'scale(3.04) translateX(3.5%) translateY(1.8%)'; }
+      if (heroBlockBack) { heroBlockBack.style.opacity = 1; heroBlockBack.style.filter = 'none'; }
+      currentBlockScale = 3.04;
+      var bands6 = document.querySelectorAll('.content-band');
+      for (var b6 = 0; b6 < bands6.length; b6++) bands6[b6].setAttribute('opacity', '1');
+      var sectionDot6 = document.getElementById('sectionDot');
+      if (sectionDot6) { sectionDot6.style.opacity = 1; sectionDot6.style.top = '42%'; }
+
+      // Crossfade anatomy → auto-pillar text
+      var anatOutP = clamp01(p / 0.2);
+      var pillarInP = clamp01((p - 0.1) / 0.25);
+      if (anatomyText) anatomyText.style.opacity = 1 - anatOutP;
+      if (autoPillarText) { autoPillarText.style.opacity = pillarInP; autoPillarText.style.transform = 'translateY(' + (-50 + (1 - pillarInP) * 15) + '%)'; }
+
+      if (tagsText) tagsText.style.opacity = 0;
+      // tagChips removed
+    } else if (pi === 7) {
+      // Tags phase — block at enlarged scale, shifted right
+      if (heroBlock) { heroBlock.style.opacity = 1; heroBlock.style.filter = 'none'; heroBlock.style.transform = 'scale(3.04) translateX(3.5%) translateY(1.8%)'; }
+      if (heroBlockBack) { heroBlockBack.style.opacity = 1; heroBlockBack.style.filter = 'none'; }
+      currentBlockScale = 3.04;
+      var bands7 = document.querySelectorAll('.content-band');
+      for (var b7 = 0; b7 < bands7.length; b7++) bands7[b7].setAttribute('opacity', '1');
+      var sectionDot7 = document.getElementById('sectionDot');
+      if (sectionDot7) { sectionDot7.style.opacity = 1; sectionDot7.style.top = '35%'; }
+
+      // Crossfade auto-pillar → tags text
+      var pillarOutP = clamp01(p / 0.2);
+      var tagsInP = clamp01((p - 0.1) / 0.25);
+      if (autoPillarText) autoPillarText.style.opacity = 1 - pillarOutP;
+      if (tagsText) { tagsText.style.opacity = tagsInP; tagsText.style.transform = 'translateY(' + (-50 + (1 - tagsInP) * 15) + '%)'; }
+      if (anatomyText) anatomyText.style.opacity = 0;
+
+      // Inline tag chips stagger in one at a time
+      var inlineTags = document.querySelectorAll('.inline-tag');
+      var tagsStaggerP = clamp01((p - 0.30) / 0.40);
+      for (var ti = 0; ti < inlineTags.length; ti++) {
+        var tagP = clamp01((tagsStaggerP - ti * 0.15) / 0.25);
+        inlineTags[ti].style.opacity = tagP;
+        inlineTags[ti].style.transform = 'translateY(' + ((1 - tagP) * 8) + 'px)';
+      }
+    } else if (pi < 5) {
+      // Reset all detail phase elements
+      if (anatomyText) { anatomyText.style.opacity = 0; anatomyText.style.transform = 'translateY(-35%)'; }
+      if (autoPillarText) { autoPillarText.style.opacity = 0; }
+      if (tagsText) { tagsText.style.opacity = 0; }
+      var resetTags = document.querySelectorAll('.inline-tag');
+      for (var rti = 0; rti < resetTags.length; rti++) { resetTags[rti].style.opacity = 0; resetTags[rti].style.transform = 'translateY(8px)'; }
+      if (pi < 2) { var bandsR = document.querySelectorAll('.content-band'); for (var br = 0; br < bandsR.length; br++) bandsR[br].setAttribute('opacity', '0'); }
+    }
+    // Fade out content bands at start of morph phase
+    if (pi === 8) {
+      var bandsOut = document.querySelectorAll('.content-band');
+      var contentOutP = clamp01(p / 0.1);
+      for (var bo = 0; bo < bandsOut.length; bo++) bandsOut[bo].setAttribute('opacity', (1 - contentOutP).toFixed(2));
+    } else if (pi > 8) {
+      var bandsH = document.querySelectorAll('.content-band');
+      for (var bh = 0; bh < bandsH.length; bh++) bandsH[bh].setAttribute('opacity', '0');
+    }
+
+    // ─── PHASE 8: Morph → Stack ───
+    var mSvg = document.getElementById('morphSvg');
+    var mBotLine = document.getElementById('mBotLine');
+    var mLeftLine = document.getElementById('mLeftLine');
+    var mRightLine = document.getElementById('mRightLine');
+    var mBottomAll = document.getElementById('mBottomAll');
+    var mBrackets = document.getElementById('mBrackets');
+    var mLinesG = document.getElementById('mLines');
+    var morphColor = document.getElementById('morphColor');
+
+    if (pi === 8) {
+      // Phase 8: hide remaining text, fade out block SVGs, show morph
+      if (tagsText) tagsText.style.opacity = clamp01(1 - p / 0.06);
+      // tagChips removed
+      if (anatomyText) anatomyText.style.opacity = 0;
+      if (autoPillarText) autoPillarText.style.opacity = 0;
+      // Fade out the block SVGs that were visible during phases 5-7
+      var blockOutP = clamp01(p / 0.08);
+      if (heroBlock) { heroBlock.style.opacity = 1 - blockOutP; heroBlock.style.filter = 'none'; }
+      if (heroBlockBack) { heroBlockBack.style.opacity = 1 - blockOutP; heroBlockBack.style.filter = 'none'; }
+
+      // Morph block appears and transforms
+      // Use scale 3.04 + translate offsets to match phase 5-7 position
+      var vh = window.innerHeight, vw = window.innerWidth;
+      var svgCoverScale = Math.max(vw / 1920, vh / 1080);
+      var frameW = 136 * svgCoverScale * 3.04;
+      var frameH = frameW;
+      var ox = vw * 0.5, oy = vh * 0.74;
+      var fcx = 959 * svgCoverScale, fcy = 688 * svgCoverScale;
+      var svgW = 1920 * svgCoverScale, svgH = 1080 * svgCoverScale;
+      var bgOffsetX = (vw - svgW) / 2, bgOffsetY = (vh - svgH) / 2;
+      var frameCX = bgOffsetX + fcx, frameCY = bgOffsetY + fcy;
+      // Scale 3.04 positions (matching phases 5-7)
+      var startCX = ox + (frameCX - ox) * 3.04;
+      var startCY = oy + (frameCY - oy) * 3.04;
+      // Add translateX(3.5%) translateY(1.8%) offsets from phases 5-7
+      // CSS transform "scale(3.04) translateX(3.5%) translateY(1.8%)" applies
+      // translate first (in unscaled space), then scale amplifies it:
+      // actual offset = scale * percentage * elementDimension
+      startCX += 3.04 * 0.035 * vw;
+      startCY += 3.04 * 0.018 * vh;
+
+      // Morph motion (0.05–0.45)
+      var morphP = clamp01((p - 0.05) / 0.40);
+      var easeP = easeOutCubic(morphP);
+
+      var stackBlockW = 160;
+      var firstBlockH = blockData[0].h;
+      var stackTopY = vh * 0.30;
+      var targetCX = vw / 2;
+      var targetCY = stackTopY + firstBlockH / 2;
+
+      var curCX = startCX + (targetCX - startCX) * easeP;
+      var curCY = startCY + (targetCY - startCY) * easeP;
+      var curW = frameW + (stackBlockW - frameW) * easeP;
+
+      var yShift = easeP * -100;
+      var vbH = 144 - easeP * 100;
+      var botLineY = (BK_T + 136 - BK_T_W / 2) + yShift;
+      var sideEndY = (BK_T + 136 - BK_ARM) + yShift;
+
+      var morphH = curW * vbH / BK_VBW;
+      var morphFadeIn = clamp01(p / 0.08);
+      morphBlock.style.opacity = morphFadeIn;
+      morphBlock.style.width = curW + 'px';
+      morphBlock.style.height = morphH + 'px';
+      morphBlock.style.left = (curCX - curW / 2) + 'px';
+      morphBlock.style.top = (curCY - morphH / 2) + 'px';
+
+      if (mSvg) mSvg.setAttribute('viewBox', (BK_L - 4).toFixed(2) + ' ' + (BK_T - 4).toFixed(2) + ' ' + BK_VBW.toFixed(2) + ' ' + vbH.toFixed(1));
+      if (mBotLine) { mBotLine.setAttribute('y1', botLineY.toFixed(2)); mBotLine.setAttribute('y2', botLineY.toFixed(2)); }
+      if (mLeftLine) mLeftLine.setAttribute('y2', sideEndY.toFixed(2));
+      if (mRightLine) mRightLine.setAttribute('y2', sideEndY.toFixed(2));
+      if (mBottomAll) mBottomAll.setAttribute('transform', 'translate(0,' + yShift.toFixed(2) + ')');
+
+      // Brackets fade (0.32–0.40)
+      var bracketFadeP = clamp01((p - 0.32) / 0.08);
+      if (mBrackets) mBrackets.setAttribute('opacity', (1 - bracketFadeP).toFixed(2));
+      // Lines fade (0.36–0.43)
+      var lineFadeP = clamp01((p - 0.36) / 0.07);
+      if (mLinesG) mLinesG.setAttribute('opacity', (1 - lineFadeP).toFixed(2));
+      // Color fills + corners round (0.38–0.46)
+      var colorFillP = clamp01((p - 0.38) / 0.08);
+      if (morphColor) morphColor.style.opacity = colorFillP;
+      morphBlock.style.borderRadius = (colorFillP * 4) + 'px';
+
+      // Stack blocks stagger in (0.48+)
+      if (p >= 0.48 && blockStackEl) {
+        blockStackEl.style.opacity = 1;
+        var firstP = clamp01((p - 0.50) / 0.04);
+        if (stackBlocks[0]) { stackBlocks[0].style.opacity = firstP; stackBlocks[0].style.transform = 'translateY(0)'; }
+        if (firstP >= 1) morphBlock.style.opacity = 0;
+        for (var si = 1; si < stackBlocks.length; si++) {
+          var bStart = 0.44 + (si - 1) / (stackBlocks.length - 1) * 0.30;
+          var bEnd = bStart + 0.06;
+          var bP = clamp01((p - bStart) / (bEnd - bStart));
+          stackBlocks[si].style.opacity = bP;
+          stackBlocks[si].style.transform = 'translateY(' + ((1 - bP) * 25) + 'px)';
+        }
+        // Date header
+        var stackDateEl = document.getElementById('stackDateHeader');
+        var dateP = clamp01((p - 0.55) / 0.06);
+        if (stackDateEl) { stackDateEl.style.opacity = dateP; stackDateEl.style.transform = 'translateX(-50%) translateY(' + ((1 - dateP) * 10) + 'px)'; }
+        // Stack beat text
+        var stackTextEl = document.getElementById('stackBeatText');
+        var stP = clamp01((p - 0.80) / 0.10);
+        if (stackTextEl) { stackTextEl.style.opacity = stP; stackTextEl.style.transform = 'translateY(' + ((1 - stP) * 15) + 'px)'; }
+      } else {
+        if (blockStackEl) blockStackEl.style.opacity = 0;
+        var stackTextEl = document.getElementById('stackBeatText');
+        var stackDateEl = document.getElementById('stackDateHeader');
+        if (stackTextEl) { stackTextEl.style.opacity = 0; stackTextEl.style.transform = 'translateY(15px)'; }
+        if (stackDateEl) { stackDateEl.style.opacity = 0; stackDateEl.style.transform = 'translateX(-50%) translateY(10px)'; }
+      }
+    } else if (pi > 8) {
+      // Stack/morph should remain visible for phases 9-11, controlled by those phases
+      morphBlock.style.opacity = 0;
+      if (mBrackets) mBrackets.setAttribute('opacity', '1');
+      if (mLinesG) mLinesG.setAttribute('opacity', '1');
+      if (morphColor) morphColor.style.opacity = 0;
+      morphBlock.style.borderRadius = '0';
+      // Block SVGs and text stay hidden
+      if (heroBlock) heroBlock.style.opacity = 0;
+      if (heroBlockBack) heroBlockBack.style.opacity = 0;
+      if (anatomyText) anatomyText.style.opacity = 0;
+      if (autoPillarText) autoPillarText.style.opacity = 0;
+      if (tagsText) tagsText.style.opacity = 0;
+      // tagChips removed
+    } else {
+      // pi < 8: reset morph
+      morphBlock.style.opacity = 0;
+      if (blockStackEl && pi < 8) blockStackEl.style.opacity = 0;
+      stackBlocks.forEach(function(b) { b.style.opacity = 0; b.style.transform = 'translateY(20px)'; });
+      if (mSvg) mSvg.setAttribute('viewBox', (BK_L - 4).toFixed(2) + ' ' + (BK_T - 4).toFixed(2) + ' ' + BK_VBW.toFixed(2) + ' 144');
+      if (mBotLine) { mBotLine.setAttribute('y1', (BK_T + 136 - BK_T_W / 2).toFixed(2)); mBotLine.setAttribute('y2', (BK_T + 136 - BK_T_W / 2).toFixed(2)); }
+      if (mLeftLine) mLeftLine.setAttribute('y2', (BK_T + 136 - BK_ARM).toFixed(2));
+      if (mRightLine) mRightLine.setAttribute('y2', (BK_T + 136 - BK_ARM).toFixed(2));
+      if (mBottomAll) mBottomAll.setAttribute('transform', 'translate(0,0)');
+      if (mBrackets) mBrackets.setAttribute('opacity', '1');
+      if (mLinesG) mLinesG.setAttribute('opacity', '1');
+      if (morphColor) morphColor.style.opacity = 0;
+      morphBlock.style.borderRadius = '0';
+      var stackTextEl = document.getElementById('stackBeatText');
+      var stackDateEl = document.getElementById('stackDateHeader');
+      if (stackTextEl) { stackTextEl.style.opacity = 0; stackTextEl.style.transform = 'translateY(15px)'; }
+      if (stackDateEl) { stackDateEl.style.opacity = 0; stackDateEl.style.transform = 'translateX(-50%) translateY(10px)'; }
+    }
+
+    // ─── PHASE 9: Week Expansion ───
+    // WED stack stays centered (NO slide). Columns appear on BOTH sides.
+    // stackBeatText stays visible. weekBeatText stays hidden.
+    var weekBeatText = document.getElementById('weekBeatText');
+    if (pi === 9) {
+      var vw = window.innerWidth;
+      var colGap = 3;
+
+      // WED stack stays put — no transforms, fully visible
+      if (blockStackEl) {
+        blockStackEl.style.opacity = 1;
+        blockStackEl.style.transform = '';
+      }
+      stackBlocks.forEach(function(b) { b.style.opacity = 1; b.style.transform = 'translateY(0)'; });
+
+      // WED date header stays centered
+      var sdh = document.getElementById('stackDateHeader');
+      if (sdh) {
+        sdh.style.left = '50%';
+        sdh.style.transform = 'translateX(-50%)';
+        sdh.style.opacity = 1;
+      }
+
+      // stackBeatText fades out as week columns appear
+      var sbt = document.getElementById('stackBeatText');
+      var sbtFadeP = clamp01(p / 0.20);
+      if (sbt) { sbt.style.opacity = 1 - sbtFadeP; sbt.style.transform = 'translateY(' + (-sbtFadeP * 15) + 'px)'; }
+
+      // weekBeatText stays hidden
+      if (weekBeatText) { weekBeatText.style.opacity = 0; }
+
+      // Position left container: right edge aligns to left edge of WED stack
+      var wedCenter = vw / 2;
+      var wedLeftEdge = wedCenter - (WEEK_BLOCK_W / 2);
+      var wedRightEdge = wedCenter + (WEEK_BLOCK_W / 2);
+
+      if (weekViewLeftEl) {
+        weekViewLeftEl.style.right = (vw - wedLeftEdge + colGap) + 'px';
+        weekViewLeftEl.style.left = 'auto';
+        weekViewLeftEl.style.paddingTop = 'calc(30vh - 42px)';
+        weekViewLeftEl.style.gap = colGap + 'px';
+      }
+
+      // Position right container: left edge aligns to right edge of WED stack
+      if (weekViewRightEl) {
+        weekViewRightEl.style.left = (wedRightEdge + colGap) + 'px';
+        weekViewRightEl.style.right = 'auto';
+        weekViewRightEl.style.paddingTop = 'calc(30vh - 42px)';
+        weekViewRightEl.style.gap = colGap + 'px';
+      }
+
+      // Show containers once columns start appearing
+      var containerShowP = clamp01((p - 0.08) / 0.10);
+      if (weekViewLeftEl) weekViewLeftEl.style.opacity = containerShowP;
+      if (weekViewRightEl) weekViewRightEl.style.opacity = containerShowP;
+
+      // Stagger columns by staggerIdx: 0 (closest to WED) first, then 1, then 2
+      // 3 stagger tiers, pairs appear simultaneously on left+right
+      var numTiers = 3;
+      var colStaggerStart = 0.12;
+      var colStaggerEnd = 0.85;
+      var tierWindow = (colStaggerEnd - colStaggerStart) / numTiers;
+
+      function animateWeekCol(col) {
+        var tier = parseInt(col.dataset.stagger);
+        var cStart = colStaggerStart + tier * tierWindow;
+        var cEnd = cStart + tierWindow * 2.0;
+        var cRaw = clamp01((p - cStart) / (cEnd - cStart));
+        var cEase = easeOutCubic(cRaw);
+        col.style.opacity = cEase;
+
+        var blocks = col.querySelectorAll('.week-block');
+        blocks.forEach(function(blk, bIdx) {
+          var bDelay = bIdx * 0.03;
+          var bRaw = clamp01((cRaw - 0.12 - bDelay) / 0.50);
+          var bEase = easeOutCubic(bRaw);
+          blk.style.opacity = bEase;
+          blk.style.transform = 'translateY(' + ((1 - bEase) * 16) + 'px)';
+        });
+      }
+
+      weekColsAll.forEach(animateWeekCol);
+
+    } else if (pi < 9) {
+      // Reset week view
+      if (weekViewLeftEl) weekViewLeftEl.style.opacity = 0;
+      if (weekViewRightEl) weekViewRightEl.style.opacity = 0;
+      weekColsAll.forEach(function(col) {
+        col.style.opacity = 0;
+        col.querySelectorAll('.week-block').forEach(function(blk) { blk.style.opacity = 0; blk.style.transform = 'translateY(12px)'; });
+      });
+      if (weekBeatText) { weekBeatText.style.opacity = 0; weekBeatText.style.transform = 'translateY(-35%)'; }
+      // No slide transforms to reset — blockStack stays centered
+      if (blockStackEl) { blockStackEl.style.transform = ''; }
+      var sdh = document.getElementById('stackDateHeader');
+      if (sdh) { sdh.style.left = '50%'; sdh.style.transform = 'translateX(-50%)'; }
+    } else {
+      // pi > 9 (engineer closer) — everything fades, handled below
+    }
+
+    // ─── PHASE 10: Engineer Closer ───
+    var engineerCloser = document.getElementById('engineerCloser');
+    if (pi === 10) {
+      // Fade out all remaining prologue visuals
+      var fadeAllP = clamp01(p / 0.3);
+      if (blockStackEl) blockStackEl.style.opacity = 1 - fadeAllP;
+      if (weekViewLeftEl) weekViewLeftEl.style.opacity = 1 - fadeAllP;
+      if (weekViewRightEl) weekViewRightEl.style.opacity = 1 - fadeAllP;
+      weekColsAll.forEach(function(col) { col.style.opacity = 1 - fadeAllP; });
+      var sdh = document.getElementById('stackDateHeader');
+      if (sdh) sdh.style.opacity = 1 - fadeAllP;
+      var sbt10 = document.getElementById('stackBeatText');
+      if (sbt10) sbt10.style.opacity = 0;
+      if (weekBeatText) weekBeatText.style.opacity = 0;
+
+      // Closer text fades in
+      var closerInP = clamp01((p - 0.2) / 0.3);
+      if (engineerCloser) { engineerCloser.style.opacity = closerInP; engineerCloser.style.transform = 'translate(-50%,-50%) translateY(' + ((1 - closerInP) * 20) + 'px)'; }
+
+      // Fade to black at end
+      var closerOutP = clamp01((p - 0.8) / 0.2);
+      if (engineerCloser) engineerCloser.style.opacity = closerInP * (1 - closerOutP);
+    } else if (pi < 10) {
+      if (engineerCloser) { engineerCloser.style.opacity = 0; engineerCloser.style.transform = 'translate(-50%,-50%) translateY(20px)'; }
+    }
+  }
+
+  // ─── Hook into scroll ───
+  lenis.on('scroll', function() {
+    updatePrologue();
+    syncProgressTop();
+  });
+  window.addEventListener('scroll', function() {
+    updatePrologue();
   }, { passive: true });
+  syncProgressTop();
+  updatePrologue();
 
   // ─── Reveal on scroll ───
-  const reveals = document.querySelectorAll('.reveal');
-  const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
+  var reveals = document.querySelectorAll('.reveal');
+  var revealObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
       if (entry.isIntersecting) {
         entry.target.classList.add('visible');
       }
@@ -1066,134 +2176,76 @@ footer {
     threshold: 0.15,
     rootMargin: '0px 0px -60px 0px'
   });
-  reveals.forEach(el => revealObserver.observe(el));
+  reveals.forEach(function(el) { revealObserver.observe(el); });
 
   // ─── Sticky scroll sections (Acts) ───
   function setupAct(outerEl, beatsContainerId, visualsId, stepsId, numBeats) {
-    const beatsContainer = document.getElementById(beatsContainerId);
-    const visualsContainer = document.getElementById(visualsId);
-    const stepsContainer = document.getElementById(stepsId);
+    var beatsContainer = document.getElementById(beatsContainerId);
+    var visualsContainer = document.getElementById(visualsId);
+    var stepsContainer = document.getElementById(stepsId);
     if (!outerEl || !beatsContainer) return;
 
-    const beats = beatsContainer.querySelectorAll('.sub-beat');
-    const visuals = visualsContainer ? visualsContainer.querySelectorAll('.act-visual-placeholder') : [];
-    const steps = stepsContainer ? stepsContainer.querySelectorAll('.step-dot') : [];
+    var beats = beatsContainer.querySelectorAll('.sub-beat');
+    var visuals = visualsContainer ? visualsContainer.querySelectorAll('.act-visual-placeholder') : [];
+    var steps = stepsContainer ? stepsContainer.querySelectorAll('.step-dot') : [];
 
     function update() {
-      const rect = outerEl.getBoundingClientRect();
-      const outerH = outerEl.offsetHeight;
-      const scrolled = -rect.top;
-      const scrollRange = outerH - window.innerHeight;
-      const progress = Math.max(0, Math.min(1, scrolled / scrollRange));
+      var rect = outerEl.getBoundingClientRect();
+      var outerH = outerEl.offsetHeight;
+      var scrolled = -rect.top;
+      var scrollRange = outerH - window.innerHeight;
+      var progress = Math.max(0, Math.min(1, scrolled / scrollRange));
+      var beatIndex = Math.min(numBeats - 1, Math.floor(progress * numBeats));
 
-      // Determine active beat
-      const beatIndex = Math.min(numBeats - 1, Math.floor(progress * numBeats));
-
-      beats.forEach((b, i) => {
-        b.classList.toggle('active', i === beatIndex);
-      });
-      visuals.forEach((v, i) => {
-        v.classList.toggle('active', i === beatIndex);
-      });
-      steps.forEach((s, i) => {
-        s.classList.toggle('active', i === beatIndex);
-      });
+      beats.forEach(function(b, i) { b.classList.toggle('active', i === beatIndex); });
+      visuals.forEach(function(v, i) { v.classList.toggle('active', i === beatIndex); });
+      steps.forEach(function(s, i) { s.classList.toggle('active', i === beatIndex); });
     }
 
-    // Use rAF-based scroll listener for smooth updates
-    let ticking = false;
-    window.addEventListener('scroll', () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          update();
-          ticking = false;
-        });
-        ticking = true;
-      }
-    }, { passive: true });
-
+    lenis.on('scroll', update);
+    window.addEventListener('scroll', update, { passive: true });
     update();
   }
 
-  setupAct(
-    document.getElementById('actEngineer'),
-    'engBeats', 'engVisuals', 'engSteps', 4
-  );
-  setupAct(
-    document.getElementById('actRecord'),
-    'recBeats', 'recVisuals', 'recSteps', 4
-  );
-  setupAct(
-    document.getElementById('actReveal'),
-    'revBeats', 'revVisuals', 'revSteps', 3
-  );
+  setupAct(document.getElementById('actRecord'), 'recBeats', 'recVisuals', 'recSteps', 3);
+  setupAct(document.getElementById('actReveal'), 'revBeats', 'revVisuals', 'revSteps', 3);
 
   // ─── Horizontal progress bar ───
-  const hProgress = document.getElementById('hProgress');
-  const hFill = document.getElementById('hProgressFill');
-  const hDots = [0,1,2,3,4].map(i => document.getElementById('hDot' + i));
-  const hLabels = [1,2,3].map(i => document.getElementById('hLabel' + i));
-
-  // Key sections and their progress positions (0-1)
-  const progressAnchors = [
-    { id: 'sectionHero', pos: 0 },
-    { id: 'actEngineer', pos: 0.25 },
-    { id: 'actRecord', pos: 0.5 },
-    { id: 'actReveal', pos: 0.75 },
-    { id: 'sectionEpilogue', pos: 1 }
-  ];
+  var hProgress = document.getElementById('hProgress');
+  var hLabels = [1,2,3].map(function(i) { return document.getElementById('hLabel' + i); });
+  var hTraveler = document.getElementById('hTraveler');
 
   function updateHProgress() {
     if (!hProgress) return;
-    const scrollY = window.scrollY;
-    const winH = window.innerHeight;
-    const docH = document.documentElement.scrollHeight - winH;
+    var scrollY = window.scrollY;
+    var winH = window.innerHeight;
+    var docH = document.documentElement.scrollHeight - winH;
 
-    // Show/hide
-    if (scrollY > winH * 0.8) {
-      hProgress.classList.add('visible');
-    } else {
-      hProgress.classList.remove('visible');
+    if (hTraveler && docH > 0) {
+      var totalProgress = Math.max(0, Math.min(1, scrollY / docH));
+      hTraveler.style.left = (totalProgress * 100) + '%';
     }
 
-    // Overall progress
-    const totalProgress = Math.max(0, Math.min(1, scrollY / docH));
-    hFill.style.width = (totalProgress * 100) + '%';
+    hLabels.forEach(function(l) { l.classList.remove('active'); });
 
-    // Activate dots and labels based on scroll position
-    hDots.forEach(d => d.classList.remove('active'));
-    hLabels.forEach(l => l.classList.remove('active'));
+    // Prologue = "Engineer" label active
+    var heroRect = heroOuter.getBoundingClientRect();
+    if (heroRect.top < winH * 0.5 && heroRect.bottom > 0) hLabels[0].classList.add('active');
 
-    progressAnchors.forEach((anchor, i) => {
-      const el = document.getElementById(anchor.id);
-      if (!el) return;
-      const rect = el.getBoundingClientRect();
-      if (rect.top < winH * 0.5) {
-        hDots[i].classList.add('active');
-      }
-    });
-
-    // Activate labels based on which act is in view
-    const engRect = document.getElementById('actEngineer').getBoundingClientRect();
-    const recRect = document.getElementById('actRecord').getBoundingClientRect();
-    const revRect = document.getElementById('actReveal').getBoundingClientRect();
-
-    if (engRect.top < winH * 0.5 && engRect.bottom > 0) hLabels[0].classList.add('active');
-    if (recRect.top < winH * 0.5 && recRect.bottom > 0) hLabels[1].classList.add('active');
-    if (revRect.top < winH * 0.5 && revRect.bottom > 0) hLabels[2].classList.add('active');
+    var recEl = document.getElementById('actRecord');
+    var revEl = document.getElementById('actReveal');
+    if (recEl) {
+      var recRect = recEl.getBoundingClientRect();
+      if (recRect.top < winH * 0.5 && recRect.bottom > 0) hLabels[1].classList.add('active');
+    }
+    if (revEl) {
+      var revRect = revEl.getBoundingClientRect();
+      if (revRect.top < winH * 0.5 && revRect.bottom > 0) hLabels[2].classList.add('active');
+    }
   }
 
-  let progressTicking = false;
-  window.addEventListener('scroll', () => {
-    if (!progressTicking) {
-      requestAnimationFrame(() => {
-        updateHProgress();
-        progressTicking = false;
-      });
-      progressTicking = true;
-    }
-  }, { passive: true });
-
+  lenis.on('scroll', updateHProgress);
+  window.addEventListener('scroll', updateHProgress, { passive: true });
   updateHProgress();
 
 })();

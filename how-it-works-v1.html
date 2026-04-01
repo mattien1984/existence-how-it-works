@@ -1,0 +1,2033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How It Works — Existence</title>
+<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+<style>
+@font-face{font-family:'Season Mix';src:url('fonts/SeasonMixTRIAL-Regular.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap;}
+@font-face{font-family:'Season Mix';src:url('fonts/SeasonMixTRIAL-RegularItalic.woff2') format('woff2');font-weight:400;font-style:italic;font-display:swap;}
+@font-face{font-family:'Roobert';src:url('fonts/RoobertTRIAL-Light.otf') format('opentype');font-weight:300;font-style:normal;font-display:swap;}
+@font-face{font-family:'Roobert';src:url('fonts/RoobertTRIAL-Regular.otf') format('opentype');font-weight:400;font-style:normal;font-display:swap;}
+@font-face{font-family:'Roobert';src:url('fonts/RoobertTRIAL-Medium.otf') format('opentype');font-weight:500;font-style:normal;font-display:swap;}
+@font-face{font-family:'Roobert Semi Mono';src:url('fonts/RoobertSemiMonoTRIAL-Regular.otf') format('opentype');font-weight:400;font-style:normal;font-display:swap;}
+
+:root {
+  --black: #050505;
+  --white: #ffffff;
+  --cream: #f5f2eb;
+  --gray: #888;
+  --dim: #444;
+  --dim2: #2a2a2a;
+  --label: #A4A7AE;
+  --serif: 'Season Mix', Georgia, 'Times New Roman', serif;
+  --sans: 'Roobert', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --mono: 'Roobert Semi Mono', 'SF Mono', 'Fira Code', monospace;
+  --ease-power2-inOut: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+  --ease-power2-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --c-eng: #8ab4f8;
+  --c-rec: #e8a87c;
+  --c-rev: #82d9c5;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: auto; }
+body {
+  font-family: var(--sans);
+  background: var(--black);
+  color: var(--white);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ═══════════════════════════════════
+   NAV
+   ═══════════════════════════════════ */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 48px;
+  background: rgba(5,5,5,0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+.nav-logo {
+  font-family: var(--serif);
+  font-size: 20px;
+  letter-spacing: 1.5px;
+  color: #ffffff;
+  text-decoration: none;
+}
+.nav-logo img {
+  filter: brightness(0) invert(1);
+}
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+.nav-links a {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--gray);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+.nav-links a:hover { color: var(--white); }
+.nav-cta {
+  font-family: var(--sans) !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  letter-spacing: 1.5px !important;
+  text-transform: uppercase !important;
+  color: var(--black) !important;
+  background: #ffffff;
+  padding: 10px 24px;
+  border-radius: 100px;
+  transition: all 0.3s;
+}
+.nav-cta:hover {
+  background: var(--white);
+  transform: translateY(-1px);
+  box-shadow: 0 0 20px rgba(255,255,255,0.35);
+}
+
+/* ═══════════════════════════════════
+   GLOBAL HELPERS
+   ═══════════════════════════════════ */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.8s var(--ease-power2-out), transform 0.8s var(--ease-power2-out);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-d1 { transition-delay: 0.1s; }
+.reveal-d2 { transition-delay: 0.2s; }
+.reveal-d3 { transition-delay: 0.3s; }
+.reveal-d4 { transition-delay: 0.4s; }
+
+/* ═══════════════════════════════════
+   HORIZONTAL PROGRESS BAR
+   ═══════════════════════════════════ */
+.h-progress {
+  position: fixed;
+  top: 80px; left: 0; right: 0;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  height: 40px;
+  padding: 0 48px;
+  background: linear-gradient(to right, rgba(5,5,5,0.55), rgba(30,30,30,0.55), rgba(5,5,5,0.55));
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border-top: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.55);
+  opacity: 1;
+  transition: opacity 0.4s;
+}
+.h-progress-track {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  position: relative;
+  height: 100%;
+}
+.h-progress-line {
+  display: none;
+}
+.h-progress-fill {
+  display: none;
+}
+.h-progress-dot {
+  display: none;
+}
+.h-progress-segment {
+  position: absolute;
+  top: 50%;
+  height: 1px;
+  background: rgba(255,255,255,0.1);
+}
+.h-progress-label {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Roobert Semi Mono', var(--mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+  white-space: nowrap;
+  transition: color 0.4s;
+  z-index: 2;
+}
+.h-progress-label.active {
+  color: rgba(255,255,255,0.9);
+}
+.h-progress-traveler {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 5px;
+  height: 5px;
+  border-radius: 1px;
+  background: #fff;
+  box-shadow: 0 0 8px rgba(255,255,255,0.6), 0 0 16px rgba(255,255,255,0.3);
+  z-index: 3;
+  left: 0%;
+}
+
+/* ═══════════════════════════════════
+   HERO
+   ═══════════════════════════════════ */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 0 48px;
+  overflow: hidden;
+}
+.hero-headline {
+  font-family: var(--serif);
+  font-size: clamp(56px, 7vw, 96px);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -1px;
+  margin-bottom: 32px;
+}
+.hero-sub {
+  font-family: var(--sans);
+  font-weight: 300;
+  font-size: clamp(17px, 1.3vw, 20px);
+  line-height: 1.7;
+  color: rgba(255,255,255,0.65);
+  max-width: 720px;
+}
+.scroll-indicator {
+  position: absolute;
+  bottom: 48px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  opacity: 0.35;
+  animation: scrollPulse 2.5s ease-in-out infinite;
+}
+.scroll-indicator span {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gray);
+}
+.scroll-arrow {
+  width: 1px;
+  height: 32px;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.4), transparent);
+}
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.35; transform: translateX(-50%) translateY(0); }
+  50% { opacity: 0.6; transform: translateX(-50%) translateY(6px); }
+}
+
+/* ═══════════════════════════════════
+   BEAT SECTIONS (Prologue)
+   ═══════════════════════════════════ */
+.beat {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 120px 48px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+.beat-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+  width: 100%;
+}
+.beat-copy h2 {
+  font-family: var(--serif);
+  font-size: clamp(32px, 3.2vw, 48px);
+  font-weight: 400;
+  line-height: 1.15;
+  margin-bottom: 28px;
+}
+.beat-copy p {
+  font-family: var(--sans);
+  font-weight: 300;
+  font-size: 17px;
+  line-height: 1.75;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 20px;
+}
+.beat-copy p:last-child { margin-bottom: 0; }
+.beat-copy p strong {
+  color: rgba(255,255,255,0.85);
+  font-weight: 400;
+}
+.beat-centered {
+  text-align: center;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 160px 48px;
+}
+.beat-centered h2 {
+  font-family: var(--serif);
+  font-size: clamp(28px, 2.8vw, 40px);
+  font-weight: 400;
+  line-height: 1.3;
+  margin-bottom: 24px;
+}
+.beat-centered p {
+  font-family: var(--sans);
+  font-weight: 300;
+  font-size: 17px;
+  line-height: 1.75;
+  color: rgba(255,255,255,0.55);
+  margin-bottom: 16px;
+}
+
+/* Visual placeholders */
+.visual-placeholder {
+  background: #111;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px;
+  aspect-ratio: 4/3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+.visual-placeholder span {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ═══════════════════════════════════
+   TRANSITION SECTIONS
+   ═══════════════════════════════════ */
+.transition-section {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 120px 48px;
+  position: relative;
+}
+.transition-section::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 1px;
+  height: 120px;
+  background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.08));
+}
+.transition-section::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 1px;
+  height: 120px;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.08), transparent);
+}
+.transition-overline {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--label);
+  margin-bottom: 40px;
+}
+.transition-headline {
+  font-family: var(--serif);
+  font-size: clamp(36px, 4vw, 56px);
+  font-weight: 400;
+  line-height: 1.15;
+  margin-bottom: 40px;
+}
+.cycle-words {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 48px;
+  flex-wrap: wrap;
+}
+.cycle-word {
+  font-family: var(--serif);
+  font-size: clamp(28px, 3vw, 44px);
+  font-weight: 400;
+}
+.cycle-arrow {
+  font-size: 20px;
+  color: rgba(255,255,255,0.2);
+}
+.transition-body {
+  font-family: var(--sans);
+  font-weight: 300;
+  font-size: 17px;
+  line-height: 1.75;
+  color: rgba(255,255,255,0.55);
+  max-width: 640px;
+  margin-bottom: 16px;
+}
+
+/* ═══════════════════════════════════
+   STICKY SCROLL SECTIONS (Acts)
+   ═══════════════════════════════════ */
+.act-outer {
+  position: relative;
+}
+.act-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+.act-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 48px;
+  width: 100%;
+}
+.act-copy {
+  max-width: 500px;
+}
+.act-label {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--label);
+  margin-bottom: 20px;
+}
+.act-headline {
+  font-family: var(--serif);
+  font-size: clamp(32px, 3vw, 46px);
+  font-weight: 400;
+  line-height: 1.15;
+  margin-bottom: 16px;
+}
+.act-intro {
+  font-family: var(--sans);
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 1.7;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 40px;
+}
+
+/* Sub-beat content (crossfading) */
+.sub-beat {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.5s var(--ease-power2-out), transform 0.5s var(--ease-power2-out);
+  pointer-events: none;
+}
+.sub-beat.active {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.sub-beat-title {
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 20px;
+  color: var(--white);
+  margin-bottom: 16px;
+}
+.sub-beat-body {
+  font-family: var(--sans);
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 1.75;
+  color: rgba(255,255,255,0.6);
+}
+.sub-beat-body p {
+  margin-bottom: 14px;
+}
+.sub-beat-body p:last-child { margin-bottom: 0; }
+.sub-beat-body ul {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0;
+}
+.sub-beat-body ul li {
+  position: relative;
+  padding-left: 20px;
+  margin-bottom: 8px;
+  color: rgba(255,255,255,0.6);
+}
+.sub-beat-body ul li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 10px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+}
+
+/* Sub-beat colored bullets per act */
+.act-engineer .sub-beat-body ul li::before { background: var(--c-eng); opacity: 0.5; }
+.act-record .sub-beat-body ul li::before { background: var(--c-rec); opacity: 0.5; }
+.act-reveal .sub-beat-body ul li::before { background: var(--c-rev); opacity: 0.5; }
+
+.sub-beat-container {
+  position: relative;
+  min-height: 200px;
+}
+
+/* Visual area */
+.act-visual {
+  position: relative;
+  width: 100%;
+}
+.act-visual-placeholder {
+  background: #111;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px;
+  aspect-ratio: 4/3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
+  opacity: 0;
+  transition: opacity 0.5s var(--ease-power2-out);
+}
+.act-visual-placeholder.active {
+  opacity: 1;
+}
+.act-visual-placeholder span {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Sub-beat step indicators */
+.step-indicators {
+  display: flex;
+  gap: 6px;
+  margin-top: 32px;
+}
+.step-dot {
+  width: 24px;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(255,255,255,0.1);
+  transition: all 0.4s;
+}
+.step-dot.active {
+  background: rgba(255,255,255,0.5);
+}
+.act-engineer .step-dot.active { background: #fff; opacity: 0.7; }
+.act-record .step-dot.active { background: #fff; opacity: 0.7; }
+.act-reveal .step-dot.active { background: #fff; opacity: 0.7; }
+
+/* ═══════════════════════════════════
+   EPILOGUE
+   ═══════════════════════════════════ */
+.epilogue {
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 120px 48px;
+}
+.epilogue h2 {
+  font-family: var(--serif);
+  font-size: clamp(36px, 4vw, 56px);
+  font-weight: 400;
+  line-height: 1.15;
+  margin-bottom: 32px;
+}
+.epilogue p {
+  font-family: var(--sans);
+  font-weight: 300;
+  font-size: 18px;
+  line-height: 1.75;
+  color: rgba(255,255,255,0.55);
+  max-width: 620px;
+  margin-bottom: 16px;
+}
+.epilogue p:last-of-type {
+  color: rgba(255,255,255,0.75);
+  font-weight: 400;
+}
+
+/* ═══════════════════════════════════
+   CTA
+   ═══════════════════════════════════ */
+.cta-section {
+  padding: 120px 48px 160px;
+  text-align: center;
+}
+.cta-section h2 {
+  font-family: var(--serif);
+  font-size: clamp(36px, 4vw, 56px);
+  font-weight: 400;
+  line-height: 1.15;
+  margin-bottom: 40px;
+}
+.cta-btn {
+  display: inline-block;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--black);
+  background: var(--white);
+  padding: 16px 48px;
+  border-radius: 100px;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+.cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 40px rgba(255,255,255,0.25);
+}
+
+/* ═══════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════ */
+footer {
+  padding: 64px 48px 40px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+}
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.footer-logo {
+  font-family: var(--serif);
+  font-size: 18px;
+  letter-spacing: 1.5px;
+  color: #fff;
+  opacity: 1;
+}
+.footer-links {
+  display: flex;
+  gap: 32px;
+}
+.footer-links a {
+  font-family: var(--sans);
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #fff;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+.footer-links a:hover { color: #ccc; }
+.footer-copy {
+  font-family: var(--sans);
+  font-size: 11px;
+  color: #fff;
+  text-align: center;
+  margin-top: 48px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ═══════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════ */
+@media (max-width: 960px) {
+  .beat-split { grid-template-columns: 1fr; gap: 48px; }
+  .act-inner { grid-template-columns: 1fr; gap: 48px; }
+  .act-visual { display: none; }
+  .act-copy { max-width: 100%; }
+  .h-progress { display: none; }
+  .footer-inner { flex-direction: column; gap: 24px; text-align: center; }
+  .footer-links { justify-content: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════
+     NAV
+     ═══════════════════════════════════ -->
+<nav id="mainNav">
+  <a href="homepage.html" class="nav-logo">
+    <img src="logo-existence.svg" alt="Existence" style="height:56px;width:auto;">
+  </a>
+  <div class="nav-links">
+    <a href="homepage.html">Home</a>
+    <a href="#" style="color:var(--white);">How It Works</a>
+    <a href="#">About</a>
+    <a href="#" class="nav-cta">Get Early Access</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════
+     HORIZONTAL PROGRESS BAR
+     ═══════════════════════════════════ -->
+<div class="h-progress" id="hProgress">
+  <div class="h-progress-track">
+    <div class="h-progress-segment" style="left: 0%; right: 78.5%;"></div>
+    <div class="h-progress-label" id="hLabel1" style="left: 25%;">Engineer</div>
+    <div class="h-progress-segment" style="left: 27.2%; right: 53.2%;"></div>
+    <div class="h-progress-label" id="hLabel2" style="left: 50%;">Record</div>
+    <div class="h-progress-segment" style="left: 52%; right: 27.8%;"></div>
+    <div class="h-progress-label" id="hLabel3" style="left: 75%;">Reveal</div>
+    <div class="h-progress-segment" style="left: 77%; right: 0%;"></div>
+    <div class="h-progress-traveler" id="hTraveler"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     PROLOGUE — BEAT 1: HERO
+     ═══════════════════════════════════ -->
+<div class="hero-outer" id="heroOuter" style="height: 2000vh; position: relative;">
+  <section class="hero" id="sectionHero" style="position: sticky; top: 0;">
+    <div id="heroGrid" style="position:absolute;top:0;left:0;width:100%;height:100%;background:url('grid-15-v3.svg') center center / cover no-repeat;pointer-events:none;will-change:transform,opacity;transform-origin:50% 74%;opacity:0.15;"></div>
+    <div id="heroFlipWrapper" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;perspective:1200px;transform-style:preserve-3d;">
+      <div id="heroBlock" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;will-change:transform,opacity;transform-origin:50% 74%;opacity:0;backface-visibility:hidden;">
+        <div style="position:absolute;top:0;left:0;width:100%;height:100%;background:url('single-block-v3.svg') center center / cover no-repeat;z-index:1;pointer-events:none;"></div>
+      </div>
+      <div id="heroBlockBack" style="position:absolute;top:0;left:0;width:100%;height:100%;background:url('single-block-v3.svg') center center / cover no-repeat;pointer-events:none;will-change:transform,opacity;transform-origin:50% 74%;opacity:0;backface-visibility:hidden;transform:scale(2.34) rotateY(180deg);">
+      </div>
+    </div>
+    <p class="hero-beat" data-beat="0" style="position:absolute; top:calc(50% - 180px); left:0; right:0; margin:0 auto; font-family:var(--serif); font-size:clamp(24px,2.5vw,36px); font-weight:400; color:#fff; opacity:0; text-align:center; line-height:1.2; white-space:nowrap; z-index:2; will-change:opacity,transform;">Everything begins<br>with a Time Block.</p>
+    <div id="heroColumns" style="position:absolute; top:calc(58% + 5px); left:50%; transform:translate(-50%,-50%); display:grid; grid-template-columns:1fr auto 1fr; align-items:center; width:90%; max-width:1400px; z-index:2; pointer-events:none;">
+      <div id="heroColLeft" style="padding-left:80px; padding-right:180px; text-align:left;">
+        <p class="hero-beat" data-beat="1" style="font-family:var(--serif); font-size:clamp(20px,2vw,28px); font-weight:400; color:#fff; opacity:0; line-height:1.2; white-space:nowrap; will-change:opacity,transform;">Time Blocks are structured<br>units of time.</p>
+        <p id="beatSubText" style="font-family:'Roobert',var(--sans); font-size:clamp(13px,1.1vw,15px); font-weight:300; color:rgba(255,255,255,0.7); opacity:0; line-height:1.5; margin-top:16px; will-change:opacity,transform;">They capture both what you intended to do and how it was actually lived — what you did, when, where, who with, and how it was experienced.</p>
+      </div>
+      <div id="heroColCenter" style="width:200px;"></div>
+      <div id="heroColRight" style="padding-right:80px; padding-left:180px; text-align:left;">
+        <p id="heroRightText" style="font-family:var(--serif); font-size:clamp(20px,2vw,28px); font-weight:400; color:#fff; opacity:0; line-height:1.2; will-change:opacity,transform;">Everything you will ever do happens inside a unit of time.</p>
+        <p id="rightSubText" style="font-family:'Roobert',var(--sans); font-size:clamp(13px,1.1vw,15px); font-weight:300; color:rgba(255,255,255,0.7); opacity:0; line-height:1.5; margin-top:16px; will-change:opacity,transform;">Every meeting, meal, workout, conversation, quiet hour—Time Blocks are how Existence captures that reality. They are the structure through which all time becomes data.</p>
+      </div>
+    </div>
+    <!-- Intentions beat content (appears after flip, before morph) -->
+    <div id="intentionsContent" style="position:absolute; top:calc(50% - 80px); right:calc(20% - 100px); transform:translateY(-50%); z-index:6; pointer-events:none; opacity:0; will-change:opacity,transform; max-width:22%; text-align:left;">
+      <p id="intentionsHeader" style="font-family:var(--serif); font-size:clamp(18px,2vw,26px); font-weight:400; color:#fff; line-height:1.3; margin:0 0 16px 0;">Start by defining how you want to divide your time across four pillars: Work, Life, Health, and Sleep.</p>
+      <p id="intentionsSub" style="font-family:'Roobert',var(--sans); font-size:clamp(13px,1.1vw,15px); font-weight:300; color:rgba(255,255,255,0.7); line-height:1.5; margin:0;">This sets your intention.</p>
+    </div>
+    <div id="intentionsUI" style="position:absolute; top:calc(50% + 80px); right:calc(20% - 100px); z-index:6; pointer-events:none; opacity:0; will-change:opacity,transform; width:300px; height:200px; border:1px solid rgba(255,255,255,0.15); border-radius:12px; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.03);">
+      <span style="font-family:var(--mono); font-size:11px; color:rgba(255,255,255,0.25); letter-spacing:1.5px; text-transform:uppercase;">Intentions UI</span>
+    </div>
+    <div id="stackDateHeader" style="position:absolute; left:50%; transform:translateX(-50%); top:calc(30vh - 50px); z-index:6; text-align:center; opacity:0; will-change:opacity,transform; pointer-events:none;">
+      <div style="font-family:'Roobert Semi Mono',var(--mono); font-size:10px; letter-spacing:2px; color:#A4A7AE; text-transform:uppercase;">WED</div>
+      <div style="font-family:'Roobert Semi Mono',var(--mono); font-size:10px; letter-spacing:2px; color:#A4A7AE; margin-top:4px; position:relative; display:inline-block;">16
+        <img src="calendar.svg" style="position:absolute; right:-55px; top:50%; transform:translateY(-50%); width:16px; height:auto; filter:brightness(10);" alt=""/>
+      </div>
+    </div>
+    <div id="blockStack" style="position:absolute; top:0; left:0; width:100%; height:100%; display:flex; flex-direction:column; align-items:center; padding-top:30vh; gap:3px; pointer-events:none; z-index:5; opacity:0;"></div>
+    <p id="stackBeatText" style="position:absolute; top:calc(58% - 58px); right:calc(20% - 100px); transform:translateY(-50%); font-family:var(--serif); font-size:clamp(18px,2vw,26px); font-weight:400; color:#fff; opacity:0; text-align:left; line-height:1.3; z-index:6; will-change:opacity,transform; max-width:20%;">On a typical day, you create 15–20 Time Blocks.</p>
+    <div id="weekView" style="position:absolute; top:0; left:0; width:70%; height:100%; display:flex; flex-direction:row; align-items:flex-start; padding-top:30vh; gap:4px; pointer-events:none; z-index:7; opacity:0; overflow:hidden;">
+    </div>
+    <p id="weekBeatText" style="position:absolute; top:calc(50%); right:8%; transform:translateY(-50%); font-family:var(--serif); font-size:clamp(18px,2vw,26px); font-weight:400; color:#fff; opacity:0; text-align:left; line-height:1.3; z-index:8; will-change:opacity,transform; max-width:22%;">Over time, patterns begin to emerge.</p>
+    <!-- Zoom block detail view -->
+    <div id="zoomBlockDetail" style="position:absolute; left:35%; top:50%; transform:translate(-50%,-50%) translateY(20px); z-index:10; pointer-events:none; opacity:0; will-change:opacity,transform; width:280px; border-radius:16px; border:1px solid rgba(255,255,255,0.1); background:rgba(15,15,15,0.92); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); overflow:hidden;">
+      <div style="background:#3C5999; padding:14px 18px; display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-family:var(--sans); font-size:14px; font-weight:500; color:#fff;">Deep Work</span>
+        <span style="font-family:var(--mono); font-size:10px; color:rgba(255,255,255,0.7); letter-spacing:0.5px;">8:00 AM</span>
+      </div>
+      <div style="padding:16px 18px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.06);">
+          <span style="font-family:var(--mono); font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:rgba(255,255,255,0.35);">When</span>
+          <span style="font-family:var(--sans); font-size:13px; font-weight:300; color:rgba(255,255,255,0.8);">8:00 AM – 11:00 AM</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.06);">
+          <span style="font-family:var(--mono); font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:rgba(255,255,255,0.35);">What</span>
+          <span style="font-family:var(--sans); font-size:13px; font-weight:300; color:rgba(255,255,255,0.8);">Deep Work</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.06);">
+          <span style="font-family:var(--mono); font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:rgba(255,255,255,0.35);">Where</span>
+          <span style="font-family:var(--sans); font-size:13px; font-weight:300; color:rgba(255,255,255,0.8);">Home Office</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 0;">
+          <span style="font-family:var(--mono); font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:rgba(255,255,255,0.35);">Who</span>
+          <span style="font-family:var(--sans); font-size:13px; font-weight:300; color:rgba(255,255,255,0.8);">Solo</span>
+        </div>
+      </div>
+    </div>
+    <!-- Zoom text beats -->
+    <div id="zoomBeat1" style="position:absolute; right:15%; top:50%; transform:translateY(15px); z-index:10; pointer-events:none; opacity:0; will-change:opacity,transform; max-width:24%; text-align:left;">
+      <p style="font-family:var(--serif); font-size:clamp(18px,2vw,26px); font-weight:400; color:#fff; line-height:1.3; margin:0 0 16px 0;">Each block defines</p>
+      <p style="font-family:var(--sans); font-size:clamp(13px,1.1vw,15px); font-weight:300; color:rgba(255,255,255,0.7); line-height:1.5; margin:0;">When it occurs, what you plan to do, where it will take place, and who it will be with.</p>
+    </div>
+    <div id="zoomBeat2" style="position:absolute; right:15%; top:50%; transform:translateY(15px); z-index:10; pointer-events:none; opacity:0; will-change:opacity,transform; max-width:24%; text-align:left;">
+      <p style="font-family:var(--serif); font-size:clamp(18px,2vw,26px); font-weight:400; color:#fff; line-height:1.3; margin:0 0 16px 0;">Tags add context</p>
+      <p style="font-family:var(--sans); font-size:clamp(13px,1.1vw,15px); font-weight:300; color:rgba(255,255,255,0.7); line-height:1.5; margin:0;">Activities, people, and places — the dimensions that turn structured time into meaningful, trackable data.</p>
+    </div>
+    <div id="zoomBeat3" style="position:absolute; right:15%; top:50%; transform:translateY(15px); z-index:10; pointer-events:none; opacity:0; will-change:opacity,transform; max-width:24%; text-align:left;">
+      <p style="font-family:var(--serif); font-size:clamp(18px,2vw,26px); font-weight:400; color:#fff; line-height:1.3; margin:0 0 16px 0;">Engineering time is effortless</p>
+      <p style="font-family:var(--sans); font-size:clamp(13px,1.1vw,15px); font-weight:300; color:rgba(255,255,255,0.7); line-height:1.5; margin:0;">Favorite your most-used blocks, place them in a single touch, and create recurring Rhythms for the time you want to consistently create.</p>
+    </div>
+    <h1 class="hero-headline" id="heroHL" style="will-change: transform; position:relative; z-index:1;">How It Works</h1>
+    <p class="hero-sub" id="heroSub" style="will-change: transform; position:relative; z-index:1;">Existence is a Time Intelligence System that enables you to structure your time, record all aspects of how it is lived, and turn that record into insight that improves how you create your time.</p>
+    <div class="scroll-indicator" style="z-index:1;">
+      <span>Scroll</span>
+      <div class="scroll-arrow"></div>
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════════════════════
+     PROLOGUE — BEAT 2: TIME BLOCK
+     ═══════════════════════════════════ -->
+<section class="beat" id="sectionTimeblock">
+  <div class="beat-split">
+    <div class="beat-copy">
+      <h2 class="reveal">Everything begins with a Time Block</h2>
+      <p class="reveal reveal-d1">A Time Block is a structured unit of time that captures both what you intended to do and how it was actually lived — what you did, when, where, who with, and how it was experienced.</p>
+      <p class="reveal reveal-d2">Calendars record what was scheduled. Time Blocks record everything.</p>
+    </div>
+    <div class="reveal reveal-d2">
+      <div class="visual-placeholder">
+        <span>Time Block Visual</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     PROLOGUE — BEAT 3: TIME BLOCK DEPTH
+     ═══════════════════════════════════ -->
+<section class="beat beat-centered" id="sectionTimeblockDepth">
+  <p class="reveal" style="font-size:18px; color:rgba(255,255,255,0.65); max-width:700px;">On a typical day, you create 15–20 Time Blocks. Each begins as a projection of what you intend to do — the ideal you. After it's lived, it becomes a record of what actually happened — the real you.</p>
+  <p class="reveal reveal-d1" style="font-size:22px; color:rgba(255,255,255,0.85); font-weight:400; margin-top:12px;">Every Time Block holds both.</p>
+  <p class="reveal reveal-d2" style="font-size:17px; color:rgba(255,255,255,0.5); margin-top:16px; max-width:640px;">Strung together across a day, they become a complete picture of how that time was created.</p>
+</section>
+
+<!-- ═══════════════════════════════════
+     TRANSITION: THE TIME CREATION CYCLE
+     ═══════════════════════════════════ -->
+<section class="transition-section" id="sectionCycle">
+  <div class="transition-overline reveal">The Time Creation Cycle</div>
+  <div class="cycle-words reveal reveal-d1">
+    <span class="cycle-word" style="color:#fff;">Engineer</span>
+    <span class="cycle-arrow">&rarr;</span>
+    <span class="cycle-word" style="color:#fff;">Record</span>
+    <span class="cycle-arrow">&rarr;</span>
+    <span class="cycle-word" style="color:#fff;">Reveal</span>
+  </div>
+  <p class="transition-body reveal reveal-d2">This cycle turns intention into structured time, lived time into data, and data into self-knowledge.</p>
+</section>
+
+<!-- ═══════════════════════════════════
+     ACT 1: ENGINEER
+     ═══════════════════════════════════ -->
+<section class="act-outer act-engineer" id="actEngineer" style="height: 500vh;">
+  <div class="act-sticky">
+    <div class="act-inner">
+      <div class="act-copy">
+        <div class="act-label">01 Engineer</div>
+        <h2 class="act-headline" style="color:#fff;">Structure your time before it is experienced</h2>
+
+        <div class="sub-beat-container" id="engBeats">
+          <!-- Sub-beat 0: Pillars -->
+          <div class="sub-beat active" data-beat="0">
+            <div class="sub-beat-title">Pillars</div>
+            <div class="sub-beat-body">
+              <p>Define how you want to distribute your time across four core pillars — Work, Life, Health, and Sleep. This sets the foundation of your intention.</p>
+            </div>
+          </div>
+          <!-- Sub-beat 1: Creating Time Blocks -->
+          <div class="sub-beat" data-beat="1">
+            <div class="sub-beat-title">Creating Time Blocks</div>
+            <div class="sub-beat-body">
+              <p>Each block defines:</p>
+              <ul>
+                <li>When it occurs</li>
+                <li>What you plan to do</li>
+                <li>Where it will take place</li>
+                <li>Who it will be with</li>
+              </ul>
+              <p>Based on your Time Block title, the system automatically organizes each block into the right pillar.</p>
+            </div>
+          </div>
+          <!-- Sub-beat 2: Tags -->
+          <div class="sub-beat" data-beat="2">
+            <div class="sub-beat-title">Tags</div>
+            <div class="sub-beat-body">
+              <p>You build a catalog of tags across three dimensions:</p>
+              <ul>
+                <li>Activities — what you do</li>
+                <li>People — who you spend your time with</li>
+                <li>Places — where your time is created</li>
+              </ul>
+            </div>
+          </div>
+          <!-- Sub-beat 3: Efficiency Tools -->
+          <div class="sub-beat" data-beat="3">
+            <div class="sub-beat-title">Efficiency Tools</div>
+            <div class="sub-beat-body">
+              <p>Engineering your time is designed to be effortless.</p>
+              <p>Favorite your most-used blocks and place them in a single touch. Create recurring blocks to establish your Rhythm — the time you want to consistently create.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-indicators" id="engSteps">
+          <div class="step-dot active"></div>
+          <div class="step-dot"></div>
+          <div class="step-dot"></div>
+          <div class="step-dot"></div>
+        </div>
+      </div>
+
+      <div class="act-visual" id="engVisuals">
+        <div class="act-visual-placeholder active" data-beat="0"><span>Pillar Allocation UI</span></div>
+        <div class="act-visual-placeholder" data-beat="1"><span>Time Block Creation UI</span></div>
+        <div class="act-visual-placeholder" data-beat="2"><span>Tag System UI</span></div>
+        <div class="act-visual-placeholder" data-beat="3"><span>Favorites &amp; Rhythm UI</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     ACT 2: RECORD
+     ═══════════════════════════════════ -->
+<section class="act-outer act-record" id="actRecord" style="height: 500vh;">
+  <div class="act-sticky">
+    <div class="act-inner">
+      <div class="act-copy">
+        <div class="act-label">02 Record</div>
+        <h2 class="act-headline" style="color:#fff;">Measure how your time was actually created</h2>
+
+        <div class="sub-beat-container" id="recBeats">
+          <div class="sub-beat active" data-beat="0">
+            <div class="sub-beat-title">Update Reality</div>
+            <div class="sub-beat-body">
+              <p>After time is experienced, you update each Time Block to reflect what actually happened:</p>
+              <ul>
+                <li>When it actually happened</li>
+                <li>What you actually did</li>
+                <li>Who you were with</li>
+                <li>Where it happened</li>
+              </ul>
+            </div>
+          </div>
+          <div class="sub-beat" data-beat="1">
+            <div class="sub-beat-title">Quality Score</div>
+            <div class="sub-beat-body">
+              <p>The Quality Score is a signal (0–10) of how your created time compared to your intention.</p>
+              <ul>
+                <li>How closely that time matched what you intended</li>
+                <li>Did this time move you forward toward your goals</li>
+                <li>How it felt as it was experienced</li>
+              </ul>
+            </div>
+          </div>
+          <div class="sub-beat" data-beat="2">
+            <div class="sub-beat-title">Reflections &amp; Media</div>
+            <div class="sub-beat-body">
+              <p>Reflections capture what that time meant — what you learned, what stood out, or what you want to remember.</p>
+              <p>Photos or media memorialize the lived experience inside the system forever.</p>
+            </div>
+          </div>
+          <div class="sub-beat" data-beat="3">
+            <div class="sub-beat-title">Both Sides</div>
+            <div class="sub-beat-body">
+              <p>Each Time Block now contains both the projection and the reality: what you intended and what was actually created.</p>
+              <p>Over time, this becomes the truest record of you.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-indicators" id="recSteps">
+          <div class="step-dot active"></div>
+          <div class="step-dot"></div>
+          <div class="step-dot"></div>
+          <div class="step-dot"></div>
+        </div>
+      </div>
+
+      <div class="act-visual" id="recVisuals">
+        <div class="act-visual-placeholder active" data-beat="0"><span>Time Block Update UI</span></div>
+        <div class="act-visual-placeholder" data-beat="1"><span>Quality Score UI</span></div>
+        <div class="act-visual-placeholder" data-beat="2"><span>Reflections UI</span></div>
+        <div class="act-visual-placeholder" data-beat="3"><span>Intention vs Reality UI</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     ACT 3: REVEAL
+     ═══════════════════════════════════ -->
+<section class="act-outer act-reveal" id="actReveal" style="height: 400vh;">
+  <div class="act-sticky">
+    <div class="act-inner">
+      <div class="act-copy">
+        <div class="act-label">03 Reveal</div>
+        <h2 class="act-headline" style="color:#fff;">Your time, transformed into understanding</h2>
+        <p class="act-intro">As your record builds, Existence transforms this data into insights — helping you see how you live and what your time is creating.</p>
+
+        <div class="sub-beat-container" id="revBeats">
+          <div class="sub-beat active" data-beat="0">
+            <div class="sub-beat-title">Time Insights</div>
+            <div class="sub-beat-body">
+              <p>Summaries transform your recorded time into clear overviews across a week, month, or year. They synthesize what you did, how your time was distributed, and how it was experienced.</p>
+              <p>Your Quality Score reflects how aligned your time was with your goals and values.</p>
+            </div>
+          </div>
+          <div class="sub-beat" data-beat="1">
+            <div class="sub-beat-title">Time Explorer</div>
+            <div class="sub-beat-body">
+              <p>A structured view of how your time was created. See how much of your time was accounted for, how it was distributed across pillars, and how closely it matched your intention.</p>
+              <p>Break time down by activities, people, and places. Filter to view specific dimensions.</p>
+            </div>
+          </div>
+          <div class="sub-beat" data-beat="2">
+            <div class="sub-beat-title">Time Agent</div>
+            <div class="sub-beat-body">
+              <p>Converse directly with your data through E, your AI time companion. Ask open-ended questions across your full record and get on-demand insight.</p>
+              <p>The more you use Existence, the more E learns — building a deeper understanding of how you create your time.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-indicators" id="revSteps">
+          <div class="step-dot active"></div>
+          <div class="step-dot"></div>
+          <div class="step-dot"></div>
+        </div>
+      </div>
+
+      <div class="act-visual" id="revVisuals">
+        <div class="act-visual-placeholder active" data-beat="0"><span>Time Insights Dashboard</span></div>
+        <div class="act-visual-placeholder" data-beat="1"><span>Time Explorer Grid</span></div>
+        <div class="act-visual-placeholder" data-beat="2"><span>E Agent Interface</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     TRANSITION: SYSTEM IN MOTION
+     ═══════════════════════════════════ -->
+<section class="transition-section" id="sectionMotion">
+  <div class="cycle-words reveal">
+    <span class="cycle-word" style="color:#fff;">Engineer</span>
+    <span class="cycle-arrow">&rarr;</span>
+    <span class="cycle-word" style="color:#fff;">Record</span>
+    <span class="cycle-arrow">&rarr;</span>
+    <span class="cycle-word" style="color:#fff;">Reveal</span>
+  </div>
+  <p class="transition-body reveal reveal-d1">You engineer your time by putting structure to it, record how it was actually created, and Existence transforms that record into knowledge that improves how you create future time.</p>
+  <p class="transition-body reveal reveal-d2" style="color:rgba(255,255,255,0.75); font-weight:400;">Each cycle builds on the last.</p>
+</section>
+
+<!-- ═══════════════════════════════════
+     EPILOGUE: TIME ALIGNMENT
+     ═══════════════════════════════════ -->
+<section class="epilogue" id="sectionEpilogue">
+  <h2 class="reveal">Time Alignment</h2>
+  <p class="reveal reveal-d1">The result of using Existence is Time Alignment.</p>
+  <p class="reveal reveal-d2">Time Alignment is when the time you create consistently reflects the life you intend to live.</p>
+  <p class="reveal reveal-d3">When sustained, the life you intend and the life you live become the same.</p>
+</section>
+
+<!-- ═══════════════════════════════════
+     CTA
+     ═══════════════════════════════════ -->
+<section class="cta-section">
+  <h2 class="reveal">Reimagine Your Time</h2>
+  <a href="#" class="cta-btn reveal reveal-d1">Create Your Existence</a>
+</section>
+
+<!-- ═══════════════════════════════════
+     FOOTER
+     ═══════════════════════════════════ -->
+<footer>
+  <div class="footer-inner">
+    <img src="logo-existence.svg" alt="existence" class="footer-logo" style="height: 39px; width: auto; display: block; filter: brightness(0) invert(1);">
+    <div class="footer-links">
+      <a href="#">How It Works</a>
+      <a href="#">About</a>
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+    </div>
+  </div>
+  <p class="footer-copy">&copy; 2026 Existence. All rights reserved.</p>
+</footer>
+
+<!-- ═══════════════════════════════════
+     SCRIPTS
+     ═══════════════════════════════════ -->
+<script>
+(function() {
+  'use strict';
+
+  // ─── Lenis smooth scroll ───
+  const lenis = new Lenis({
+    duration: 0.8,
+    easing: function(t) { return 1 - Math.pow(1 - t, 3); },
+    smoothWheel: true,
+    smoothTouch: false,
+    wheelMultiplier: 1.4,
+  });
+
+  function raf(time) {
+    lenis.raf(time);
+    requestAnimationFrame(raf);
+  }
+  requestAnimationFrame(raf);
+
+  // ─── Nav scroll state + progress bar positioning ───
+  const nav = document.getElementById('mainNav');
+  const hBar = document.getElementById('hProgress');
+  let lastScroll = 0;
+
+  function syncProgressTop() {
+    if (hBar) hBar.style.top = nav.offsetHeight + 'px';
+  }
+
+  // Watch nav for size changes from padding transition
+  const navRO = new ResizeObserver(() => syncProgressTop());
+  navRO.observe(nav);
+
+  // ─── Hero pinned parallax ───
+  const heroOuter = document.getElementById('heroOuter');
+  const heroHL = document.getElementById('heroHL');
+  const heroSub = document.getElementById('heroSub');
+  const scrollInd = document.querySelector('.scroll-indicator');
+  const heroGrid = document.getElementById('heroGrid');
+  const blockImage = document.getElementById('blockImage');
+  const heroBlock = document.getElementById('heroBlock');
+  const heroBlockBack = document.getElementById('heroBlockBack');
+  const heroBeats = document.querySelectorAll('.hero-beat');
+  const heroRightText = document.getElementById('heroRightText');
+
+  // Block data: colored rectangles with event text
+  const blockStackEl = document.getElementById('blockStack');
+  const STACK_COUNT = 10;
+  const blockData = [
+    { name: 'Morning Run', time: '6:30 AM', color: '#6BAA83', h: 49 },
+    { name: 'Deep Work', time: '8 AM', color: '#3C5999', h: 65 },
+    { name: 'Coffee', time: '11 AM', color: '#838C9F', h: 28 },
+    { name: 'Team Sync', time: '11:30 AM', color: '#A38523', h: 48 },
+    { name: 'Lunch', time: '1 PM', color: '#A38523', h: 28 },
+    { name: 'Design Review', time: '2 PM', color: '#3C5999', h: 75 },
+    { name: 'Walk', time: '5 PM', color: '#6BAA83', h: 32 },
+    { name: 'Dinner', time: '6 PM', color: '#838C9F', h: 42 },
+    { name: 'Reading', time: '7:30 PM', color: '#A38523', h: 55 },
+    { name: 'Journal', time: '9:30 PM', color: '#6BAA83', h: 26 }
+  ];
+
+  const weekDays = [
+    { day: 'WED', num: '16', blocks: blockData },
+    { day: 'THU', num: '17', blocks: [
+      { name: 'Yoga', time: '7 AM', color: '#6BAA83', h: 42 },
+      { name: 'Standup', time: '9 AM', color: '#A38523', h: 24 },
+      { name: 'Deep Work', time: '9:30 AM', color: '#3C5999', h: 72 },
+      { name: 'Lunch', time: '12 PM', color: '#838C9F', h: 30 },
+      { name: 'Client Call', time: '1 PM', color: '#A38523', h: 45 },
+      { name: 'Code Review', time: '3 PM', color: '#3C5999', h: 55 },
+      { name: 'Walk', time: '5:30 PM', color: '#6BAA83', h: 28 },
+      { name: 'Dinner', time: '6:30 PM', color: '#838C9F', h: 38 },
+      { name: 'Piano', time: '8 PM', color: '#A38523', h: 48 }
+    ]},
+    { day: 'FRI', num: '18', blocks: [
+      { name: 'Run', time: '6 AM', color: '#6BAA83', h: 52 },
+      { name: 'Planning', time: '8 AM', color: '#A38523', h: 35 },
+      { name: 'Deep Work', time: '9:30 AM', color: '#3C5999', h: 68 },
+      { name: 'Team Lunch', time: '12 PM', color: '#838C9F', h: 42 },
+      { name: 'Design', time: '2 PM', color: '#3C5999', h: 60 },
+      { name: 'Coffee', time: '4 PM', color: '#838C9F', h: 22 },
+      { name: 'Errands', time: '5 PM', color: '#A38523', h: 35 },
+      { name: 'Dinner Out', time: '7 PM', color: '#838C9F', h: 50 }
+    ]},
+    { day: 'SAT', num: '19', blocks: [
+      { name: 'Sleep In', time: '9 AM', color: '#838C9F', h: 32 },
+      { name: 'Brunch', time: '10 AM', color: '#A38523', h: 38 },
+      { name: 'Hike', time: '12 PM', color: '#6BAA83', h: 70 },
+      { name: 'Reading', time: '3 PM', color: '#A38523', h: 45 },
+      { name: 'Cooking', time: '5 PM', color: '#838C9F', h: 42 },
+      { name: 'Movie', time: '8 PM', color: '#3C5999', h: 55 }
+    ]},
+    { day: 'SUN', num: '20', blocks: [
+      { name: 'Meditation', time: '8 AM', color: '#6BAA83', h: 28 },
+      { name: 'Church', time: '9 AM', color: '#A38523', h: 48 },
+      { name: 'Brunch', time: '11 AM', color: '#838C9F', h: 35 },
+      { name: 'Family Time', time: '1 PM', color: '#6BAA83', h: 65 },
+      { name: 'Meal Prep', time: '4 PM', color: '#A38523', h: 40 },
+      { name: 'Walk', time: '6 PM', color: '#6BAA83', h: 30 },
+      { name: 'Reading', time: '7:30 PM', color: '#3C5999', h: 48 },
+      { name: 'Journal', time: '9 PM', color: '#A38523', h: 24 }
+    ]},
+    { day: 'MON', num: '21', blocks: [
+      { name: 'Run', time: '6:30 AM', color: '#6BAA83', h: 45 },
+      { name: 'Deep Work', time: '8 AM', color: '#3C5999', h: 70 },
+      { name: 'Standup', time: '10:30 AM', color: '#A38523', h: 26 },
+      { name: 'Lunch', time: '12 PM', color: '#838C9F', h: 28 },
+      { name: 'Workshop', time: '1 PM', color: '#3C5999', h: 62 },
+      { name: 'Break', time: '3:30 PM', color: '#838C9F', h: 20 },
+      { name: 'Admin', time: '4 PM', color: '#A38523', h: 38 },
+      { name: 'Gym', time: '5:30 PM', color: '#6BAA83', h: 42 },
+      { name: 'Dinner', time: '7 PM', color: '#838C9F', h: 35 }
+    ]},
+    { day: 'TUE', num: '22', blocks: [
+      { name: 'Swim', time: '6 AM', color: '#6BAA83', h: 40 },
+      { name: 'Focus Time', time: '8 AM', color: '#3C5999', h: 65 },
+      { name: 'Coffee Chat', time: '10:30 AM', color: '#838C9F', h: 25 },
+      { name: 'Design Review', time: '11 AM', color: '#3C5999', h: 50 },
+      { name: 'Lunch', time: '1 PM', color: '#A38523', h: 30 },
+      { name: 'Meetings', time: '2 PM', color: '#A38523', h: 55 },
+      { name: 'Walk', time: '4:30 PM', color: '#6BAA83', h: 28 },
+      { name: 'Dinner', time: '6 PM', color: '#838C9F', h: 40 },
+      { name: 'Reading', time: '8 PM', color: '#A38523', h: 45 }
+    ]}
+  ];
+
+  // Bracket geometry constants (for morph block SVG)
+  const BK_L = 890.75, BK_R = 1026.84, BK_T = 620.48;
+  const BK_ARM = 6.4, BK_T_W = 0.47;
+  const BK_VBW = BK_R - BK_L + 8;
+
+  function makeStackBlock(d) {
+    return '<span style="position:absolute;left:8px;top:50%;transform:translateY(-50%);font-family:\'Roobert\',var(--sans);font-size:10px;color:#fff;font-weight:300;">' + d.name + '</span>' +
+      '<span style="position:absolute;right:8px;top:50%;transform:translateY(-50%);font-family:\'Roobert Semi Mono\',var(--mono);font-size:8px;color:rgba(255,255,255,0.7);letter-spacing:0.3px;">' + d.time + '</span>';
+  }
+
+  if (blockStackEl) {
+    for (var i = 0; i < STACK_COUNT; i++) {
+      var d = blockData[i];
+      var block = document.createElement('div');
+      block.className = 'stack-block';
+      block.dataset.stack = i;
+      block.style.cssText = 'width:160px; height:' + d.h + 'px; background:' + d.color + '; border-radius:4px; position:relative; opacity:0; transform:translateY(20px); will-change:opacity,transform; overflow:hidden;';
+      block.innerHTML = makeStackBlock(d);
+      blockStackEl.appendChild(block);
+    }
+  }
+  const stackBlocks = document.querySelectorAll('.stack-block');
+
+  // Build week view columns — skip WED (index 0) since the original blockStack represents it
+  const weekViewEl = document.getElementById('weekView');
+  const WEEK_BLOCK_W = 105; // smaller width for week columns
+  if (weekViewEl) {
+    weekDays.slice(1).forEach(function(dayData) {
+      var col = document.createElement('div');
+      col.className = 'week-col';
+      col.style.cssText = 'display:flex; flex-direction:column; align-items:center; gap:2px; flex-shrink:0; opacity:0; will-change:opacity,transform;';
+      // Day header
+      var header = document.createElement('div');
+      header.style.cssText = 'text-align:center; margin-bottom:6px;';
+      header.innerHTML = '<div style="font-family:\'Roobert Semi Mono\',var(--mono); font-size:8px; letter-spacing:2px; color:#A4A7AE; text-transform:uppercase;">' + dayData.day + '</div>' +
+        '<div style="font-family:\'Roobert Semi Mono\',var(--mono); font-size:8px; letter-spacing:2px; color:#A4A7AE; margin-top:3px;">' + dayData.num + '</div>';
+      col.appendChild(header);
+      // Blocks (each starts hidden, will stagger in)
+      dayData.blocks.forEach(function(b) {
+        var block = document.createElement('div');
+        block.className = 'week-block';
+        var scaledH = Math.round(b.h * 0.7); // scale down block heights for week view
+        block.style.cssText = 'width:' + WEEK_BLOCK_W + 'px; height:' + scaledH + 'px; background:' + b.color + '; border-radius:3px; position:relative; overflow:hidden; opacity:0; transform:translateY(12px); will-change:opacity,transform;';
+        block.innerHTML = '<span style="position:absolute;left:5px;top:50%;transform:translateY(-50%);font-family:\'Roobert\',var(--sans);font-size:7px;color:#fff;font-weight:300;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:60px;">' + b.name + '</span>' +
+          '<span style="position:absolute;right:5px;top:50%;transform:translateY(-50%);font-family:\'Roobert Semi Mono\',var(--mono);font-size:6px;color:rgba(255,255,255,0.7);letter-spacing:0.3px;">' + b.time + '</span>';
+        col.appendChild(block);
+      });
+      weekViewEl.appendChild(col);
+    });
+  }
+  const weekCols = document.querySelectorAll('.week-col');
+
+  // Morph block — SVG wireframe that transitions into first colored block
+  const morphBlock = document.createElement('div');
+  morphBlock.id = 'morphBlock';
+  morphBlock.style.cssText = 'position:absolute; opacity:0; z-index:6; pointer-events:none; will-change:transform,opacity; overflow:hidden;';
+  var fullB = BK_T + 136;
+  // SVG wireframe layer
+  morphBlock.innerHTML = '<svg id="morphSvg" viewBox="' + (BK_L - 4).toFixed(2) + ' ' + (BK_T - 4).toFixed(2) + ' ' + BK_VBW.toFixed(2) + ' 144" width="100%" style="position:relative;z-index:2;" xmlns="http://www.w3.org/2000/svg">' +
+    '<g id="mLines">' +
+    '<line x1="' + (BK_L + BK_ARM).toFixed(2) + '" y1="' + (BK_T + BK_T_W / 2).toFixed(2) + '" x2="' + (BK_R - BK_ARM).toFixed(2) + '" y2="' + (BK_T + BK_T_W / 2).toFixed(2) + '" stroke="#fff" stroke-width=".11" fill="none"/>' +
+    '<line id="mBotLine" x1="' + (BK_L + BK_ARM).toFixed(2) + '" y1="' + (fullB - BK_T_W / 2).toFixed(2) + '" x2="' + (BK_R - BK_ARM).toFixed(2) + '" y2="' + (fullB - BK_T_W / 2).toFixed(2) + '" stroke="#fff" stroke-width=".11" fill="none"/>' +
+    '<line id="mLeftLine" x1="' + (BK_L + BK_T_W / 2).toFixed(2) + '" y1="' + (BK_T + BK_ARM).toFixed(2) + '" x2="' + (BK_L + BK_T_W / 2).toFixed(2) + '" y2="' + (fullB - BK_ARM).toFixed(2) + '" stroke="#fff" stroke-width=".11" fill="none"/>' +
+    '<line id="mRightLine" x1="' + (BK_R - BK_T_W / 2).toFixed(2) + '" y1="' + (BK_T + BK_ARM).toFixed(2) + '" x2="' + (BK_R - BK_T_W / 2).toFixed(2) + '" y2="' + (fullB - BK_ARM).toFixed(2) + '" stroke="#fff" stroke-width=".11" fill="none"/>' +
+    '</g>' +
+    '<g id="mBrackets">' +
+    '<rect x="' + BK_L.toFixed(2) + '" y="' + BK_T.toFixed(2) + '" width="' + BK_ARM + '" height="' + BK_T_W + '" fill="#fff"/>' +
+    '<rect x="' + BK_L.toFixed(2) + '" y="' + BK_T.toFixed(2) + '" width="' + BK_T_W + '" height="' + BK_ARM + '" fill="#fff"/>' +
+    '<rect x="' + (BK_R - BK_ARM).toFixed(2) + '" y="' + BK_T.toFixed(2) + '" width="' + BK_ARM + '" height="' + BK_T_W + '" fill="#fff"/>' +
+    '<rect x="' + (BK_R - BK_T_W).toFixed(2) + '" y="' + BK_T.toFixed(2) + '" width="' + BK_T_W + '" height="' + BK_ARM + '" fill="#fff"/>' +
+    '<g id="mBottomAll" transform="translate(0,0)">' +
+    '<rect x="' + BK_L.toFixed(2) + '" y="' + (fullB - BK_T_W).toFixed(2) + '" width="' + BK_ARM + '" height="' + BK_T_W + '" fill="#fff"/>' +
+    '<rect x="' + BK_L.toFixed(2) + '" y="' + (fullB - BK_ARM).toFixed(2) + '" width="' + BK_T_W + '" height="' + BK_ARM + '" fill="#fff"/>' +
+    '<rect x="' + (BK_R - BK_ARM).toFixed(2) + '" y="' + (fullB - BK_T_W).toFixed(2) + '" width="' + BK_ARM + '" height="' + BK_T_W + '" fill="#fff"/>' +
+    '<rect x="' + (BK_R - BK_T_W).toFixed(2) + '" y="' + (fullB - BK_ARM).toFixed(2) + '" width="' + BK_T_W + '" height="' + BK_ARM + '" fill="#fff"/>' +
+    '</g></g></svg>';
+  // Color overlay that fades in at end of morph
+  var morphColorDiv = document.createElement('div');
+  morphColorDiv.id = 'morphColor';
+  morphColorDiv.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;background:' + blockData[0].color + ';border-radius:4px;opacity:0;z-index:1;display:flex;align-items:center;justify-content:space-between;padding:0 8px;box-sizing:border-box;';
+  morphColorDiv.innerHTML = '<span style="font-family:\'Roobert\',var(--sans);font-size:10px;color:#fff;font-weight:300;">' + blockData[0].name + '</span><span style="font-family:\'Roobert Semi Mono\',var(--mono);font-size:8px;color:rgba(255,255,255,0.7);letter-spacing:0.3px;">' + blockData[0].time + '</span>';
+  morphBlock.appendChild(morphColorDiv);
+  document.getElementById('sectionHero').appendChild(morphBlock);
+
+  function updateHeroParallax() {
+    if (!heroOuter) return;
+    const rect = heroOuter.getBoundingClientRect();
+    const totalScrollRange = heroOuter.offsetHeight - window.innerHeight;
+    const existingRange = 4 * window.innerHeight; // first 400vh for existing animations
+    const intentionRange = 2.5 * window.innerHeight; // next 250vh for intentions beat
+    const collapseRange = 5 * window.innerHeight; // next 500vh for collapse/stack
+    const zoomRange = 4.5 * window.innerHeight; // next 450vh for zoom into block
+    const weekRange = 3 * window.innerHeight; // final 300vh for week expansion
+    const scrollTop = -rect.top;
+    const progress = Math.max(0, Math.min(1, scrollTop / existingRange));
+    const intentionProgress = Math.max(0, Math.min(1, (scrollTop - existingRange) / intentionRange));
+    const collapseProgress = Math.max(0, Math.min(1, (scrollTop - existingRange - intentionRange) / collapseRange));
+    const zoomProgress = Math.max(0, Math.min(1, (scrollTop - existingRange - intentionRange - collapseRange) / zoomRange));
+    const weekProgress = Math.max(0, Math.min(1, (scrollTop - existingRange - intentionRange - collapseRange - zoomRange) / weekRange));
+
+    // Intro phase capped at 0.25 — everything settles by then
+    const introP = Math.min(1, progress / 0.25);
+
+    // Text exits — no fade, completes within intro phase
+    const textP = Math.min(1, introP * 2);
+    if (heroHL) heroHL.style.transform = 'translateY(' + (-textP * 800) + 'px)';
+    if (heroSub) heroSub.style.transform = 'translateY(' + (textP * 800) + 'px)';
+    if (scrollInd) {
+      scrollInd.style.animation = 'none';
+      scrollInd.style.opacity = Math.max(0, 0.35 - introP * 1.5);
+    }
+
+    // Grid fades out and scales up (zooming into center block)
+    if (heroGrid) {
+      heroGrid.style.opacity = Math.max(0, 0.15 - introP * 0.15);
+      const gridScale = 1 + introP * 0.8;
+      heroGrid.style.transform = 'scale(' + gridScale + ')';
+    }
+
+    // Center block fades in and scales — holds at final state
+    var blockScale = 1 + introP * 0.8; // reaches 1.8 at introP=1 (progress=0.25)
+    // Scale bump during beat 1 (progress 0.42–0.50), stays at 2.34
+    if (progress > 0.42) {
+      const bumpP = Math.max(0, Math.min(1, (progress - 0.42) / 0.08));
+      const easeP = bumpP * bumpP * (3 - 2 * bumpP); // smoothstep
+      blockScale = 1.8 + 0.54 * easeP; // 1.8 → 2.34 (30% increase), holds
+    }
+    if (heroBlock) {
+      const fadeIn = Math.max(0, Math.min(1, introP * 3));
+      heroBlock.style.opacity = fadeIn;
+    }
+
+    // ─── Hero text beats (progress 0.25–0.60) ───
+    if (heroBeats.length > 0 && progress > 0.2) {
+      const beatStart = 0.25;
+      const beatEnd = 0.60;
+      const beatProgress = Math.max(0, Math.min(1, (progress - beatStart) / (beatEnd - beatStart)));
+      const numBeats = heroBeats.length;
+      const beatDuration = 1 / numBeats;
+
+      heroBeats.forEach((beat, i) => {
+        const bStart = i * beatDuration;
+        const bEnd = (i + 1) * beatDuration;
+        const bFadeIn = bStart + beatDuration * 0.2;
+        const bFadeOut = bEnd - beatDuration * 0.2;
+        let opacity = 0, yOffset = 20;
+        if (beatProgress >= bStart && beatProgress < bEnd) {
+          if (beatProgress < bFadeIn) {
+            // Fade in
+            const t = (beatProgress - bStart) / (bFadeIn - bStart);
+            opacity = t; yOffset = 20 * (1 - t);
+          } else if (i < numBeats - 1 && beatProgress > bFadeOut) {
+            // Fade out (only non-last beats)
+            const t = (beatProgress - bFadeOut) / (bEnd - bFadeOut);
+            opacity = 1 - t; yOffset = -20 * t;
+          } else {
+            opacity = 1; yOffset = 0;
+          }
+        } else if (i === numBeats - 1 && beatProgress >= bEnd) {
+          // Last beat persists
+          opacity = 1; yOffset = 0;
+        }
+        beat.style.opacity = opacity;
+        beat.style.transform = 'translateY(' + yOffset + 'px)';
+      });
+      // Sub-text fades in slightly after beat 1 (delayed)
+      const beatSubText = document.getElementById('beatSubText');
+      if (beatSubText) {
+        const subStart = 0.48, subEnd = 0.56;
+        const subP = Math.max(0, Math.min(1, (progress - subStart) / (subEnd - subStart)));
+        beatSubText.style.opacity = subP * 0.7;
+        beatSubText.style.transform = 'translateY(' + ((1 - subP) * 12) + 'px)';
+      }
+    } else {
+      heroBeats.forEach(b => { b.style.opacity = 0; });
+      const beatSubText = document.getElementById('beatSubText');
+      if (beatSubText) { beatSubText.style.opacity = 0; }
+    }
+
+    // ─── Block image fades in with beat 1 (progress ~0.42–0.48) ───
+    if (blockImage) {
+      const imgStart = 0.42, imgEnd = 0.48;
+      const imgP = Math.max(0, Math.min(1, (progress - imgStart) / (imgEnd - imgStart)));
+      blockImage.style.opacity = imgP;
+    }
+
+
+    // ─── Right text + 3D flip (progress 0.80–0.90) ───
+    const rightStartP = 0.80;
+    const rightEndP = 0.90;
+    const rightSubText = document.getElementById('rightSubText');
+    var flipAngle = 0;
+    if (progress >= rightStartP && heroRightText) {
+      const rightP = Math.min(1, (progress - rightStartP) / (rightEndP - rightStartP));
+      heroRightText.style.opacity = rightP;
+      heroRightText.style.transform = 'translateY(' + ((1 - rightP) * 20) + 'px)';
+      if (rightSubText) {
+        const rSubStart = 0.85, rSubEnd = 0.93;
+        const rSubP = Math.max(0, Math.min(1, (progress - rSubStart) / (rSubEnd - rSubStart)));
+        rightSubText.style.opacity = rSubP * 0.7;
+        rightSubText.style.transform = 'translateY(' + ((1 - rSubP) * 12) + 'px)';
+      }
+      flipAngle = rightP * 180;
+      if (heroBlockBack) {
+        heroBlockBack.style.opacity = 1;
+        heroBlockBack.style.transform = 'scale(' + blockScale + ') rotateY(' + (180 + flipAngle) + 'deg)';
+      }
+    } else if (heroRightText) {
+      heroRightText.style.opacity = 0;
+      if (rightSubText) rightSubText.style.opacity = 0;
+      if (progress < rightStartP && heroBlockBack) {
+        heroBlockBack.style.opacity = 0;
+        heroBlockBack.style.transform = 'scale(' + blockScale + ') rotateY(180deg)';
+      }
+    }
+    // Single unified transform for heroBlock — scale + flip combined
+    if (heroBlock) {
+      heroBlock.style.transform = 'scale(' + blockScale + ')' + (flipAngle > 0 ? ' rotateY(' + flipAngle + 'deg)' : '');
+    }
+
+    // ─── Intentions phase (intentionProgress 0→1) ───
+    const intentionsContent = document.getElementById('intentionsContent');
+    const intentionsUI = document.getElementById('intentionsUI');
+
+    if (intentionProgress > 0) {
+      // Phase A (0–0.15): Fade out left column text + right column text
+      const intFadeOutP = Math.min(1, intentionProgress / 0.15);
+      if (heroBeats[0]) heroBeats[0].style.opacity = 0;
+      if (heroBeats[1]) heroBeats[1].style.opacity = Math.max(0, 1 - intFadeOutP);
+      var bst = document.getElementById('beatSubText');
+      if (bst) bst.style.opacity = Math.max(0, 0.7 * (1 - intFadeOutP));
+      if (heroRightText) heroRightText.style.opacity = Math.max(0, 1 - intFadeOutP);
+      var rst = document.getElementById('rightSubText');
+      if (rst) rst.style.opacity = Math.max(0, 0.7 * (1 - intFadeOutP));
+
+      // Phase B (0.15–0.35): Intentions text + UI fade UP into view
+      const intFadeInStart = 0.15, intFadeInEnd = 0.35;
+      const intFadeInP = Math.max(0, Math.min(1, (intentionProgress - intFadeInStart) / (intFadeInEnd - intFadeInStart)));
+      if (intentionsContent) {
+        intentionsContent.style.opacity = intFadeInP;
+        intentionsContent.style.transform = 'translateY(' + ((-50 + (1 - intFadeInP) * 20)) + '%)';
+      }
+      // UI placeholder fades in slightly after text
+      const uiFadeInStart = 0.22, uiFadeInEnd = 0.40;
+      const uiFadeInP = Math.max(0, Math.min(1, (intentionProgress - uiFadeInStart) / (uiFadeInEnd - uiFadeInStart)));
+      if (intentionsUI) {
+        intentionsUI.style.opacity = uiFadeInP;
+        intentionsUI.style.transform = 'translateY(' + ((1 - uiFadeInP) * 20) + 'px)';
+      }
+
+      // Hold visible from 0.40–0.75
+
+      // Phase C (0.75–0.95): Intentions text + UI fade OUT before morph starts
+      const intFadeOutStart = 0.75, intFadeOutEnd = 0.95;
+      const intContentFadeP = Math.max(0, Math.min(1, (intentionProgress - intFadeOutStart) / (intFadeOutEnd - intFadeOutStart)));
+      if (intentionProgress > intFadeOutStart) {
+        if (intentionsContent) intentionsContent.style.opacity = Math.max(0, 1 - intContentFadeP);
+        if (intentionsUI) intentionsUI.style.opacity = Math.max(0, 1 - intContentFadeP);
+      }
+
+      // heroBlockBack stays visible and stationary during intentions phase
+      if (heroBlockBack) {
+        heroBlockBack.style.opacity = 1;
+        heroBlockBack.style.transform = 'scale(' + blockScale + ') rotateY(360deg)';
+      }
+      if (heroBlock) {
+        heroBlock.style.opacity = 1;
+        heroBlock.style.transform = 'scale(' + blockScale + ') rotateY(180deg)';
+      }
+    } else {
+      // Reset intentions state when scrolling back
+      if (intentionsContent) { intentionsContent.style.opacity = 0; intentionsContent.style.transform = 'translateY(-30%)'; }
+      if (intentionsUI) { intentionsUI.style.opacity = 0; intentionsUI.style.transform = 'translateY(20px)'; }
+    }
+
+    // ─── Collapse phase (collapseProgress 0→1) ───
+    // Morph SVG references
+    const mSvg = document.getElementById('morphSvg');
+    const mBotLine = document.getElementById('mBotLine');
+    const mLeftLine = document.getElementById('mLeftLine');
+    const mRightLine = document.getElementById('mRightLine');
+    const mBottomAll = document.getElementById('mBottomAll');
+
+    if (collapseProgress > 0) {
+      // Text already faded out during intentions phase — ensure it stays hidden
+      if (heroBeats[0]) heroBeats[0].style.opacity = 0;
+      if (heroBeats[1]) heroBeats[1].style.opacity = 0;
+      var bst = document.getElementById('beatSubText');
+      if (bst) bst.style.opacity = 0;
+      if (heroRightText) heroRightText.style.opacity = 0;
+      var rst = document.getElementById('rightSubText');
+      if (rst) rst.style.opacity = 0;
+      // Also ensure intentions content is hidden
+      if (intentionsContent) intentionsContent.style.opacity = 0;
+      if (intentionsUI) intentionsUI.style.opacity = 0;
+
+      // Quick crossfade — heroBlockBack out, morphBlock in (starts immediately)
+      const swapStart = 0.0, swapEnd = 0.10;
+      const swapP = Math.max(0, Math.min(1, (collapseProgress - swapStart) / (swapEnd - swapStart)));
+
+      // Calculate frame position (where the block visually appears at scale 2.34)
+      const vw = window.innerWidth, vh = window.innerHeight;
+      const svgCoverScale = Math.max(vw / 1920, vh / 1080);
+      const frameW = 136 * svgCoverScale * 2.34;
+      const frameH = 136 * svgCoverScale * 2.34;
+      // Transform-origin 50% 74%, frame center in SVG at ~(959, 688)
+      const ox = vw * 0.5, oy = vh * 0.74;
+      const fcx = 959 * svgCoverScale, fcy = 688 * svgCoverScale;
+      // Adjust for cover centering
+      const svgW = 1920 * svgCoverScale, svgH = 1080 * svgCoverScale;
+      const bgOffsetX = (vw - svgW) / 2, bgOffsetY = (vh - svgH) / 2;
+      const frameCX = bgOffsetX + fcx, frameCY = bgOffsetY + fcy;
+      // After scale 2.34 around transform-origin (50% 74%)
+      const startCX = ox + (frameCX - ox) * 2.34;
+      const startCY = oy + (frameCY - oy) * 2.34;
+
+      // Fade out heroBlockBack, fade in morphBlock
+      if (heroBlockBack) heroBlockBack.style.opacity = Math.max(0, 1 - swapP * 5);
+      if (heroBlock) heroBlock.style.opacity = Math.max(0, 1 - swapP * 5);
+
+      // Morph block moves up, shrinks, SVG morphs
+      // Starts AFTER crossfade completes (swapEnd=0.10) to avoid overlap
+      const morphStart = 0.12, morphEnd = 0.55;
+      const morphP = Math.max(0, Math.min(1, (collapseProgress - morphStart) / (morphEnd - morphStart)));
+      // Eased morph progress
+      const easeP = 1 - Math.pow(1 - morphP, 3);
+
+      // Target: first stack block position (centered column, shifted down)
+      const stackBlockW = 160;
+      const firstBlockH = blockData[0].h;
+      const stackTopY = vh * 0.30; // matches padding-top:30vh
+      const targetCX = vw / 2;
+      const targetCY = stackTopY + firstBlockH / 2;
+
+      // Interpolate position and size
+      const curCX = startCX + (targetCX - startCX) * easeP;
+      const curCY = startCY + (targetCY - startCY) * easeP;
+      const curW = frameW + (stackBlockW - frameW) * easeP;
+
+      // SVG morph: bottom y offset (0 at full square, -100 at collapsed)
+      const yShift = easeP * -100;
+      // ViewBox height morphs: 144 → 44
+      const vbH = 144 - easeP * 100;
+      // Bottom line y and side line ends shift with bottom brackets
+      const botLineY = (BK_T + 136 - BK_T_W / 2) + yShift;
+      const sideEndY = (BK_T + 136 - BK_ARM) + yShift;
+
+      var morphH = curW * vbH / BK_VBW;
+      morphBlock.style.opacity = swapP;
+      morphBlock.style.width = curW + 'px';
+      morphBlock.style.height = morphH + 'px';
+      morphBlock.style.left = (curCX - curW / 2) + 'px';
+      morphBlock.style.top = (curCY - morphH / 2) + 'px';
+
+      if (mSvg) mSvg.setAttribute('viewBox', (BK_L - 4).toFixed(2) + ' ' + (BK_T - 4).toFixed(2) + ' ' + BK_VBW.toFixed(2) + ' ' + vbH.toFixed(1));
+      if (mBotLine) { mBotLine.setAttribute('y1', botLineY.toFixed(2)); mBotLine.setAttribute('y2', botLineY.toFixed(2)); }
+      if (mLeftLine) mLeftLine.setAttribute('y2', sideEndY.toFixed(2));
+      if (mRightLine) mRightLine.setAttribute('y2', sideEndY.toFixed(2));
+      if (mBottomAll) mBottomAll.setAttribute('transform', 'translate(0,' + yShift.toFixed(2) + ')');
+
+      // End of morph: brackets fade → lines fade → color fills in → corners round
+      const mBrackets = document.getElementById('mBrackets');
+      const mLines = document.getElementById('mLines');
+      const morphColor = document.getElementById('morphColor');
+      // Brackets fade (0.40–0.48)
+      const bracketFadeP = Math.max(0, Math.min(1, (collapseProgress - 0.40) / 0.08));
+      if (mBrackets) mBrackets.setAttribute('opacity', (1 - bracketFadeP).toFixed(2));
+      // Lines fade (0.44–0.51)
+      const lineFadeP = Math.max(0, Math.min(1, (collapseProgress - 0.44) / 0.07));
+      if (mLines) mLines.setAttribute('opacity', (1 - lineFadeP).toFixed(2));
+      // Color fills in + corners round (0.46–0.54)
+      const colorFillP = Math.max(0, Math.min(1, (collapseProgress - 0.46) / 0.08));
+      if (morphColor) morphColor.style.opacity = colorFillP;
+      morphBlock.style.borderRadius = (colorFillP * 4) + 'px';
+
+      // Morph becomes first block, rest stagger in
+      const stackStart = 0.56;
+      if (collapseProgress >= stackStart && blockStackEl) {
+        blockStackEl.style.opacity = 1;
+        // First stack block replaces morph (identical visual — seamless swap)
+        const firstP = Math.max(0, Math.min(1, (collapseProgress - 0.58) / 0.04));
+        if (stackBlocks[0]) {
+          stackBlocks[0].style.opacity = firstP;
+          stackBlocks[0].style.transform = 'translateY(0)';
+        }
+        // Hide morph block once first stack block is fully in
+        if (firstP >= 1) morphBlock.style.opacity = 0;
+
+        // Stagger remaining blocks
+        for (let i = 1; i < stackBlocks.length; i++) {
+          const bStart = 0.52 + (i - 1) / (stackBlocks.length - 1) * 0.30;
+          const bEnd = bStart + 0.06;
+          const bP = Math.max(0, Math.min(1, (collapseProgress - bStart) / (bEnd - bStart)));
+          stackBlocks[i].style.opacity = bP;
+          stackBlocks[i].style.transform = 'translateY(' + ((1 - bP) * 25) + 'px)';
+        }
+        // Date header fades in right after morph completes / first block appears
+        const stackDateEl = document.getElementById('stackDateHeader');
+        const dateStart = 0.63, dateEnd = 0.69;
+        const dateP = Math.max(0, Math.min(1, (collapseProgress - dateStart) / (dateEnd - dateStart)));
+        if (stackDateEl) {
+          stackDateEl.style.opacity = dateP;
+          stackDateEl.style.transform = 'translateX(-50%) translateY(' + ((1 - dateP) * 10) + 'px)';
+        }
+        // Stack beat text fades in after blocks finish staggering
+        const stackTextEl = document.getElementById('stackBeatText');
+        const textStart = 0.85, textEnd = 0.92;
+        const textP = Math.max(0, Math.min(1, (collapseProgress - textStart) / (textEnd - textStart)));
+        if (stackTextEl) {
+          stackTextEl.style.opacity = textP;
+          stackTextEl.style.transform = 'translateY(' + ((1 - textP) * 15) + 'px)';
+        }
+      } else {
+        if (blockStackEl) blockStackEl.style.opacity = 0;
+        const stackTextEl = document.getElementById('stackBeatText');
+        const stackDateEl = document.getElementById('stackDateHeader');
+        if (stackTextEl) { stackTextEl.style.opacity = 0; stackTextEl.style.transform = 'translateY(15px)'; }
+        if (stackDateEl) { stackDateEl.style.opacity = 0; stackDateEl.style.transform = 'translateX(-50%) translateY(10px)'; }
+      }
+    } else {
+      // Reset collapse state
+      morphBlock.style.opacity = 0;
+      if (blockStackEl) blockStackEl.style.opacity = 0;
+      stackBlocks.forEach(b => { b.style.opacity = 0; b.style.transform = 'translateY(20px)'; });
+      const stackTextEl = document.getElementById('stackBeatText');
+      const stackDateEl = document.getElementById('stackDateHeader');
+      if (stackTextEl) { stackTextEl.style.opacity = 0; stackTextEl.style.transform = 'translateY(15px)'; }
+      if (stackDateEl) { stackDateEl.style.opacity = 0; stackDateEl.style.transform = 'translateX(-50%) translateY(10px)'; }
+      // Reset morph SVG + color overlay
+      if (mSvg) mSvg.setAttribute('viewBox', (BK_L - 4).toFixed(2) + ' ' + (BK_T - 4).toFixed(2) + ' ' + BK_VBW.toFixed(2) + ' 144');
+      if (mBotLine) { mBotLine.setAttribute('y1', (BK_T + 136 - BK_T_W / 2).toFixed(2)); mBotLine.setAttribute('y2', (BK_T + 136 - BK_T_W / 2).toFixed(2)); }
+      if (mLeftLine) mLeftLine.setAttribute('y2', (BK_T + 136 - BK_ARM).toFixed(2));
+      if (mRightLine) mRightLine.setAttribute('y2', (BK_T + 136 - BK_ARM).toFixed(2));
+      if (mBottomAll) mBottomAll.setAttribute('transform', 'translate(0,0)');
+      var mBrk = document.getElementById('mBrackets');
+      var mLns = document.getElementById('mLines');
+      var mClr = document.getElementById('morphColor');
+      if (mBrk) mBrk.setAttribute('opacity', '1');
+      if (mLns) mLns.setAttribute('opacity', '1');
+      if (mClr) mClr.style.opacity = 0;
+      morphBlock.style.borderRadius = '0';
+    }
+
+    // ─── Zoom into block phase (zoomProgress 0→1) ───
+    if (zoomProgress > 0) {
+      var zoomDetail = document.getElementById('zoomBlockDetail');
+      var zBeat1 = document.getElementById('zoomBeat1');
+      var zBeat2 = document.getElementById('zoomBeat2');
+      var zBeat3 = document.getElementById('zoomBeat3');
+
+      // Phase A (0-0.12): Fade out "On a typical day..." text, dim stack, highlight Deep Work
+      var stackTextEl = document.getElementById('stackBeatText');
+      if (stackTextEl) stackTextEl.style.opacity = Math.max(0, 1 - zoomProgress / 0.10);
+
+      // Dim all stack blocks except Deep Work (index 1)
+      var dimP = Math.min(1, zoomProgress / 0.15);
+      stackBlocks.forEach(function(b, i) {
+        if (i === 1) {
+          // Deep Work gets a glow
+          b.style.boxShadow = '0 0 ' + (dimP * 20) + 'px rgba(60,89,153,' + (dimP * 0.6) + ')';
+        } else {
+          b.style.opacity = Math.max(0.15, 1 - dimP * 0.85);
+        }
+      });
+      // Dim date header
+      var sdh = document.getElementById('stackDateHeader');
+      if (sdh) sdh.style.opacity = Math.max(0.15, 1 - dimP * 0.85);
+
+      // Phase B (0.12-0.30): Crossfade — Deep Work block fades, detail view fades in
+      var crossStart = 0.12, crossEnd = 0.30;
+      var crossP = Math.max(0, Math.min(1, (zoomProgress - crossStart) / (crossEnd - crossStart)));
+      if (stackBlocks[1]) {
+        stackBlocks[1].style.opacity = Math.max(0.15, 1 - crossP);
+        stackBlocks[1].style.boxShadow = '0 0 ' + ((1 - crossP) * 20) + 'px rgba(60,89,153,' + ((1 - crossP) * 0.6) + ')';
+      }
+      if (zoomDetail) {
+        zoomDetail.style.opacity = crossP;
+        zoomDetail.style.transform = 'translate(-50%,-50%) translateY(' + ((1 - crossP) * 20) + 'px)';
+      }
+
+      // Phase C (0.30-0.82): Three text beats cycle
+      // Beat 1: 0.30-0.48
+      // Beat 2: 0.48-0.65
+      // Beat 3: 0.65-0.82
+      var beats = [zBeat1, zBeat2, zBeat3];
+      var beatRanges = [[0.30, 0.48], [0.48, 0.65], [0.65, 0.82]];
+      beats.forEach(function(beat, i) {
+        if (!beat) return;
+        var bStart = beatRanges[i][0];
+        var bEnd = beatRanges[i][1];
+        var bDur = bEnd - bStart;
+        var fadeInEnd = bStart + bDur * 0.25;
+        var fadeOutStart = bEnd - bDur * 0.25;
+        var op = 0, yOff = 15;
+
+        if (zoomProgress >= bStart && zoomProgress < bEnd) {
+          if (zoomProgress < fadeInEnd) {
+            // Fade in
+            var t = (zoomProgress - bStart) / (fadeInEnd - bStart);
+            op = t; yOff = 15 * (1 - t);
+          } else if (i < 2 && zoomProgress > fadeOutStart) {
+            // Fade out (not last beat)
+            var t = (zoomProgress - fadeOutStart) / (bEnd - fadeOutStart);
+            op = 1 - t; yOff = -10 * t;
+          } else {
+            op = 1; yOff = 0;
+          }
+        } else if (i === 2 && zoomProgress >= bEnd) {
+          // Last beat persists
+          op = 1; yOff = 0;
+        }
+        beat.style.opacity = op;
+        beat.style.transform = 'translateY(' + yOff + 'px)';
+      });
+
+      // Phase D (0.85-1.0): Collapse back — detail fades out, stack restores
+      if (zoomProgress > 0.85) {
+        var restoreP = Math.min(1, (zoomProgress - 0.85) / 0.15);
+        if (zoomDetail) zoomDetail.style.opacity = Math.max(0, 1 - restoreP);
+        if (zBeat3) zBeat3.style.opacity = Math.max(0, 1 - restoreP);
+
+        // Restore stack blocks to full opacity
+        stackBlocks.forEach(function(b) {
+          b.style.opacity = 0.15 + restoreP * 0.85;
+          b.style.boxShadow = 'none';
+        });
+        var sdh2 = document.getElementById('stackDateHeader');
+        if (sdh2) sdh2.style.opacity = 0.15 + restoreP * 0.85;
+      }
+
+    } else {
+      // Reset zoom state
+      var zoomDetail = document.getElementById('zoomBlockDetail');
+      var zBeat1 = document.getElementById('zoomBeat1');
+      var zBeat2 = document.getElementById('zoomBeat2');
+      var zBeat3 = document.getElementById('zoomBeat3');
+      if (zoomDetail) { zoomDetail.style.opacity = 0; zoomDetail.style.transform = 'translate(-50%,-50%) translateY(20px)'; }
+      if (zBeat1) { zBeat1.style.opacity = 0; zBeat1.style.transform = 'translateY(15px)'; }
+      if (zBeat2) { zBeat2.style.opacity = 0; zBeat2.style.transform = 'translateY(15px)'; }
+      if (zBeat3) { zBeat3.style.opacity = 0; zBeat3.style.transform = 'translateY(15px)'; }
+      // Stack blocks are controlled by collapse phase when zoom is not active
+    }
+
+    // ─── Week expansion phase (weekProgress 0→1) ───
+    if (weekProgress > 0) {
+      const vw = window.innerWidth;
+
+      // Eased progress for the shrink+slide (0–0.30 of weekProgress)
+      const moveRaw = Math.min(1, weekProgress / 0.30);
+      const moveP = 1 - Math.pow(1 - moveRaw, 3); // ease-out cubic
+
+      // Target scale for the WED column: 0.7 (30% smaller)
+      const targetScale = 0.7;
+      const curScale = 1 - (1 - targetScale) * moveP; // 1 → 0.7
+
+      // Block stack is 100% wide, blocks are centered via align-items:center at 160px wide.
+      // The visual center of the blocks is at vw/2.
+      // Target: WED column left edge at ~4% viewport from left
+      const wedTargetLeft = vw * 0.04;
+      const wedScaledW = 160 * targetScale; // 112px at full shrink
+      const wedTargetCenter = wedTargetLeft + wedScaledW / 2;
+
+      // Current visual center of blocks = vw/2 (no transform)
+      // After scale around center-top: blocks stay at vw/2 center
+      // We need to shift left by (vw/2 - wedTargetCenter) pixels in screen space
+      const targetShiftX = vw / 2 - wedTargetCenter;
+      const curShiftX = targetShiftX * moveP;
+
+      // Apply transforms: scale first (around center top), then translate in scaled space
+      // Since scale happens first, translateX value needs to be divided by curScale
+      // to achieve the correct screen-space shift
+      if (blockStackEl) {
+        blockStackEl.style.transformOrigin = 'center top';
+        blockStackEl.style.transform = 'scale(' + curScale + ') translateX(' + (-curShiftX / curScale) + 'px)';
+        blockStackEl.style.opacity = 1;
+      }
+
+      // Date header: originally at left:50% with translateX(-50%) to center it.
+      // Move it to follow the blocks: shift left by curShiftX
+      var sdh = document.getElementById('stackDateHeader');
+      if (sdh) {
+        const wedCurCenter = vw / 2 - curShiftX;
+        sdh.style.left = wedCurCenter + 'px';
+        sdh.style.transform = 'translateX(-50%) scale(' + curScale + ')';
+        sdh.style.transformOrigin = 'center bottom';
+        sdh.style.opacity = 1;
+      }
+
+      // stackBeatText fades out (0–0.15)
+      var sbt = document.getElementById('stackBeatText');
+      if (sbt) {
+        const sbtFade = Math.min(1, weekProgress / 0.15);
+        sbt.style.opacity = Math.max(0, 1 - sbtFade);
+      }
+
+      // weekBeatText fades in (0.15–0.35)
+      var weekText = document.getElementById('weekBeatText');
+      if (weekText) {
+        const wtP = Math.max(0, Math.min(1, (weekProgress - 0.15) / 0.20));
+        weekText.style.opacity = wtP;
+        weekText.style.transform = 'translateY(' + ((1 - wtP) * 15) + 'px)';
+      }
+
+      // Week columns (THU-TUE) appear to the right of the WED stack
+      if (weekViewEl) {
+        const colGap = 4;
+        // Track the current right edge of the WED column as it moves
+        // Original block center: vw/2. Current scaled width: 160 * curScale
+        // After translateX(-curShiftX), the center is at: vw/2 - curShiftX
+        const curWedCenter = vw / 2 - curShiftX;
+        const curWedHalfW = (160 * curScale) / 2;
+        const curWedRight = curWedCenter + curWedHalfW;
+
+        weekViewEl.style.left = (curWedRight + colGap) + 'px';
+        weekViewEl.style.paddingLeft = '0';
+        // Offset to align column blocks with the WED stack
+        // Week cols have ~26px of header above blocks, WED stack starts at 30vh
+        // So push weekView up by ~26px to roughly align block tops
+        weekViewEl.style.paddingTop = 'calc(30vh - 26px)';
+        weekViewEl.style.gap = colGap + 'px';
+
+        // Only show weekView once the stack has started moving
+        const weekViewShowP = Math.max(0, Math.min(1, (weekProgress - 0.08) / 0.10));
+        weekViewEl.style.opacity = weekViewShowP;
+
+        // Stagger columns appearing left to right
+        const numCols = weekCols.length; // 6 columns (THU-TUE)
+        const colStaggerStart = 0.12;
+        const colStaggerEnd = 0.80;
+        const colWindow = (colStaggerEnd - colStaggerStart) / numCols;
+
+        weekCols.forEach(function(col, colIdx) {
+          const cStart = colStaggerStart + colIdx * colWindow;
+          const cEnd = cStart + colWindow * 2.0; // generous overlap
+          const cRaw = Math.max(0, Math.min(1, (weekProgress - cStart) / (cEnd - cStart)));
+          const cEase = 1 - Math.pow(1 - cRaw, 3);
+
+          col.style.opacity = cEase;
+
+          // Blocks within each column stagger in from top
+          var blocks = col.querySelectorAll('.week-block');
+          blocks.forEach(function(block, bIdx) {
+            var bDelay = bIdx * 0.02;
+            var bRaw = Math.max(0, Math.min(1, (cRaw - 0.15 - bDelay) / 0.55));
+            var bEase = 1 - Math.pow(1 - bRaw, 3);
+            block.style.opacity = bEase;
+            block.style.transform = 'translateY(' + ((1 - bEase) * 14) + 'px)';
+          });
+        });
+      }
+    } else {
+      // Reset week state
+      if (weekViewEl) weekViewEl.style.opacity = 0;
+      weekCols.forEach(function(col) {
+        col.style.opacity = 0;
+        var blocks = col.querySelectorAll('.week-block');
+        blocks.forEach(function(block) { block.style.opacity = 0; block.style.transform = 'translateY(14px)'; });
+      });
+      var weekText = document.getElementById('weekBeatText');
+      if (weekText) { weekText.style.opacity = 0; weekText.style.transform = 'translateY(15px)'; }
+      // Reset stack transforms so collapse phase still works when scrolling back
+      if (blockStackEl) {
+        blockStackEl.style.transformOrigin = '';
+        blockStackEl.style.transform = '';
+      }
+      var sdh = document.getElementById('stackDateHeader');
+      if (sdh) {
+        sdh.style.left = '50%';
+        sdh.style.transformOrigin = '';
+        // Let collapse phase control transform if active, otherwise reset
+        if (collapseProgress <= 0) {
+          sdh.style.transform = 'translateX(-50%) translateY(10px)';
+        }
+      }
+    }
+  }
+
+  // Hook into Lenis scroll for synced updates
+  lenis.on('scroll', () => {
+    updateHeroParallax();
+    syncProgressTop();
+  });
+  // Fallback for native scroll
+  window.addEventListener('scroll', () => {
+    updateHeroParallax();
+  }, { passive: true });
+
+  syncProgressTop();
+
+  // ─── Reveal on scroll ───
+  const reveals = document.querySelectorAll('.reveal');
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, {
+    threshold: 0.15,
+    rootMargin: '0px 0px -60px 0px'
+  });
+  reveals.forEach(el => revealObserver.observe(el));
+
+  // ─── Sticky scroll sections (Acts) ───
+  function setupAct(outerEl, beatsContainerId, visualsId, stepsId, numBeats) {
+    const beatsContainer = document.getElementById(beatsContainerId);
+    const visualsContainer = document.getElementById(visualsId);
+    const stepsContainer = document.getElementById(stepsId);
+    if (!outerEl || !beatsContainer) return;
+
+    const beats = beatsContainer.querySelectorAll('.sub-beat');
+    const visuals = visualsContainer ? visualsContainer.querySelectorAll('.act-visual-placeholder') : [];
+    const steps = stepsContainer ? stepsContainer.querySelectorAll('.step-dot') : [];
+
+    function update() {
+      const rect = outerEl.getBoundingClientRect();
+      const outerH = outerEl.offsetHeight;
+      const scrolled = -rect.top;
+      const scrollRange = outerH - window.innerHeight;
+      const progress = Math.max(0, Math.min(1, scrolled / scrollRange));
+
+      // Determine active beat
+      const beatIndex = Math.min(numBeats - 1, Math.floor(progress * numBeats));
+
+      beats.forEach((b, i) => {
+        b.classList.toggle('active', i === beatIndex);
+      });
+      visuals.forEach((v, i) => {
+        v.classList.toggle('active', i === beatIndex);
+      });
+      steps.forEach((s, i) => {
+        s.classList.toggle('active', i === beatIndex);
+      });
+    }
+
+    // Register for Lenis updates
+    lenis.on('scroll', update);
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+  }
+
+  setupAct(
+    document.getElementById('actEngineer'),
+    'engBeats', 'engVisuals', 'engSteps', 4
+  );
+  setupAct(
+    document.getElementById('actRecord'),
+    'recBeats', 'recVisuals', 'recSteps', 4
+  );
+  setupAct(
+    document.getElementById('actReveal'),
+    'revBeats', 'revVisuals', 'revSteps', 3
+  );
+
+  // ─── Horizontal progress bar ───
+  const hProgress = document.getElementById('hProgress');
+  const hLabels = [1,2,3].map(i => document.getElementById('hLabel' + i));
+  const hTraveler = document.getElementById('hTraveler');
+
+  // Key sections and their progress positions (0-1)
+  const progressAnchors = [
+    { id: 'sectionHero', pos: 0 },
+    { id: 'actEngineer', pos: 0.25 },
+    { id: 'actRecord', pos: 0.5 },
+    { id: 'actReveal', pos: 0.75 },
+    { id: 'sectionEpilogue', pos: 1 }
+  ];
+
+  function updateHProgress() {
+    if (!hProgress) return;
+    const scrollY = window.scrollY;
+    const winH = window.innerHeight;
+    const docH = document.documentElement.scrollHeight - winH;
+
+    // Move traveler dot
+    if (hTraveler && docH > 0) {
+      const totalProgress = Math.max(0, Math.min(1, scrollY / docH));
+      hTraveler.style.left = (totalProgress * 100) + '%';
+    }
+
+    // Activate labels based on scroll position
+    hLabels.forEach(l => l.classList.remove('active'));
+
+    // Activate labels based on which act is in view
+    const engRect = document.getElementById('actEngineer').getBoundingClientRect();
+    const recRect = document.getElementById('actRecord').getBoundingClientRect();
+    const revRect = document.getElementById('actReveal').getBoundingClientRect();
+
+    if (engRect.top < winH * 0.5 && engRect.bottom > 0) hLabels[0].classList.add('active');
+    if (recRect.top < winH * 0.5 && recRect.bottom > 0) hLabels[1].classList.add('active');
+    if (revRect.top < winH * 0.5 && revRect.bottom > 0) hLabels[2].classList.add('active');
+  }
+
+  lenis.on('scroll', updateHProgress);
+  window.addEventListener('scroll', updateHProgress, { passive: true });
+  updateHProgress();
+
+})();
+</script>
+</body>
+</html>
