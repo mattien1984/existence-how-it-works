@@ -908,7 +908,7 @@ footer {
 <!-- ═══════════════════════════════════
      SECTION 1: PROLOGUE (sticky scroll)
      ═══════════════════════════════════ -->
-<div class="hero-outer" id="heroOuter" style="height: 1950vh; position: relative;">
+<div class="hero-outer" id="heroOuter" style="height: 2150vh; position: relative;">
   <section class="hero" id="sectionHero" style="position: sticky; top: 0;">
 
     <!-- Background grid -->
@@ -1103,16 +1103,15 @@ footer {
       </div>
     </div>
 
-    <!-- Phase 9: stack date header -->
-    <div id="stackDateHeader" style="position:absolute; left:50%; transform:translateX(-50%); top:calc(30vh - 50px); z-index:6; text-align:center; opacity:0; pointer-events:none;">
-      <div style="font-family:'Roobert Semi Mono',var(--mono); font-size:10px; letter-spacing:2px; color:#A4A7AE; text-transform:uppercase;">WED</div>
-      <div style="font-family:'Roobert Semi Mono',var(--mono); font-size:10px; letter-spacing:2px; color:#A4A7AE; margin-top:4px; position:relative; display:inline-block;">16
-        <img src="calendar.svg" style="position:absolute; right:-55px; top:50%; transform:translateY(-50%); width:16px; height:auto; filter:brightness(10);" alt=""/>
+    <!-- Phase 9: block stack (date header is INSIDE so it scales together) -->
+    <div id="blockStack" style="position:absolute; top:0; left:0; width:100%; height:100%; display:flex; flex-direction:column; align-items:center; padding-top:calc(30vh - 42px); gap:3px; pointer-events:none; z-index:5; opacity:0;">
+      <div id="stackDateHeader" style="text-align:center; margin-bottom:8px; opacity:0;">
+        <div style="font-family:'Roobert Semi Mono',var(--mono); font-size:10px; letter-spacing:2px; color:#A4A7AE; text-transform:uppercase;">WED</div>
+        <div style="font-family:'Roobert Semi Mono',var(--mono); font-size:10px; letter-spacing:2px; color:#A4A7AE; margin-top:4px; position:relative; display:inline-block;">16
+          <img src="calendar.svg" style="position:absolute; right:-55px; top:50%; transform:translateY(-50%); width:16px; height:auto; filter:brightness(10);" alt=""/>
+        </div>
       </div>
     </div>
-
-    <!-- Phase 9: block stack -->
-    <div id="blockStack" style="position:absolute; top:0; left:0; width:100%; height:100%; display:flex; flex-direction:column; align-items:center; padding-top:30vh; gap:3px; pointer-events:none; z-index:5; opacity:0;"></div>
 
     <!-- Phase 9: stack beat text -->
     <p id="stackBeatText" style="position:absolute; top:calc(58% - 58px); right:calc(20% - 100px); transform:translateY(-50%); font-family:var(--serif); font-size:clamp(18px,2vw,26px); font-weight:400; color:#fff; opacity:0; text-align:left; line-height:1.3; z-index:6; max-width:20%;">On a typical day, you create 15–20 Time Blocks.</p>
@@ -1128,7 +1127,12 @@ footer {
     <!-- Phase 10: week beat text (kept but not shown in phase 9) -->
     <p id="weekBeatText" style="position:absolute; top:calc(58% - 58px); right:calc(20% - 100px); transform:translateY(-50%); font-family:var(--serif); font-size:clamp(18px,2vw,26px); font-weight:400; color:#fff; opacity:0; text-align:left; line-height:1.3; z-index:8; max-width:16%;">And in a typical week, you create over 100 Time Blocks.</p>
 
-    <!-- Phase 12: engineer closer -->
+    <!-- Phase 10: laptop capture -->
+    <div id="laptopFrame" style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); z-index:3; pointer-events:none; opacity:0; width:65vw;">
+      <img src="Mockup%20copy.png" alt="" style="width:100%; height:auto; display:block; pointer-events:none;">
+    </div>
+
+    <!-- Phase 11: engineer closer -->
     <div id="engineerCloser" style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); z-index:12; pointer-events:none; opacity:0; text-align:center; max-width:700px;">
       <p style="font-family:var(--serif); font-style:italic; font-size:clamp(22px,2.5vw,36px); font-weight:400; color:rgba(255,255,255,0.85); line-height:1.4;">By creating Time Blocks, you give structure to your time, turning intention into something visible and measurable.</p>
     </div>
@@ -1582,7 +1586,8 @@ footer {
     { name: 'tags',            vh: 150 },   // 7
     { name: 'morph-stack',     vh: 250 },   // 8
     { name: 'week-expand',     vh: 200 },   // 9
-    { name: 'engineer-closer', vh: 100 }    // 10
+    { name: 'laptop-capture',  vh: 200 },   // 10
+    { name: 'engineer-closer', vh: 100 }    // 11
   ];
 
   // Compute cumulative offsets
@@ -1592,7 +1597,7 @@ footer {
     totalPrologueVh += phases[pi].vh;
     phases[pi].endVh = totalPrologueVh;
   }
-  // total = 2050vh of scroll content + 100vh viewport = 2150vh outer
+  // total = 2050vh of scroll content + 100vh viewport = 2150vh outer (with laptop-capture)
 
   function getPhaseState(scrollPx) {
     var vh = window.innerHeight;
@@ -1977,10 +1982,10 @@ footer {
           stackBlocks[si].style.opacity = bP;
           stackBlocks[si].style.transform = 'translateY(' + ((1 - bP) * 25) + 'px)';
         }
-        // Date header
+        // Date header (child of blockStack — no translateX needed)
         var stackDateEl = document.getElementById('stackDateHeader');
         var dateP = clamp01((p - 0.55) / 0.06);
-        if (stackDateEl) { stackDateEl.style.opacity = dateP; stackDateEl.style.transform = 'translateX(-50%) translateY(' + ((1 - dateP) * 10) + 'px)'; }
+        if (stackDateEl) { stackDateEl.style.opacity = dateP; stackDateEl.style.transform = 'translateY(' + ((1 - dateP) * 10) + 'px)'; }
         // Stack beat text
         var stackTextEl = document.getElementById('stackBeatText');
         var stP = clamp01((p - 0.80) / 0.10);
@@ -1990,7 +1995,7 @@ footer {
         var stackTextEl = document.getElementById('stackBeatText');
         var stackDateEl = document.getElementById('stackDateHeader');
         if (stackTextEl) { stackTextEl.style.opacity = 0; stackTextEl.style.transform = 'translateY(15px)'; }
-        if (stackDateEl) { stackDateEl.style.opacity = 0; stackDateEl.style.transform = 'translateX(-50%) translateY(10px)'; }
+        if (stackDateEl) { stackDateEl.style.opacity = 0; stackDateEl.style.transform = 'translateY(10px)'; }
       }
     } else if (pi > 8) {
       // Stack/morph should remain visible for phases 9-11, controlled by those phases
@@ -2023,7 +2028,7 @@ footer {
       var stackTextEl = document.getElementById('stackBeatText');
       var stackDateEl = document.getElementById('stackDateHeader');
       if (stackTextEl) { stackTextEl.style.opacity = 0; stackTextEl.style.transform = 'translateY(15px)'; }
-      if (stackDateEl) { stackDateEl.style.opacity = 0; stackDateEl.style.transform = 'translateX(-50%) translateY(10px)'; }
+      if (stackDateEl) { stackDateEl.style.opacity = 0; stackDateEl.style.transform = 'translateY(10px)'; }
     }
 
     // ─── PHASE 9: Week Expansion ───
@@ -2038,15 +2043,15 @@ footer {
       if (blockStackEl) {
         blockStackEl.style.opacity = 1;
         blockStackEl.style.transform = '';
+        blockStackEl.style.transformOrigin = '';
       }
       stackBlocks.forEach(function(b) { b.style.opacity = 1; b.style.transform = 'translateY(0)'; });
 
-      // WED date header stays centered
+      // WED date header — child of blockStack, just ensure visible
       var sdh = document.getElementById('stackDateHeader');
       if (sdh) {
-        sdh.style.left = '50%';
-        sdh.style.transform = 'translateX(-50%)';
         sdh.style.opacity = 1;
+        sdh.style.transform = '';
       }
 
       // stackBeatText fades out as week columns appear
@@ -2067,6 +2072,8 @@ footer {
         weekViewLeftEl.style.left = 'auto';
         weekViewLeftEl.style.paddingTop = 'calc(30vh - 42px)';
         weekViewLeftEl.style.gap = colGap + 'px';
+        weekViewLeftEl.style.transform = '';
+        weekViewLeftEl.style.transformOrigin = '';
       }
 
       // Position right container: left edge aligns to right edge of WED stack
@@ -2075,6 +2082,8 @@ footer {
         weekViewRightEl.style.right = 'auto';
         weekViewRightEl.style.paddingTop = 'calc(30vh - 42px)';
         weekViewRightEl.style.gap = colGap + 'px';
+        weekViewRightEl.style.transform = '';
+        weekViewRightEl.style.transformOrigin = '';
       }
 
       // Show containers once columns start appearing
@@ -2121,24 +2130,143 @@ footer {
       // No slide transforms to reset — blockStack stays centered
       if (blockStackEl) { blockStackEl.style.transform = ''; }
       var sdh = document.getElementById('stackDateHeader');
-      if (sdh) { sdh.style.left = '50%'; sdh.style.transform = 'translateX(-50%)'; }
+      if (sdh) { sdh.style.transform = ''; }
     } else {
-      // pi > 9 (engineer closer) — everything fades, handled below
+      // pi > 9 (laptop-capture or engineer closer) — handled below
     }
 
-    // ─── PHASE 10: Engineer Closer ───
-    var engineerCloser = document.getElementById('engineerCloser');
+    // ─── PHASE 10: Laptop Capture ───
+    // The laptop frame fades in around the week columns, then everything
+    // scales down together so the blocks appear inside the laptop screen.
+    var laptopFrame = document.getElementById('laptopFrame');
     if (pi === 10) {
-      // Fade out all remaining prologue visuals
-      var fadeAllP = clamp01(p / 0.3);
-      if (blockStackEl) blockStackEl.style.opacity = 1 - fadeAllP;
-      if (weekViewLeftEl) weekViewLeftEl.style.opacity = 1 - fadeAllP;
-      if (weekViewRightEl) weekViewRightEl.style.opacity = 1 - fadeAllP;
-      weekColsAll.forEach(function(col) { col.style.opacity = 1 - fadeAllP; });
-      var sdh = document.getElementById('stackDateHeader');
-      if (sdh) sdh.style.opacity = 1 - fadeAllP;
+      var vw = window.innerWidth;
+      var vh = window.innerHeight;
+
+      // Laptop image natural ratio: 2724x1774
+      // Screen area within the frame: ~82% width, ~78% height, top offset ~4%
+      // Target: laptop ends at 65vw wide. We start scaled up so the screen area
+      // encompasses the week view columns at their current size.
+
+      // Final laptop width in px
+      var laptopFinalW = vw * 0.48;
+      // The screen area inside the laptop is about 82% of frame width
+      var screenAreaW = laptopFinalW * 0.82;
+
+      // The week view spans: 7 columns * 160px + 6 gaps * 3px = 1138px
+      var weekSpanPx = 7 * WEEK_BLOCK_W + 6 * 3;
+
+      // Scale factor: how much bigger should the laptop start to encompass columns
+      // We need screenAreaW * startScale >= weekSpanPx, with some padding
+      var startScale = Math.max(1.8, (weekSpanPx * 1.15) / screenAreaW);
+      var endScale = 1.0;
+
+      // Animation sub-phases:
+      // 0.00-0.25: laptop fades in (large, behind columns)
+      // 0.10-0.80: everything scales down together
+      // 0.70-1.00: hold at final position
+
+      var laptopFadeP = clamp01(p / 0.25);
+      var scaleP = clamp01((p - 0.10) / 0.70);
+      var scaleEase = easeOutCubic(scaleP);
+      var currentScale = lerp(startScale, endScale, scaleEase);
+
+      // Show the laptop frame
+      if (laptopFrame) {
+        // The laptop width at current scale
+        var laptopW = laptopFinalW * currentScale;
+        var laptopH = laptopW * (1774 / 2724);
+        laptopFrame.style.opacity = laptopFadeP;
+        laptopFrame.style.width = laptopW + 'px';
+        laptopFrame.style.top = lerp(50, 58, scaleEase) + '%';
+        laptopFrame.style.transform = 'translate(-50%, -50%)';
+        laptopFrame.style.zIndex = '3';
+      }
+
+      // Scale the week columns and stack from the same center point.
+      // At the start: laptop screen = screenAreaW * startScale ~ weekSpanPx, columns at scale 1.
+      // At the end: laptop screen = screenAreaW, columns scale to screenAreaW / weekSpanPx.
+      // Linear interpolation: colScale goes from 1.0 to (screenAreaW / weekSpanPx).
+      var colEndScale = (screenAreaW / weekSpanPx) * 0.85;
+      var colScaleFactor = lerp(1.0, colEndScale, scaleEase);
+
+      // Apply scale to all week elements from center of viewport.
+      // All 7 columns must scale as a unified group. blockStack scales from its
+      // center (50%), so its edges move inward as it shrinks. weekViewLeft/Right
+      // need translateX compensation to track those moving edges.
+      var colShiftY = lerp(0, 2, scaleEase); // slight downward shift to match laptop
+
+      // Compensation for the gap: as blockStack scales down, its edges move inward.
+      // The inward movement = half the width lost = WEEK_BLOCK_W * (1 - colScaleFactor) / 2
+      var wedEdgeInset = WEEK_BLOCK_W * (1 - colScaleFactor) / 2;
+
+      if (blockStackEl) {
+        blockStackEl.style.opacity = 1;
+        blockStackEl.style.transformOrigin = '50% 40vh';
+        blockStackEl.style.transform = 'translateY(' + colShiftY + 'vh) scale(' + colScaleFactor + ')';
+      }
+      if (weekViewLeftEl) {
+        weekViewLeftEl.style.opacity = 1;
+        weekViewLeftEl.style.transformOrigin = '100% 40vh';
+        // Shift right to close the gap caused by blockStack's left edge moving inward
+        weekViewLeftEl.style.transform = 'translateX(' + wedEdgeInset + 'px) translateY(' + colShiftY + 'vh) scale(' + colScaleFactor + ')';
+      }
+      if (weekViewRightEl) {
+        weekViewRightEl.style.opacity = 1;
+        weekViewRightEl.style.transformOrigin = '0% 40vh';
+        // Shift left to close the gap caused by blockStack's right edge moving inward
+        weekViewRightEl.style.transform = 'translateX(-' + wedEdgeInset + 'px) translateY(' + colShiftY + 'vh) scale(' + colScaleFactor + ')';
+      }
+      // stackDateHeader is a child of blockStack — it scales automatically
+      var sdh10 = document.getElementById('stackDateHeader');
+      if (sdh10) { sdh10.style.opacity = 1; sdh10.style.transform = ''; }
+
+      // Keep all individual week col blocks visible
+      weekColsAll.forEach(function(col) {
+        col.style.opacity = 1;
+        col.querySelectorAll('.week-block').forEach(function(blk) {
+          blk.style.opacity = 1;
+          blk.style.transform = 'translateY(0)';
+        });
+      });
+
+      // stackBeatText and weekBeatText stay hidden
       var sbt10 = document.getElementById('stackBeatText');
       if (sbt10) sbt10.style.opacity = 0;
+      if (weekBeatText) weekBeatText.style.opacity = 0;
+
+    } else if (pi < 10) {
+      // Reset laptop
+      if (laptopFrame) { laptopFrame.style.opacity = 0; }
+    }
+
+    // ─── PHASE 11: Engineer Closer ───
+    var engineerCloser = document.getElementById('engineerCloser');
+    if (pi === 11) {
+      // Fade out laptop and all remaining prologue visuals
+      // Maintain the scaled-down state from phase 10's end position
+      var fadeAllP = clamp01(p / 0.3);
+
+      // Recompute the final scale from phase 10 for consistency
+      var vw11 = window.innerWidth;
+      var laptopFinalW11 = vw11 * 0.48;
+      var screenAreaW11 = laptopFinalW11 * 0.82;
+      var weekSpanPx11 = 7 * WEEK_BLOCK_W + 6 * 3;
+      var colEndScale11 = (screenAreaW11 / weekSpanPx11) * 0.85;
+
+      // Gap compensation at final scale (same formula as phase 10)
+      var wedEdgeInset11 = WEEK_BLOCK_W * (1 - colEndScale11) / 2;
+
+      if (laptopFrame) { laptopFrame.style.opacity = 1 - fadeAllP; laptopFrame.style.width = laptopFinalW11 + 'px'; laptopFrame.style.top = '58%'; }
+      if (blockStackEl) { blockStackEl.style.opacity = 1 - fadeAllP; blockStackEl.style.transformOrigin = '50% 40vh'; blockStackEl.style.transform = 'translateY(2vh) scale(' + colEndScale11 + ')'; }
+      if (weekViewLeftEl) { weekViewLeftEl.style.opacity = 1 - fadeAllP; weekViewLeftEl.style.transformOrigin = '100% 40vh'; weekViewLeftEl.style.transform = 'translateX(' + wedEdgeInset11 + 'px) translateY(2vh) scale(' + colEndScale11 + ')'; }
+      if (weekViewRightEl) { weekViewRightEl.style.opacity = 1 - fadeAllP; weekViewRightEl.style.transformOrigin = '0% 40vh'; weekViewRightEl.style.transform = 'translateX(-' + wedEdgeInset11 + 'px) translateY(2vh) scale(' + colEndScale11 + ')'; }
+      weekColsAll.forEach(function(col) { col.style.opacity = 1 - fadeAllP; });
+      // stackDateHeader is a child of blockStack — fades with it, no separate transform needed
+      var sdh = document.getElementById('stackDateHeader');
+      if (sdh) { sdh.style.opacity = 1; sdh.style.transform = ''; }
+      var sbt11 = document.getElementById('stackBeatText');
+      if (sbt11) sbt11.style.opacity = 0;
       if (weekBeatText) weekBeatText.style.opacity = 0;
 
       // Closer text fades in
@@ -2148,7 +2276,7 @@ footer {
       // Fade to black at end
       var closerOutP = clamp01((p - 0.8) / 0.2);
       if (engineerCloser) engineerCloser.style.opacity = closerInP * (1 - closerOutP);
-    } else if (pi < 10) {
+    } else if (pi < 11) {
       if (engineerCloser) { engineerCloser.style.opacity = 0; engineerCloser.style.transform = 'translate(-50%,-50%) translateY(20px)'; }
     }
   }
