@@ -908,7 +908,7 @@ footer {
 <!-- ═══════════════════════════════════
      SECTION 1: PROLOGUE (sticky scroll)
      ═══════════════════════════════════ -->
-<div class="hero-outer" id="heroOuter" style="height: 2150vh; position: relative;">
+<div class="hero-outer" id="heroOuter" style="height: 2280vh; position: relative;">
   <section class="hero" id="sectionHero" style="position: sticky; top: 0;">
 
     <!-- Background grid -->
@@ -992,10 +992,19 @@ footer {
 
     <!-- Hero headline + sub -->
     <h1 class="hero-headline" id="heroHL" style="position:relative; z-index:1;">How It Works</h1>
-    <p class="hero-sub" id="heroSub" style="position:relative; z-index:1;">Existence is a Time Intelligence System that enables you to structure your time, record all aspects of how it is lived, and turn that record into insight that improves how you create your time.</p>
+    <p class="hero-sub" id="heroSub" style="position:relative; z-index:1;">A simple cycle. A lifetime of impact.</p>
     <div class="scroll-indicator" style="z-index:1;">
       <span>Scroll</span>
       <div class="scroll-arrow"></div>
+    </div>
+
+    <!-- Intention section (appears after hero fades) -->
+    <div id="intentionSection" style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center; z-index:2; opacity:0; pointer-events:none; width:90%; max-width:700px;">
+      <h2 style="font-family:var(--serif); font-style:italic; font-size:clamp(28px,3vw,40px); font-weight:400; color:rgba(255,255,255,0.85); line-height:1.3;">How do you want to spend your time?</h2>
+      <div id="intentionUISpace" style="width:100%; height:200px; margin-top:32px; margin-bottom:32px;">
+        <!-- Space reserved for UI element -->
+      </div>
+      <p id="intentionBaseline" style="font-family:var(--sans); font-weight:300; font-size:15px; color:rgba(255,255,255,0.4); line-height:1.6; opacity:0;">This becomes the baseline everything is measured against.</p>
     </div>
 
     <!-- Beat 0: centered text above block -->
@@ -1593,8 +1602,9 @@ footer {
   //  PHASE REGISTRY — Prologue scroll system
   // ═══════════════════════════════════════════════════
   var phases = [
-    { name: 'hero-exit',       vh: 100 },   // 0
-    { name: 'block-appear',    vh: 150 },   // 1
+    { name: 'hero-exit',       vh: 80  },   // 0
+    { name: 'intention',       vh: 150 },   // 1
+    { name: 'block-appear',    vh: 150 },   // 2
     { name: 'text-beats',      vh: 200 },   // 2
     { name: 'flip',            vh: 150 },   // 3
     { name: 'intentions',      vh: 200 },   // 4
@@ -1614,7 +1624,7 @@ footer {
     totalPrologueVh += phases[pi].vh;
     phases[pi].endVh = totalPrologueVh;
   }
-  // total = 2050vh of scroll content + 100vh viewport = 2150vh outer (with laptop-capture)
+  // total = 2180vh of scroll content + 100vh viewport = 2280vh outer
 
   function getPhaseState(scrollPx) {
     var vh = window.innerHeight;
@@ -1648,25 +1658,51 @@ footer {
     var pi = state.index;
     var p = state.progress;
 
-    // ─── PHASE 0: Hero Exit ───
+    // ─── PHASE 0: Hero Exit (both texts fade UP, grid stays) ───
     var heroExitP = (pi === 0) ? p : (pi > 0 ? 1 : 0);
-    var textP = clamp01(heroExitP * 2.5);
-    if (heroHL) heroHL.style.transform = 'translateY(' + (-textP * 800) + 'px)';
-    if (heroSub) heroSub.style.transform = 'translateY(' + (textP * 800) + 'px)';
+    var textFadeUp = smoothstep(clamp01(heroExitP / 0.6));
+    if (heroHL) { heroHL.style.opacity = 1 - textFadeUp; heroHL.style.transform = 'translateY(' + (-textFadeUp * 60) + 'px)'; }
+    if (heroSub) { heroSub.style.opacity = 1 - textFadeUp; heroSub.style.transform = 'translateY(' + (-textFadeUp * 40) + 'px)'; }
     if (scrollInd) {
       scrollInd.style.animation = heroExitP > 0 ? 'none' : '';
       scrollInd.style.opacity = Math.max(0, 0.35 - heroExitP * 1.5);
     }
+    // Grid stays unchanged during hero exit
     if (heroGrid) {
-      heroGrid.style.opacity = Math.max(0.04, 0.15 - heroExitP * 0.11);
-      heroGrid.style.transform = 'scale(' + (1 + heroExitP * 0.8) + ')';
+      // Continuous slow zoom across all remaining scroll (no change during hero exit)
+      var totalRange = heroOuter.offsetHeight - window.innerHeight;
+      var totalP = totalRange > 0 ? scrollTop / totalRange : 0;
+      var gridScale = 1 + totalP * 0.4;
+      heroGrid.style.transform = 'scale(' + gridScale + ')';
+      // Grid dims starting at intention phase
+      if (pi <= 1) {
+        heroGrid.style.opacity = 0.15;
+      } else {
+        var gridDimP = (pi === 2) ? clamp01(p / 0.3) : 1;
+        heroGrid.style.opacity = Math.max(0.05, 0.15 - gridDimP * 0.10);
+      }
     }
 
-    // ─── PHASE 1: Block Appears ───
-    var blockAppearP = (pi === 1) ? p : (pi > 1 ? 1 : 0);
+    // ─── PHASE 1: Intention ("How do you want to spend your time?") ───
+    var intentionSection = document.getElementById('intentionSection');
+    var intentionBaseline = document.getElementById('intentionBaseline');
+    if (pi === 1) {
+      var intFadeIn = smoothstep(clamp01(p / 0.3));
+      var intFadeOut = smoothstep(clamp01((p - 0.75) / 0.25));
+      intentionSection.style.opacity = intFadeIn * (1 - intFadeOut);
+      intentionSection.style.transform = 'translate(-50%, calc(-50% + ' + ((1 - intFadeIn) * 30 + intFadeOut * (-30)) + 'px))';
+      // Baseline text fades in later
+      var baseP = smoothstep(clamp01((p - 0.45) / 0.25));
+      intentionBaseline.style.opacity = baseP * 0.6 * (1 - intFadeOut);
+    } else {
+      intentionSection.style.opacity = 0;
+    }
+
+    // ─── PHASE 2: Block Appears ───
+    var blockAppearP = (pi === 2) ? p : (pi > 2 ? 1 : 0);
     var beat0El = document.getElementById('phaseBeat0');
     if (heroBlock) {
-      var fadeIn = (pi >= 1) ? 1 : clamp01(heroExitP * 3);
+      var fadeIn = (pi >= 2) ? 1 : clamp01(heroExitP * 3);
       heroBlock.style.opacity = fadeIn;
       heroBlock.style.filter = 'none';
     }
@@ -1674,15 +1710,15 @@ footer {
     var trimPathGroup = document.getElementById('trimPathGroup');
     var surgeAnim = document.getElementById('surgeAnim');
     if (trimPathGroup && surgeAnim) {
-      if (pi === 1 && p > 0.1 && !trimPathGroup._started) {
+      if (pi === 2 && p > 0.1 && !trimPathGroup._started) {
         trimPathGroup.setAttribute('opacity', '1');
         surgeAnim.beginElement();
         trimPathGroup._started = true;
-      } else if (pi === 2) {
+      } else if (pi === 3) {
         trimPathGroup.setAttribute('opacity', Math.max(0, 1 - p * 4).toFixed(2));
-      } else if (pi > 2) {
+      } else if (pi > 3) {
         trimPathGroup.setAttribute('opacity', '0');
-      } else if (pi < 1) {
+      } else if (pi < 2) {
         trimPathGroup.setAttribute('opacity', '0');
         trimPathGroup._started = false;
       }
@@ -1690,12 +1726,12 @@ footer {
     currentBlockScale = 1 + heroExitP * 0.8; // 1.0→1.8 during hero exit
     // beat 0 text
     if (beat0El) {
-      if (pi === 1) {
+      if (pi === 2) {
         var fadeInP = clamp01(p / 0.3);
         var fadeOutP = clamp01((p - 0.7) / 0.3);
         beat0El.style.opacity = fadeInP - fadeOutP;
         beat0El.style.transform = 'translateY(' + ((1 - fadeInP) * 20 - fadeOutP * 20) + 'px)';
-      } else if (pi > 1) {
+      } else if (pi > 2) {
         beat0El.style.opacity = 0;
       } else {
         beat0El.style.opacity = 0;
@@ -1703,18 +1739,18 @@ footer {
       }
     }
 
-    // ─── PHASE 2: Text Beats (right side only, crossfade A→B) ───
-    var textBeatsP = (pi === 2) ? p : (pi > 2 ? 1 : 0);
+    // ─── PHASE 3: Text Beats (right side only, crossfade A→B) ───
+    var textBeatsP = (pi === 3) ? p : (pi > 3 ? 1 : 0);
     var textBeatA = document.getElementById('textBeatA');
     var textBeatB = document.getElementById('textBeatB');
 
     // Block scale bump: 1.8 → 2.34 during first part of text-beats
-    if (pi >= 2) {
-      var bumpP = (pi === 2) ? clamp01(p / 0.3) : 1;
+    if (pi >= 3) {
+      var bumpP = (pi === 3) ? clamp01(p / 0.3) : 1;
       currentBlockScale = 1.8 + 0.54 * smoothstep(bumpP);
     }
 
-    if (pi === 2) {
+    if (pi === 3) {
       // Block content bands stagger in, glow fades out with the scale bump
       var contentBands = document.querySelectorAll('.content-band');
       var contentFadeP = clamp01((p - 0.1) / 0.5);
@@ -1737,30 +1773,30 @@ footer {
         textBeatA.style.opacity = beatAInP;
         textBeatA.style.transform = 'translateY(' + ((1 - beatAInP) * 20) + 'px)';
       }
-    } else if (pi === 3) {
+    } else if (pi === 4) {
       // Beat A fades out during flip
       var beatAOutP = clamp01(p / 0.3);
       if (textBeatA) {
         textBeatA.style.opacity = 1 - beatAOutP;
         textBeatA.style.transform = 'translateY(' + (-beatAOutP * 10) + 'px)';
       }
-    } else if (pi > 3) {
+    } else if (pi > 4) {
       if (textBeatA) textBeatA.style.opacity = 0;
     } else {
       if (textBeatA) { textBeatA.style.opacity = 0; textBeatA.style.transform = 'translateY(20px)'; }
     }
 
-    // ─── PHASE 3: No flip — block stays as-is ───
-    // Only apply centered transform for phases 0-4; phases 5+ set their own transform with offsets
-    if (heroBlock && pi < 5) {
+    // ─── PHASE 4: No flip — block stays as-is ───
+    // Only apply centered transform for phases 0-5; phases 6+ set their own transform with offsets
+    if (heroBlock && pi < 6) {
       heroBlock.style.transform = 'scale(' + currentBlockScale + ')';
     }
 
-    // ─── PHASES 3-4: Flip + Intentions ───
-    // Intentions text fades in DURING the flip (phase 3), holds during phase 4, fades out at end of 4
+    // ─── PHASES 4-5: Flip + Intentions ───
+    // Intentions text fades in DURING the flip (phase 4), holds during phase 5, fades out at end of 5
     var intentionsContent = document.getElementById('intentionsContent');
     var intentionsUI = document.getElementById('intentionsUI');
-    if (pi === 3) {
+    if (pi === 4) {
       // Intentions text fades in during flip (0.3–0.7 of flip)
       var intInP = clamp01((p - 0.3) / 0.4);
       if (intentionsContent) { intentionsContent.style.opacity = intInP; intentionsContent.style.transform = 'translateY(' + (-50 + (1 - intInP) * 15) + '%)'; }
@@ -1781,7 +1817,7 @@ footer {
       var blockBright = 1 - blockDimP * 0.7;
       if (heroBlock) { heroBlock.style.opacity = 1; heroBlock.style.filter = 'brightness(' + blockBright + ')'; }
       if (heroBlockBack) { heroBlockBack.style.opacity = 1; heroBlockBack.style.filter = 'brightness(' + blockBright + ')'; }
-    } else if (pi === 4) {
+    } else if (pi === 5) {
       // Hold intentions visible, fade out at end
       var intOutP = clamp01((p - 0.75) / 0.20);
       if (intentionsContent) intentionsContent.style.opacity = 1 - intOutP;
@@ -1799,18 +1835,18 @@ footer {
       if (heroBlockBack) { heroBlockBack.style.opacity = 1; heroBlockBack.style.filter = 'brightness(' + blockBright2 + ')'; }
       // Block stays put (no flip)
       if (heroBlock) heroBlock.style.transform = 'scale(' + currentBlockScale + ')';
-    } else if (pi < 3) {
+    } else if (pi < 4) {
       if (intentionsContent) { intentionsContent.style.opacity = 0; intentionsContent.style.transform = 'translateY(-30%)'; }
       if (intentionsUI) { intentionsUI.style.opacity = 0; intentionsUI.style.transform = 'translateY(10px)'; }
       var pillarPillsR = document.querySelectorAll('.pillar-pill');
       for (var ppr = 0; ppr < pillarPillsR.length; ppr++) { pillarPillsR[ppr].style.opacity = 0; pillarPillsR[ppr].style.transform = 'translateY(6px)'; }
     } else {
-      // pi > 4: ensure hidden
+      // pi > 5: ensure hidden
       if (intentionsContent) intentionsContent.style.opacity = 0;
       if (intentionsUI) { intentionsUI.style.opacity = 0; intentionsUI.style.transform = 'translateY(10px)'; }
     }
 
-    // ─── PHASES 5-7: Block anatomy, auto-pillar, tags ───
+    // ─── PHASES 6-8: Block anatomy, auto-pillar, tags ───
     // Center block stays visible; detail card is hidden; text on right crossfades
     var anatomyText = document.getElementById('anatomyText');
     var autoPillarText = document.getElementById('autoPillarText');
@@ -1824,7 +1860,7 @@ footer {
     if (zoomDetail) zoomDetail.style.opacity = 0;
     if (pillarIndicator) pillarIndicator.style.opacity = 0;
 
-    if (pi === 5) {
+    if (pi === 6) {
       // Block comes back into focus and scales up 30%, expanding to the right
       if (heroBlock) { heroBlock.style.opacity = 1; heroBlock.style.filter = 'none'; }
       if (heroBlockBack) { heroBlockBack.style.opacity = 1; heroBlockBack.style.filter = 'none'; }
@@ -1855,7 +1891,7 @@ footer {
       if (autoPillarText) autoPillarText.style.opacity = 0;
       if (tagsText) tagsText.style.opacity = 0;
       // tagChips removed
-    } else if (pi === 6) {
+    } else if (pi === 7) {
       // Auto-pillar phase — block at enlarged scale, shifted right
       if (heroBlock) { heroBlock.style.opacity = 1; heroBlock.style.filter = 'none'; heroBlock.style.transform = 'scale(3.04) translateX(3.5%) translateY(1.8%)'; }
       if (heroBlockBack) { heroBlockBack.style.opacity = 1; heroBlockBack.style.filter = 'none'; }
@@ -1873,7 +1909,7 @@ footer {
 
       if (tagsText) tagsText.style.opacity = 0;
       // tagChips removed
-    } else if (pi === 7) {
+    } else if (pi === 8) {
       // Tags phase — block at enlarged scale, shifted right
       if (heroBlock) { heroBlock.style.opacity = 1; heroBlock.style.filter = 'none'; heroBlock.style.transform = 'scale(3.04) translateX(3.5%) translateY(1.8%)'; }
       if (heroBlockBack) { heroBlockBack.style.opacity = 1; heroBlockBack.style.filter = 'none'; }
@@ -1898,26 +1934,26 @@ footer {
         inlineTags[ti].style.opacity = tagP;
         inlineTags[ti].style.transform = 'translateY(' + ((1 - tagP) * 8) + 'px)';
       }
-    } else if (pi < 5) {
+    } else if (pi < 6) {
       // Reset all detail phase elements
       if (anatomyText) { anatomyText.style.opacity = 0; anatomyText.style.transform = 'translateY(-35%)'; }
       if (autoPillarText) { autoPillarText.style.opacity = 0; }
       if (tagsText) { tagsText.style.opacity = 0; }
       var resetTags = document.querySelectorAll('.inline-tag');
       for (var rti = 0; rti < resetTags.length; rti++) { resetTags[rti].style.opacity = 0; resetTags[rti].style.transform = 'translateY(8px)'; }
-      if (pi < 2) { var bandsR = document.querySelectorAll('.content-band'); for (var br = 0; br < bandsR.length; br++) bandsR[br].setAttribute('opacity', '0'); }
+      if (pi < 3) { var bandsR = document.querySelectorAll('.content-band'); for (var br = 0; br < bandsR.length; br++) bandsR[br].setAttribute('opacity', '0'); }
     }
     // Fade out content bands at start of morph phase
-    if (pi === 8) {
+    if (pi === 9) {
       var bandsOut = document.querySelectorAll('.content-band');
       var contentOutP = clamp01(p / 0.1);
       for (var bo = 0; bo < bandsOut.length; bo++) bandsOut[bo].setAttribute('opacity', (1 - contentOutP).toFixed(2));
-    } else if (pi > 8) {
+    } else if (pi > 9) {
       var bandsH = document.querySelectorAll('.content-band');
       for (var bh = 0; bh < bandsH.length; bh++) bandsH[bh].setAttribute('opacity', '0');
     }
 
-    // ─── PHASE 8: Morph → Stack ───
+    // ─── PHASE 9: Morph → Stack ───
     var mSvg = document.getElementById('morphSvg');
     var mBotLine = document.getElementById('mBotLine');
     var mLeftLine = document.getElementById('mLeftLine');
@@ -1927,8 +1963,8 @@ footer {
     var mLinesG = document.getElementById('mLines');
     var morphColor = document.getElementById('morphColor');
 
-    if (pi === 8) {
-      // Phase 8: hide remaining text, fade out block SVGs, show morph
+    if (pi === 9) {
+      // Phase 9: hide remaining text, fade out block SVGs, show morph
       if (tagsText) tagsText.style.opacity = clamp01(1 - p / 0.06);
       // tagChips removed
       if (anatomyText) anatomyText.style.opacity = 0;
@@ -2031,7 +2067,7 @@ footer {
         if (stackTextEl) { stackTextEl.style.opacity = 0; stackTextEl.style.transform = 'translateY(15px)'; }
         if (stackDateEl) { stackDateEl.style.opacity = 0; stackDateEl.style.transform = 'translateY(10px)'; }
       }
-    } else if (pi > 8) {
+    } else if (pi > 9) {
       // Stack/morph should remain visible for phases 9-11, controlled by those phases
       morphBlock.style.opacity = 0;
       if (mBrackets) mBrackets.setAttribute('opacity', '1');
@@ -2048,7 +2084,7 @@ footer {
     } else {
       // pi < 8: reset morph
       morphBlock.style.opacity = 0;
-      if (blockStackEl && pi < 8) blockStackEl.style.opacity = 0;
+      if (blockStackEl && pi < 9) blockStackEl.style.opacity = 0;
       stackBlocks.forEach(function(b) { b.style.opacity = 0; b.style.transform = 'translateY(20px)'; });
       if (mSvg) mSvg.setAttribute('viewBox', (BK_L - 4).toFixed(2) + ' ' + (BK_T - 4).toFixed(2) + ' ' + BK_VBW.toFixed(2) + ' 144');
       if (mBotLine) { mBotLine.setAttribute('y1', (BK_T + 136 - BK_T_W / 2).toFixed(2)); mBotLine.setAttribute('y2', (BK_T + 136 - BK_T_W / 2).toFixed(2)); }
@@ -2065,11 +2101,11 @@ footer {
       if (stackDateEl) { stackDateEl.style.opacity = 0; stackDateEl.style.transform = 'translateY(10px)'; }
     }
 
-    // ─── PHASE 9: Week Expansion ───
+    // ─── PHASE 10: Week Expansion ───
     // WED stack stays centered (NO slide). Columns appear on BOTH sides.
     // stackBeatText stays visible. weekBeatText stays hidden.
     var weekBeatText = document.getElementById('weekBeatText');
-    if (pi === 9) {
+    if (pi === 10) {
       var vw = window.innerWidth;
       var colGap = 3;
 
@@ -2152,7 +2188,7 @@ footer {
 
       weekColsAll.forEach(animateWeekCol);
 
-    } else if (pi < 9) {
+    } else if (pi < 10) {
       // Reset week view
       if (weekViewLeftEl) weekViewLeftEl.style.opacity = 0;
       if (weekViewRightEl) weekViewRightEl.style.opacity = 0;
@@ -2169,11 +2205,11 @@ footer {
       // pi > 9 (laptop-capture or engineer closer) — handled below
     }
 
-    // ─── PHASE 10: Laptop Capture ───
+    // ─── PHASE 11: Laptop Capture ───
     // The laptop frame fades in around the week columns, then everything
     // scales down together so the blocks appear inside the laptop screen.
     var laptopFrame = document.getElementById('laptopFrame');
-    if (pi === 10) {
+    if (pi === 11) {
       var vw = window.innerWidth;
       var vh = window.innerHeight;
 
@@ -2269,14 +2305,14 @@ footer {
       if (sbt10) sbt10.style.opacity = 0;
       if (weekBeatText) weekBeatText.style.opacity = 0;
 
-    } else if (pi < 10) {
+    } else if (pi < 12) {
       // Reset laptop
       if (laptopFrame) { laptopFrame.style.opacity = 0; }
     }
 
-    // ─── PHASE 11: Engineer Closer ───
+    // ─── PHASE 12: Engineer Closer ───
     var engineerCloser = document.getElementById('engineerCloser');
-    if (pi === 11) {
+    if (pi === 12) {
       // Fade out laptop and all remaining prologue visuals
       // Maintain the scaled-down state from phase 10's end position
       var fadeAllP = clamp01(p / 0.3);
@@ -2310,7 +2346,7 @@ footer {
       // Fade to black at end
       var closerOutP = clamp01((p - 0.8) / 0.2);
       if (engineerCloser) engineerCloser.style.opacity = closerInP * (1 - closerOutP);
-    } else if (pi < 11) {
+    } else if (pi < 12) {
       if (engineerCloser) { engineerCloser.style.opacity = 0; engineerCloser.style.transform = 'translate(-50%,-50%) translateY(20px)'; }
     }
   }
@@ -2390,8 +2426,8 @@ footer {
       // Phase 10 end (laptop done, ~1950vh scroll) → 40% (60% between Eng and Record)
       var heroH = heroOuter ? heroOuter.offsetHeight : 0;
       var vh = winH;
-      var phase5Start = 800 * vh / 100; // 800vh in pixels
-      var phase10End = 1950 * vh / 100; // 1950vh in pixels
+      var phase5Start = 930 * vh / 100; // 930vh in pixels (shifted +130vh for intention phase)
+      var phase10End = 2080 * vh / 100; // 2080vh in pixels
       var travelerPct;
       if (scrollY <= phase5Start) {
         // 0% → 25% during phases 0-4

@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How It Works — Existence</title>
+<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+<style>
+@font-face{font-family:'Season Mix';src:url('fonts/SeasonMixTRIAL-Regular.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap;}
+@font-face{font-family:'Season Mix';src:url('fonts/SeasonMixTRIAL-RegularItalic.woff2') format('woff2');font-weight:400;font-style:italic;font-display:swap;}
+@font-face{font-family:'Roobert';src:url('fonts/RoobertTRIAL-Light.otf') format('opentype');font-weight:300;font-style:normal;font-display:swap;}
+@font-face{font-family:'Roobert';src:url('fonts/RoobertTRIAL-Regular.otf') format('opentype');font-weight:400;font-style:normal;font-display:swap;}
+@font-face{font-family:'Roobert';src:url('fonts/RoobertTRIAL-Medium.otf') format('opentype');font-weight:500;font-style:normal;font-display:swap;}
+@font-face{font-family:'Roobert Semi Mono';src:url('fonts/RoobertSemiMonoTRIAL-Regular.otf') format('opentype');font-weight:400;font-style:normal;font-display:swap;}
+
+:root{
+  --black:#050505;--white:#ffffff;--gray:#888;
+  --serif:'Season Mix',Georgia,'Times New Roman',serif;
+  --sans:'Roobert',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --mono:'Roobert Semi Mono','SF Mono','Fira Code',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:auto;}
+body{font-family:var(--sans);background:var(--black);color:var(--white);overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
+
+#journeyOuter{position:relative;}
+#journeySticky{position:sticky;top:0;height:100vh;overflow:hidden;}
+
+/* ═══ SIDE NAV ═══ */
+#sideNav{position:absolute;top:150px;left:28px;z-index:20;pointer-events:none;}
+.snav-step{display:flex;align-items:flex-start;gap:10px;}
+.snav-num{font-family:var(--mono);font-size:9px;color:rgba(255,255,255,0.25);line-height:1;padding-top:1px;min-width:14px;}
+.snav-name{font-family:var(--mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.25);line-height:1;transition:color 0.4s;}
+.snav-name.active{color:rgba(255,255,255,0.7);}
+.snav-connector{position:relative;width:1px;height:80px;background:rgba(255,255,255,0.08);margin-left:6px;margin-top:8px;margin-bottom:8px;overflow:hidden;}
+.snav-fill{position:absolute;top:0;left:0;width:100%;height:0%;background:rgba(255,255,255,0.35);transition:height 0.3s;}
+
+/* ═══ SCREEN LAYERS ═══ */
+.screen{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;flex-direction:column;justify-content:center;align-items:center;opacity:0;pointer-events:none;}
+
+/* ═══ HERO BLOCK (persistent, centered) ═══ */
+#heroBlock{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:160px;height:160px;z-index:10;opacity:0;pointer-events:none;}
+#heroBlockSvg{width:100%;height:100%;position:relative;z-index:2;}
+
+/* ═══ INTENTION CARD ═══ */
+#s2{flex-direction:column;align-items:center;text-align:center;gap:0;}
+.int-title{font-family:var(--serif);font-size:clamp(32px,3.5vw,48px);font-weight:400;line-height:1.2;opacity:0;transform:translateY(20px);}
+.int-sub{font-family:var(--sans);font-weight:300;font-size:clamp(14px,1.1vw,17px);color:rgba(255,255,255,0.6);margin-top:20px;line-height:1.6;opacity:0;transform:translateY(15px);}
+.int-pillars{display:flex;flex-direction:column;gap:0;margin-top:40px;width:240px;opacity:0;transform:translateY(15px);}
+.int-row{display:flex;align-items:center;gap:20px;padding:14px 0;}
+.int-pillar{font-family:var(--sans);font-weight:500;font-size:clamp(16px,1.4vw,22px);color:var(--white);min-width:70px;text-align:left;}
+.int-bar{flex:1;height:1px;background:var(--white);opacity:0.7;transform-origin:left;transform:scaleX(0);}
+
+/* ═══ BLOCK INTRO TEXT ═══ */
+#blockTitle{position:absolute;top:calc(50% - 170px);left:50%;transform:translate(-50%,0);font-family:var(--serif);font-size:clamp(32px,3.5vw,52px);font-weight:400;text-align:center;white-space:nowrap;z-index:11;opacity:0;}
+#blockSub{position:absolute;top:calc(50% + 120px);left:50%;transform:translate(-50%,0);font-family:var(--sans);font-weight:300;font-size:clamp(15px,1.2vw,19px);color:#ffffff;text-align:center;line-height:1.5;z-index:11;opacity:0;white-space:nowrap;}
+
+/* ═══ DUALITY TEXT ═══ */
+#dualLeft{position:absolute;top:50%;right:calc(50% + 110px);transform:translateY(-50%);text-align:right;z-index:11;opacity:0;white-space:nowrap;}
+#dualRight{position:absolute;top:50%;left:calc(50% + 110px);transform:translateY(-50%);text-align:left;z-index:11;opacity:0;white-space:nowrap;}
+
+/* ═══ SPLIT BLOCK ═══ */
+#splitWrap{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);display:flex;align-items:center;gap:0;z-index:12;opacity:0;pointer-events:none;}
+#splitLabelLeft{font-family:var(--serif);font-size:clamp(20px,2.2vw,32px);font-weight:400;color:var(--white);text-align:center;line-height:1.3;white-space:nowrap;padding-right:40px;opacity:0;}
+#splitLabelRight{font-family:var(--serif);font-size:clamp(20px,2.2vw,32px);font-weight:400;color:var(--white);text-align:center;line-height:1.3;white-space:nowrap;padding-left:40px;opacity:0;}
+#splitBlockLeft,#splitBlockRight{width:80px;height:160px;overflow:hidden;flex-shrink:0;}
+#splitBlockLeft svg,#splitBlockRight svg{width:160px;height:160px;}
+#splitBlockRight svg{margin-left:-80px;}
+#splitAnd{font-family:var(--serif);font-style:italic;font-size:clamp(18px,1.8vw,26px);color:#ffffff;padding:0 8px;opacity:0;}
+
+/* ═══ GRID ═══ */
+#gridContainer{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:11;opacity:0;}
+.grid-cell{background:transparent;padding:0;margin:0;line-height:0;overflow:hidden;}
+.grid-cell svg{width:100%;height:100%;display:block;}
+#accText{position:absolute;top:calc(50% + 140px);left:50%;transform:translate(-50%,0);font-family:var(--serif);font-size:clamp(24px,2.5vw,36px);font-weight:400;text-align:center;line-height:1.4;z-index:11;opacity:0;white-space:nowrap;}
+#accText em{font-style:italic;}
+</style>
+</head>
+<body>
+
+<div id="journeyOuter">
+  <div id="journeySticky">
+
+    <!-- SIDE NAV -->
+    <div id="sideNav">
+      <div class="snav-step"><span class="snav-num">01</span><span class="snav-name" id="nav1">Intention</span></div>
+      <div class="snav-connector"><div class="snav-fill" id="navFill1"></div></div>
+      <div class="snav-step"><span class="snav-num">02</span><span class="snav-name" id="nav2">Time Block</span></div>
+      <div class="snav-connector"><div class="snav-fill" id="navFill2"></div></div>
+      <div class="snav-step"><span class="snav-num">03</span><span class="snav-name" id="nav3">Engineer</span></div>
+      <div class="snav-connector"><div class="snav-fill" id="navFill3"></div></div>
+      <div class="snav-step"><span class="snav-num">04</span><span class="snav-name" id="nav4">Record</span></div>
+      <div class="snav-connector"><div class="snav-fill" id="navFill4"></div></div>
+      <div class="snav-step"><span class="snav-num">05</span><span class="snav-name" id="nav5">Reveal</span></div>
+    </div>
+
+    <!-- SCREEN 1: Hero -->
+    <div class="screen" id="s1" style="opacity:1">
+      <h1 id="heroTitle" style="font-family:var(--serif);font-size:clamp(48px,5.5vw,80px);font-weight:400;letter-spacing:-0.5px;text-align:center;line-height:1.1;opacity:0;transform:translateY(20px)">How it works</h1>
+      <p id="heroSub" style="font-family:var(--sans);font-weight:300;font-size:clamp(16px,1.3vw,20px);color:rgba(255,255,255,0.6);margin-top:20px;text-align:center;opacity:0;transform:translateY(12px)">A simple cycle. A lifetime of impact.</p>
+    </div>
+
+    <!-- SCREEN 2: Intention -->
+    <div class="screen" id="s2">
+      <h2 class="int-title" id="intTitle">Define how you want<br>to spend your time.</h2>
+      <p class="int-sub" id="intSub">This becomes the baseline against<br>which everything is measured.</p>
+      <div class="int-pillars" id="intPillars">
+        <div class="int-row"><span class="int-pillar">Work</span><div class="int-bar" id="bar0"></div></div>
+        <div class="int-row"><span class="int-pillar">Life</span><div class="int-bar" id="bar1"></div></div>
+        <div class="int-row"><span class="int-pillar">Health</span><div class="int-bar" id="bar2"></div></div>
+        <div class="int-row"><span class="int-pillar">Sleep</span><div class="int-bar" id="bar3"></div></div>
+      </div>
+    </div>
+
+    <!-- HERO BLOCK (persistent, centered) -->
+    <div id="heroBlock">
+      <svg id="heroBlockSvg" viewBox="890.75 620.28 136.09 136.4" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="blockGrad" x1="0" y1="0" x2="0.4" y2="1">
+            <stop offset="0%" stop-color="rgba(255,255,255,0.04)"/>
+            <stop offset="50%" stop-color="rgba(255,255,255,0.01)"/>
+            <stop offset="100%" stop-color="rgba(255,255,255,0.03)"/>
+          </linearGradient>
+          <filter id="edgeGlow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="surgeGlow" x="-10%" y="-10%" width="120%" height="120%">
+            <feGaussianBlur stdDeviation="1" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <g id="trimPathGroup" opacity="0">
+          <path d="M890.75,620.48 L1026.84,620.48 L1026.84,756.48 L890.75,756.48 Z" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="0.35" filter="url(#surgeGlow)" stroke-dasharray="140 404.36" stroke-dashoffset="544.36">
+            <animate id="surgeAnim" attributeName="stroke-dashoffset" from="544.36" to="0" dur="1.2s" fill="freeze" begin="indefinite" calcMode="spline" keySplines="0.25 0 0.2 1"/>
+          </path>
+        </g>
+        <rect id="blockGradRect" x="891" y="620.7" width="135.6" height="135.5" fill="url(#blockGrad)"/>
+        <g id="edgeGlowLines" filter="url(#edgeGlow)">
+          <line x1="897.15" y1="620.715" x2="1020.44" y2="620.715" stroke="rgba(255,255,255,0.7)" stroke-width=".25"/>
+          <line x1="897.15" y1="756.245" x2="1020.44" y2="756.245" stroke="rgba(255,255,255,0.7)" stroke-width=".25"/>
+          <line x1="890.985" y1="626.88" x2="890.985" y2="750.08" stroke="rgba(255,255,255,0.7)" stroke-width=".25"/>
+          <line x1="1026.605" y1="626.88" x2="1026.605" y2="750.08" stroke="rgba(255,255,255,0.7)" stroke-width=".25"/>
+        </g>
+        <g id="edgeGlowBrackets" filter="url(#edgeGlow)">
+          <rect x="890.75" y="620.28" width="6.4" height="0.8" fill="#fff"/>
+          <rect x="890.75" y="620.28" width="0.8" height="6.4" fill="#fff"/>
+          <rect x="1020.44" y="620.28" width="6.4" height="0.8" fill="#fff"/>
+          <rect x="1026.04" y="620.28" width="0.8" height="6.4" fill="#fff"/>
+          <rect x="890.75" y="755.88" width="6.4" height="0.8" fill="#fff"/>
+          <rect x="890.75" y="750.08" width="0.8" height="6.4" fill="#fff"/>
+          <rect x="1020.44" y="755.88" width="6.4" height="0.8" fill="#fff"/>
+          <rect x="1026.04" y="750.08" width="0.8" height="6.4" fill="#fff"/>
+        </g>
+        <!-- Content bars (abstract content indicators) -->
+        <rect class="content-bar" x="896" y="630" width="100" height="5" rx="1.5" fill="rgba(255,255,255,0.45)" opacity="0"/>
+        <rect class="content-bar" x="896" y="642" width="70" height="5" rx="1.5" fill="rgba(255,255,255,0.3)" opacity="0"/>
+        <rect class="content-bar" x="896" y="658" width="115" height="4" rx="1.5" fill="rgba(255,255,255,0.2)" opacity="0"/>
+        <rect class="content-bar" x="896" y="669" width="90" height="4" rx="1.5" fill="rgba(255,255,255,0.2)" opacity="0"/>
+        <rect class="content-bar" x="896" y="680" width="75" height="4" rx="1.5" fill="rgba(255,255,255,0.15)" opacity="0"/>
+      </svg>
+      <!-- Video inside block (behind SVG frame, hidden until reality) -->
+      <div id="blockVideoWrap" style="position:absolute;top:0%;left:0%;width:100%;height:100%;overflow:hidden;z-index:-1;opacity:0;">
+        <video id="blockVideo" src="reality-video.mp4" muted playsinline loop preload="auto" style="width:100%;height:100%;object-fit:cover;filter:blur(3px);transform:scale(1.05);"></video>
+      </div>
+    </div>
+
+    <!-- BLOCK TEXT (persistent, positioned around block) -->
+    <h2 id="blockTitle">This is a time block</h2>
+    <p id="blockSub">It is the foundational<br>container for all time.</p>
+    <p id="blockSub2" style="position:absolute;top:calc(50% + 120px);left:50%;transform:translate(-50%,0);font-family:var(--sans);font-weight:300;font-size:clamp(15px,1.2vw,19px);color:#ffffff;text-align:center;line-height:1.5;z-index:11;opacity:0;white-space:nowrap;">Everything you do exists<br>inside a unit of time.</p>
+    <p id="blockSub3" style="position:absolute;top:calc(50% + 120px);left:50%;transform:translate(-50%,0);font-family:var(--sans);font-weight:300;font-size:clamp(15px,1.2vw,19px);color:#ffffff;text-align:center;line-height:1.5;z-index:11;opacity:0;white-space:nowrap;">It gives time structure.</p>
+
+    <!-- DUALITY TEXT (persistent) -->
+    <div id="dualLeft" style="display:flex;flex-direction:column;gap:8px;">
+      <p style="font-family:var(--serif);font-size:clamp(24px,2.5vw,38px);font-weight:400;line-height:1.25;">It captures what<br>you planned.</p>
+      <p style="font-family:var(--sans);font-weight:300;font-size:clamp(13px,1.1vw,16px);color:rgba(255,255,255,0.5);text-align:right;">Your intention.</p>
+    </div>
+    <div id="dualRight" style="display:flex;flex-direction:column;gap:8px;">
+      <p style="font-family:var(--serif);font-size:clamp(24px,2.5vw,38px);font-weight:400;line-height:1.25;">And what actually<br>happened.</p>
+      <p style="font-family:var(--sans);font-weight:300;font-size:clamp(13px,1.1vw,16px);color:rgba(255,255,255,0.5);text-align:left;">Your reality.</p>
+    </div>
+
+    <!-- SPLIT BLOCK (actual block SVG split in half) -->
+    <div id="splitWrap">
+      <div id="splitLabelLeft">It holds<br>intention.</div>
+      <div id="splitBlockLeft">
+        <svg viewBox="890.75 620.28 136.09 136.4" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g filter="url(#edgeGlow)">
+            <line x1="897.15" y1="620.715" x2="1020.44" y2="620.715" stroke="rgba(255,255,255,0.7)" stroke-width=".25"/>
+            <line x1="897.15" y1="756.245" x2="1020.44" y2="756.245" stroke="rgba(255,255,255,0.7)" stroke-width=".25"/>
+            <line x1="890.985" y1="626.88" x2="890.985" y2="750.08" stroke="rgba(255,255,255,0.7)" stroke-width=".25"/>
+            <line x1="1026.605" y1="626.88" x2="1026.605" y2="750.08" stroke="rgba(255,255,255,0.7)" stroke-width=".25"/>
+          </g>
+          <g>
+            <rect x="890.75" y="620.28" width="6.4" height="0.8" fill="#fff"/>
+            <rect x="890.75" y="620.28" width="0.8" height="6.4" fill="#fff"/>
+            <rect x="1020.44" y="620.28" width="6.4" height="0.8" fill="#fff"/>
+            <rect x="1026.04" y="620.28" width="0.8" height="6.4" fill="#fff"/>
+            <rect x="890.75" y="755.88" width="6.4" height="0.8" fill="#fff"/>
+            <rect x="890.75" y="750.08" width="0.8" height="6.4" fill="#fff"/>
+            <rect x="1020.44" y="755.88" width="6.4" height="0.8" fill="#fff"/>
+            <rect x="1026.04" y="750.08" width="0.8" height="6.4" fill="#fff"/>
+          </g>
+        </svg>
+      </div>
+      <div id="splitAnd"><em>and</em></div>
+      <div id="splitBlockRight">
+        <svg viewBox="890.75 620.28 136.09 136.4" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g filter="url(#edgeGlow)">
+            <line x1="897.15" y1="620.715" x2="1020.44" y2="620.715" stroke="rgba(255,255,255,0.7)" stroke-width=".25"/>
+            <line x1="897.15" y1="756.245" x2="1020.44" y2="756.245" stroke="rgba(255,255,255,0.7)" stroke-width=".25"/>
+            <line x1="890.985" y1="626.88" x2="890.985" y2="750.08" stroke="rgba(255,255,255,0.7)" stroke-width=".25"/>
+            <line x1="1026.605" y1="626.88" x2="1026.605" y2="750.08" stroke="rgba(255,255,255,0.7)" stroke-width=".25"/>
+          </g>
+          <g>
+            <rect x="890.75" y="620.28" width="6.4" height="0.8" fill="#fff"/>
+            <rect x="890.75" y="620.28" width="0.8" height="6.4" fill="#fff"/>
+            <rect x="1020.44" y="620.28" width="6.4" height="0.8" fill="#fff"/>
+            <rect x="1026.04" y="620.28" width="0.8" height="6.4" fill="#fff"/>
+            <rect x="890.75" y="755.88" width="6.4" height="0.8" fill="#fff"/>
+            <rect x="890.75" y="750.08" width="0.8" height="6.4" fill="#fff"/>
+            <rect x="1020.44" y="755.88" width="6.4" height="0.8" fill="#fff"/>
+            <rect x="1026.04" y="750.08" width="0.8" height="6.4" fill="#fff"/>
+          </g>
+        </svg>
+      </div>
+      <div id="splitLabelRight">It holds<br>reality.</div>
+    </div>
+
+    <!-- GRID (persistent) -->
+    <div id="gridContainer"></div>
+    <p id="accText">As Time Blocks accumulate,<br>they become the record of <em>you</em>.</p>
+
+  </div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  function smoothstep(t){return t*t*(3-2*t);}
+  function easeOutCubic(t){return 1-Math.pow(1-t,3);}
+  function lerp(a,b,t){return a+(b-a)*t;}
+  function clamp01(t){return Math.max(0,Math.min(1,t));}
+
+  // ─── Phase registry ───
+  var phases=[
+    {name:'hero',        vh:50 },  // 0: hero visible
+    {name:'hero-exit',   vh:30 },  // 1: hero fades up
+    {name:'intention',   vh:180},  // 2: intention stagger in + bars
+    {name:'int-exit',    vh:80 },  // 3: intention fades out
+    {name:'block-draw',  vh:200},  // 4: block draws itself + title/sub1
+    {name:'block-sub2',  vh:80 },  // 5: "foundational container"
+    {name:'block-sub3',  vh:80 },  // 6: "gives time structure"
+    {name:'duality',     vh:180},  // 7: left text, then right text
+    {name:'duality-exit', vh:60},   // 8: duality fades, block holds
+    {name:'grid-expand', vh:180},  // 9: block shrinks, grid peppers out
+    {name:'grid-grow',   vh:250}   // 10: grid grows to fill screen
+  ];
+
+  var vh=window.innerHeight;
+  var totalVh=0,bounds=[];
+  for(var i=0;i<phases.length;i++){
+    var s=totalVh*vh/100;
+    totalVh+=phases[i].vh;
+    bounds.push({start:s,end:totalVh*vh/100,dur:phases[i].vh*vh/100});
+  }
+  document.getElementById('journeyOuter').style.height=totalVh+'vh';
+
+  function getPhase(scrollPx){
+    for(var i=0;i<bounds.length;i++){
+      if(scrollPx<bounds[i].end) return{i:i,p:clamp01((scrollPx-bounds[i].start)/bounds[i].dur)};
+    }
+    return{i:phases.length-1,p:1};
+  }
+
+  // ─── Lenis ───
+  var lenis=new Lenis({duration:0.8,easing:function(t){return 1-Math.pow(1-t,3);},smoothWheel:true,smoothTouch:false,wheelMultiplier:1.4});
+  function raf(time){lenis.raf(time);requestAnimationFrame(raf);}
+  requestAnimationFrame(raf);
+
+  // ─── Hero entrance animation ───
+  var heroTitle=document.getElementById('heroTitle');
+  var heroSubEl=document.getElementById('heroSub');
+  setTimeout(function(){
+    heroTitle.style.transition='opacity 0.8s ease, transform 0.8s ease';
+    heroTitle.style.opacity='1';heroTitle.style.transform='translateY(0)';
+  },200);
+  setTimeout(function(){
+    heroSubEl.style.transition='opacity 0.8s ease, transform 0.8s ease';
+    heroSubEl.style.opacity='1';heroSubEl.style.transform='translateY(0)';
+  },500);
+
+  // ─── DOM refs ───
+  var E=function(id){return document.getElementById(id);};
+  var s1=E('s1'),s2=E('s2');
+  var intTitle=E('intTitle'),intSubText=E('intSub'),intPillars=E('intPillars');
+  var bars=[E('bar0'),E('bar1'),E('bar2'),E('bar3')];
+  var heroBlock=E('heroBlock');
+  var blockTitle=E('blockTitle'),blockSub=E('blockSub'),blockSub2=E('blockSub2'),blockSub3=E('blockSub3');
+  var dualLeft=E('dualLeft'),dualRight=E('dualRight');
+  var splitWrap=E('splitWrap'),splitLabelLeft=E('splitLabelLeft'),splitLabelRight=E('splitLabelRight'),splitAnd=E('splitAnd');
+  var gridContainer=E('gridContainer'),accText=E('accText');
+  var trimPathGroup=E('trimPathGroup'),surgeAnim=E('surgeAnim');
+
+  // Nav
+  var navNames=[E('nav1'),E('nav2'),E('nav3'),E('nav4'),E('nav5')];
+  var navFills=[E('navFill1'),E('navFill2'),E('navFill3'),E('navFill4')];
+
+  // Grid state
+  var GRID_LOOSE_COLS=7,GRID_LOOSE_ROWS=3;
+  var GRID_FULL_COLS=27,GRID_FULL_ROWS=15;
+  var CELL_LOOSE=clamp01(window.innerWidth/1400)*52;
+  if(CELL_LOOSE<36) CELL_LOOSE=36;
+  var CELL_DENSE=clamp01(window.innerWidth/1400)*28;
+  if(CELL_DENSE<20) CELL_DENSE=20;
+  var GAP_LOOSE=0,GAP_DENSE=0;
+
+  // Mini block SVG markup (simplified: edge lines + bracket corners, no filters)
+  var miniBlockSvg='<svg viewBox="890.75 620.28 136.09 136.4" fill="none" preserveAspectRatio="none" style="width:100%;height:100%;display:block">'
+    +'<line x1="897" y1="620.7" x2="1020" y2="620.7" stroke="rgba(255,255,255,0.5)" stroke-width=".25"/>'
+    +'<line x1="897" y1="756.2" x2="1020" y2="756.2" stroke="rgba(255,255,255,0.5)" stroke-width=".25"/>'
+    +'<line x1="891" y1="627" x2="891" y2="750" stroke="rgba(255,255,255,0.5)" stroke-width=".25"/>'
+    +'<line x1="1026.6" y1="627" x2="1026.6" y2="750" stroke="rgba(255,255,255,0.5)" stroke-width=".25"/>'
+    +'<rect x="890.75" y="620.28" width="6.4" height="0.8" fill="rgba(255,255,255,0.6)"/>'
+    +'<rect x="890.75" y="620.28" width="0.8" height="6.4" fill="rgba(255,255,255,0.6)"/>'
+    +'<rect x="1020.44" y="620.28" width="6.4" height="0.8" fill="rgba(255,255,255,0.6)"/>'
+    +'<rect x="1026.04" y="620.28" width="0.8" height="6.4" fill="rgba(255,255,255,0.6)"/>'
+    +'<rect x="890.75" y="755.88" width="6.4" height="0.8" fill="rgba(255,255,255,0.6)"/>'
+    +'<rect x="890.75" y="750.08" width="0.8" height="6.4" fill="rgba(255,255,255,0.6)"/>'
+    +'<rect x="1020.44" y="755.88" width="6.4" height="0.8" fill="rgba(255,255,255,0.6)"/>'
+    +'<rect x="1026.04" y="750.08" width="0.8" height="6.4" fill="rgba(255,255,255,0.6)"/>'
+    +'</svg>';
+
+  // Build grid cells (enough for full expanded grid)
+  var totalCells=GRID_FULL_COLS*GRID_FULL_ROWS;
+  var gridCells=[];
+  for(var gi=0;gi<totalCells;gi++){
+    var c=document.createElement('div');
+    c.className='grid-cell';
+    c.style.cssText='position:absolute;opacity:0;';
+    c.innerHTML=miniBlockSvg;
+    gridContainer.appendChild(c);
+    gridCells.push(c);
+  }
+
+  // Surge started flag
+  var surgeStarted=false;
+
+  // ─── Main update ───
+  function update(){
+    var scrollY=window.scrollY;
+    var state=getPhase(scrollY);
+    var pi=state.i,p=state.p;
+
+    // ─── NAV ───
+    var navSections=[
+      {nav:0,phases:[2,3]},       // Intention
+      {nav:1,phases:[4,5,6,7,8,9,10]}, // Time Block
+    ];
+    navNames.forEach(function(n){n.classList.remove('active');});
+    for(var ni=0;ni<navSections.length;ni++){
+      if(navSections[ni].phases.indexOf(pi)!==-1) navNames[navSections[ni].nav].classList.add('active');
+    }
+    // Fill lines based on overall progress
+    var totalScroll=(totalVh-100)*vh/100;
+    var overallP=totalScroll>0?scrollY/totalScroll:0;
+    // Section boundaries for line fills
+    var sectionEnds=[0.15,0.85,0.85,0.85]; // intention ends, time block ends, etc
+    for(var fi=0;fi<navFills.length;fi++){
+      var fillP=clamp01((overallP-fi*0.2)/0.2);
+      navFills[fi].style.height=(fillP*100)+'%';
+    }
+
+    // ─── PHASE 0: Hero visible ───
+    if(pi===0){
+      s1.style.opacity='1';
+      heroTitle.style.opacity='1';heroTitle.style.transform='translateY(0)';
+      heroSubEl.style.opacity='1';heroSubEl.style.transform='translateY(0)';
+    }
+
+    // ─── PHASE 1: Hero exit (fade up) ───
+    if(pi===1){
+      var fadeUp=smoothstep(clamp01(p/0.6));
+      s1.style.opacity=1-fadeUp;
+      heroTitle.style.transform='translateY('+(-fadeUp*60)+'px)';
+      heroTitle.style.opacity=1-fadeUp;
+      heroSubEl.style.transform='translateY('+(-fadeUp*40)+'px)';
+      heroSubEl.style.opacity=1-fadeUp;
+    }
+    if(pi>1) s1.style.opacity='0';
+
+    // ─── PHASE 2: Intention (stagger in centered) ───
+    if(pi===2){
+      s2.style.opacity='1';
+      // Title fades in
+      var tIn=smoothstep(clamp01(p/0.25));
+      intTitle.style.opacity=tIn;
+      intTitle.style.transform='translateY('+((1-tIn)*20)+'px)';
+      // Sub staggers after
+      var sIn=smoothstep(clamp01((p-0.12)/0.2));
+      intSubText.style.opacity=sIn;
+      intSubText.style.transform='translateY('+((1-sIn)*15)+'px)';
+      // Pillars stagger after
+      var pIn=smoothstep(clamp01((p-0.25)/0.2));
+      intPillars.style.opacity=pIn;
+      intPillars.style.transform='translateY('+((1-pIn)*15)+'px)';
+      // Bars grow one by one
+      for(var bi=0;bi<bars.length;bi++){
+        var barP=smoothstep(clamp01((p-0.4-bi*0.06)/0.12));
+        bars[bi].style.transform='scaleX('+barP+')';
+      }
+    }
+
+    // ─── PHASE 3: Intention exit (text UP, pillars DOWN, block scales up between) ───
+    if(pi===3){
+      s2.style.opacity='1';
+      var splitP=smoothstep(clamp01(p/0.5));
+      // Text goes UP
+      intTitle.style.opacity=1-splitP;
+      intTitle.style.transform='translateY('+(-splitP*80)+'px)';
+      intSubText.style.opacity=1-splitP;
+      intSubText.style.transform='translateY('+(-splitP*60)+'px)';
+      // Pillars go DOWN
+      intPillars.style.opacity=1-splitP;
+      intPillars.style.transform='translateY('+(splitP*80)+'px)';
+      // Block scales up in the gap between them
+      var blockReveal=smoothstep(clamp01((p-0.1)/0.5));
+      var blockScale=lerp(0.3,1,blockReveal);
+      heroBlock.style.opacity=blockReveal;
+      heroBlock.style.transform='translate(-50%,-50%) scale('+blockScale+')';
+      heroBlock.style.filter='none';
+      // Trigger surge during this reveal
+      if(p>0.25&&!surgeStarted){
+        trimPathGroup.setAttribute('opacity','1');
+        surgeAnim.beginElement();
+        surgeStarted=true;
+      }
+    }
+    if(pi>3) s2.style.opacity='0';
+    if(pi<2){s2.style.opacity='0';intTitle.style.opacity='0';intSubText.style.opacity='0';intPillars.style.opacity='0';bars.forEach(function(b){b.style.transform='scaleX(0)';});}
+
+    // ─── PHASE 4: Block holds + title/sub appear ───
+    if(pi===4){
+      heroBlock.style.opacity='1';
+      heroBlock.style.transform='translate(-50%,-50%) scale(1)';
+      heroBlock.style.filter='none';
+
+      var titleIn=smoothstep(clamp01((p-0.1)/0.25));
+      blockTitle.style.opacity=titleIn;
+      blockTitle.style.transform='translate(-50%,'+(((1-titleIn)*15))+'px)';
+      var subIn=smoothstep(clamp01((p-0.4)/0.25));
+      blockSub.style.opacity=subIn*0.75;
+      blockSub.style.transform='translate(-50%,'+(((1-subIn)*10))+'px)';
+
+      if(p>0.5) trimPathGroup.setAttribute('opacity',Math.max(0,1-(p-0.5)*4).toFixed(2));
+      blockSub2.style.opacity='0';blockSub3.style.opacity='0';
+    }
+
+    // ─── PHASE 5: Sub swap → "foundational container" ───
+    if(pi===5){
+      heroBlock.style.opacity='1';heroBlock.style.transform='translate(-50%,-50%) scale(1)';
+      blockTitle.style.opacity='1';blockTitle.style.transform='translate(-50%,0)';
+      // Sub1 fades out up
+      var s1Out=smoothstep(clamp01(p/0.3));
+      blockSub.style.opacity=(1-s1Out)*0.75;
+      blockSub.style.transform='translate(-50%,'+(-s1Out*15)+'px)';
+      // Sub2 fades in
+      var s2In=smoothstep(clamp01((p-0.2)/0.3));
+      blockSub2.style.opacity=s2In*0.75;
+      blockSub2.style.transform='translate(-50%,'+((1-s2In)*10)+'px)';
+      blockSub3.style.opacity='0';
+    }
+
+    // ─── PHASE 6: Sub swap → "gives time structure" ───
+    if(pi===6){
+      heroBlock.style.opacity='1';heroBlock.style.transform='translate(-50%,-50%) scale(1)';
+      blockTitle.style.opacity='1';blockTitle.style.transform='translate(-50%,0)';
+      blockSub.style.opacity='0';
+      // Sub2 fades out up
+      var s2Out=smoothstep(clamp01(p/0.3));
+      blockSub2.style.opacity=(1-s2Out)*0.75;
+      blockSub2.style.transform='translate(-50%,'+(-s2Out*15)+'px)';
+      // Sub3 fades in
+      var s3In=smoothstep(clamp01((p-0.2)/0.3));
+      blockSub3.style.opacity=s3In*0.75;
+      blockSub3.style.transform='translate(-50%,'+((1-s3In)*10)+'px)';
+    }
+
+    if(pi<3){heroBlock.style.opacity='0';blockTitle.style.opacity='0';blockSub.style.opacity='0';blockSub2.style.opacity='0';blockSub3.style.opacity='0';surgeStarted=false;trimPathGroup.setAttribute('opacity','0');}
+
+    // ─── PHASE 7: Duality (block stays, text flanks, bars then video) ───
+    var contentBars=document.querySelectorAll('.content-bar');
+    var blockVideo=E('blockVideo');
+    if(pi===7){
+      heroBlock.style.opacity='1';
+      heroBlock.style.transform='translate(-50%,-50%) scale(1)';
+
+      // Title/subs fade out
+      var titOut=clamp01(p/0.15);
+      blockTitle.style.opacity=1-titOut;
+      blockSub.style.opacity='0';blockSub2.style.opacity='0';
+      blockSub3.style.opacity=(1-titOut)*0.75;
+
+      // Left text first — "It captures what you planned."
+      var lIn=smoothstep(clamp01((p-0.1)/0.2));
+      dualLeft.style.opacity=lIn;
+      dualLeft.style.transform='translateY(calc(-50% + '+((1-lIn)*15)+'px))';
+
+      // Content bars stagger in WITH "planned" text
+      for(var cbi=0;cbi<contentBars.length;cbi++){
+        var cbP=smoothstep(clamp01((p-0.15-cbi*0.04)/0.12));
+        contentBars[cbi].setAttribute('opacity',cbP.toFixed(2));
+      }
+
+      // Right text after — "And what actually happened."
+      var rIn=smoothstep(clamp01((p-0.45)/0.2));
+      dualRight.style.opacity=rIn;
+      dualRight.style.transform='translateY(calc(-50% + '+((1-rIn)*15)+'px))';
+
+      // When right text appears: bars fade OUT, video fades IN
+      var barOut=smoothstep(clamp01((p-0.5)/0.15));
+      if(barOut>0){
+        for(var cbo=0;cbo<contentBars.length;cbo++){
+          contentBars[cbo].setAttribute('opacity',((1-barOut)*parseFloat(contentBars[cbo].getAttribute('opacity')||1)).toFixed(2));
+        }
+      }
+      var vidIn=smoothstep(clamp01((p-0.55)/0.2));
+      E('blockVideoWrap').style.opacity=vidIn;
+      if(vidIn>0&&blockVideo.paused) blockVideo.play();
+    } else {
+      // Reset bars and video when not in phase 7
+      for(var cbr=0;cbr<contentBars.length;cbr++) contentBars[cbr].setAttribute('opacity','0');
+      E('blockVideoWrap').style.opacity='0';
+      if(!blockVideo.paused) blockVideo.pause();
+    }
+    if(pi<7){dualLeft.style.opacity='0';dualRight.style.opacity='0';}
+    if(pi>7){blockTitle.style.opacity='0';blockSub.style.opacity='0';blockSub2.style.opacity='0';blockSub3.style.opacity='0';}
+
+    // ─── PHASE 8: Duality fades, block returns to normal ───
+    if(pi===8){
+      var dOut=smoothstep(clamp01(p/0.4));
+      dualLeft.style.opacity=1-dOut;
+      dualRight.style.opacity=1-dOut;
+      heroBlock.style.opacity='1';
+      heroBlock.style.transform='translate(-50%,-50%) scale(1)';
+      E('blockGradRect').setAttribute('opacity','0');
+    }
+
+    // ─── PHASE 9: Grid expand (block shrinks, duplicates pepper out) ───
+    if(pi===9){
+      splitWrap.style.opacity='0';
+      dualLeft.style.opacity='0';dualRight.style.opacity='0';
+      blockTitle.style.opacity='0';blockSub.style.opacity='0';blockSub2.style.opacity='0';blockSub3.style.opacity='0';
+
+      // Block shrinks to grid cell size but stays fully visible at center
+      var shrinkP=smoothstep(clamp01(p/0.3));
+      var targetScale=CELL_LOOSE/160;
+      var blockScale=lerp(1,targetScale,shrinkP);
+      heroBlock.style.opacity='1';
+      heroBlock.style.transform='translate(-50%,-50%) scale('+blockScale+')';
+
+      // Grid peppers in
+      gridContainer.style.opacity='1';
+      var looseW=GRID_LOOSE_COLS*CELL_LOOSE+(GRID_LOOSE_COLS-1)*GAP_LOOSE;
+      var looseH=GRID_LOOSE_ROWS*CELL_LOOSE+(GRID_LOOSE_ROWS-1)*GAP_LOOSE;
+      gridContainer.style.width=looseW+'px';
+      gridContainer.style.height=looseH+'px';
+
+      var visibleCells=GRID_LOOSE_COLS*GRID_LOOSE_ROWS;
+      for(var gi2=0;gi2<totalCells;gi2++){
+        if(gi2<visibleCells){
+          var row=Math.floor(gi2/GRID_LOOSE_COLS);
+          var col=gi2%GRID_LOOSE_COLS;
+          gridCells[gi2].style.width=CELL_LOOSE+'px';
+          gridCells[gi2].style.height=CELL_LOOSE+'px';
+          gridCells[gi2].style.left=(col*(CELL_LOOSE+GAP_LOOSE))+'px';
+          gridCells[gi2].style.top=(row*(CELL_LOOSE+GAP_LOOSE))+'px';
+          // Pepper in with stagger from center (skip center cell — hero block sits there)
+          var centerIdx=1*GRID_LOOSE_COLS+3;
+          var dist=Math.abs(col-3)+Math.abs(row-1);
+          var cellP=smoothstep(clamp01((p-0.2-dist*0.04)/0.2));
+          if(gi2===centerIdx){
+            gridCells[gi2].style.opacity='0';
+          } else {
+            gridCells[gi2].style.opacity=cellP;
+            gridCells[gi2].style.transform='scale(1)';
+          }
+        } else {
+          gridCells[gi2].style.opacity='0';
+        }
+      }
+
+      // Acc text
+      var textP=smoothstep(clamp01((p-0.35)/0.25));
+      accText.style.opacity=textP;
+      accText.style.top='calc(50% + '+(looseH/2+40)+'px)';
+    }
+    if(pi<9){gridContainer.style.opacity='0';accText.style.opacity='0';}
+
+    // ─── PHASE 10: Grid grows (same pepper style, expands outward) ───
+    if(pi===10){
+      heroBlock.style.opacity='0';
+      gridContainer.style.opacity='1';
+      accText.style.opacity='1';
+
+      // Full grid dimensions
+      var fullW=GRID_FULL_COLS*CELL_LOOSE;
+      var fullH=GRID_FULL_ROWS*CELL_LOOSE;
+      gridContainer.style.width=fullW+'px';
+      gridContainer.style.height=fullH+'px';
+
+      // Offset: original 7×3 sits in center of 13×7
+      var colOff=Math.floor((GRID_FULL_COLS-GRID_LOOSE_COLS)/2); // 3
+      var rowOff=Math.floor((GRID_FULL_ROWS-GRID_LOOSE_ROWS)/2); // 2
+
+      var fullCells=GRID_FULL_COLS*GRID_FULL_ROWS;
+      var centerCol=Math.floor(GRID_FULL_COLS/2);
+      var centerRow=Math.floor(GRID_FULL_ROWS/2);
+
+      for(var gi3=0;gi3<totalCells;gi3++){
+        if(gi3<fullCells){
+          var r2=Math.floor(gi3/GRID_FULL_COLS);
+          var c2=gi3%GRID_FULL_COLS;
+          gridCells[gi3].style.width=CELL_LOOSE+'px';
+          gridCells[gi3].style.height=CELL_LOOSE+'px';
+          gridCells[gi3].style.left=(c2*CELL_LOOSE)+'px';
+          gridCells[gi3].style.top=(r2*CELL_LOOSE)+'px';
+
+          // Was this cell in the original 7×3?
+          var inOriginal=(c2>=colOff&&c2<colOff+GRID_LOOSE_COLS&&r2>=rowOff&&r2<rowOff+GRID_LOOSE_ROWS);
+          if(inOriginal){
+            gridCells[gi3].style.opacity='1';
+          } else {
+            // Pepper in from center outward, same style as phase 9
+            var dist=Math.abs(c2-centerCol)+Math.abs(r2-centerRow);
+            var cellP=smoothstep(clamp01((p-dist*0.03)/0.2));
+            gridCells[gi3].style.opacity=cellP;
+          }
+          gridCells[gi3].style.transform='scale(1)';
+        } else {
+          gridCells[gi3].style.opacity='0';
+        }
+      }
+
+      // Text stays in same position (use original grid height for positioning)
+      var origH=GRID_LOOSE_ROWS*CELL_LOOSE;
+      accText.style.top='calc(50% + '+(origH/2+40)+'px)';
+    }
+
+    // ─── Ensure block hidden when not in block phases ───
+    if(pi<3){heroBlock.style.opacity='0';}
+    if(pi>=9&&pi<=10){/* grid phases handle block */}
+  }
+
+  lenis.on('scroll',update);
+  window.addEventListener('scroll',update,{passive:true});
+  update();
+})();
+</script>
+</body>
+</html>

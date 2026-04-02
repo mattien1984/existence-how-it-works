@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How It Works — Existence</title>
+<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+<style>
+@font-face{font-family:'Season Mix';src:url('fonts/SeasonMixTRIAL-Regular.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap;}
+@font-face{font-family:'Season Mix';src:url('fonts/SeasonMixTRIAL-RegularItalic.woff2') format('woff2');font-weight:400;font-style:italic;font-display:swap;}
+@font-face{font-family:'Roobert';src:url('fonts/RoobertTRIAL-Light.otf') format('opentype');font-weight:300;font-style:normal;font-display:swap;}
+@font-face{font-family:'Roobert';src:url('fonts/RoobertTRIAL-Regular.otf') format('opentype');font-weight:400;font-style:normal;font-display:swap;}
+@font-face{font-family:'Roobert';src:url('fonts/RoobertTRIAL-Medium.otf') format('opentype');font-weight:500;font-style:normal;font-display:swap;}
+@font-face{font-family:'Roobert Semi Mono';src:url('fonts/RoobertSemiMonoTRIAL-Regular.otf') format('opentype');font-weight:400;font-style:normal;font-display:swap;}
+
+:root {
+  --black: #050505;
+  --white: #ffffff;
+  --gray: #888;
+  --dim: #444;
+  --label: #A4A7AE;
+  --serif: 'Season Mix', Georgia, 'Times New Roman', serif;
+  --sans: 'Roobert', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --mono: 'Roobert Semi Mono', 'SF Mono', 'Fira Code', monospace;
+  --ease-power2-inOut: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+  --ease-power2-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --c-eng: #8ab4f8;
+  --c-rec: #e8a87c;
+  --c-rev: #82d9c5;
+  --green: #6BAA83;
+  --blue: #3C5999;
+  --gray-block: #838C9F;
+  --gold: #A38523;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:auto;}
+body{font-family:var(--sans);background:var(--black);color:var(--white);overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
+
+/* ═══ NAV ═══ */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:24px 48px;background:rgba(5,5,5,0.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);}
+.nav-logo{font-family:var(--serif);font-size:20px;letter-spacing:1.5px;color:#fff;text-decoration:none;}
+.nav-logo img{filter:brightness(0) invert(1);}
+.nav-links{display:flex;align-items:center;gap:40px;}
+.nav-links a{font-family:var(--sans);font-size:13px;font-weight:400;letter-spacing:1.2px;text-transform:uppercase;color:var(--gray);text-decoration:none;transition:color 0.3s;}
+.nav-links a:hover{color:var(--white);}
+.nav-cta{font-family:var(--sans)!important;font-size:12px!important;font-weight:500!important;letter-spacing:1.5px!important;text-transform:uppercase!important;color:var(--black)!important;background:#fff;padding:10px 24px;border-radius:100px;transition:all 0.3s;}
+.nav-cta:hover{transform:translateY(-1px);box-shadow:0 0 20px rgba(255,255,255,0.35);}
+
+/* ═══ STORY NAV ═══ */
+#storyNav{position:fixed;left:32px;top:50%;transform:translateY(-50%);z-index:998;display:flex;flex-direction:column;align-items:flex-start;opacity:0;transition:opacity 0.6s;}
+#storyNav.visible{opacity:1;}
+.snav-item{display:flex;align-items:center;gap:12px;padding:10px 0;}
+.snav-dot{width:5px;height:5px;border-radius:50%;border:1px solid rgba(255,255,255,0.25);background:transparent;transition:all 0.4s;flex-shrink:0;}
+.snav-dot.active{background:#fff;border-color:#fff;box-shadow:0 0 8px rgba(255,255,255,0.4);}
+.snav-label{font-family:var(--mono);font-size:8px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.0);transition:color 0.4s;white-space:nowrap;}
+.snav-label.active{color:rgba(255,255,255,0.5);}
+.snav-line{width:1px;height:16px;background:rgba(255,255,255,0.08);margin-left:2px;}
+
+/* ═══ GRID BG ═══ */
+.grid-bg{position:absolute;top:0;left:0;right:0;bottom:0;background:url('grid-15-v3.svg') center/cover no-repeat;opacity:0.18;pointer-events:none;z-index:0;}
+
+/* ═══ AMBIENT GLOW ═══ */
+#ambientGlow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:600px;border-radius:50%;pointer-events:none;z-index:1;opacity:0;}
+
+/* ═══ JOURNEY ═══ */
+#journeyOuter{position:relative;}
+#journeySticky{position:sticky;top:0;height:100vh;overflow:hidden;}
+
+/* ═══ BLOCK ANCHOR (permanent center) ═══ */
+#blockAnchor{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(1);transform-origin:center center;width:148px;height:148px;pointer-events:none;z-index:5;opacity:0;}
+.duality-label{position:absolute;font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;opacity:0;}
+#dualityLeft{right:calc(100% + 24px);top:50%;transform:translateY(-50%);color:rgba(255,255,255,0.35);}
+#dualityRight{left:calc(100% + 24px);top:50%;transform:translateY(-50%);color:rgba(255,255,255,0.35);}
+.duality-divider{position:absolute;top:10%;left:50%;width:1px;height:80%;background:rgba(255,255,255,0.08);transform:translateX(-50%);opacity:0;}
+
+/* ═══ TEXT CENTER ZONE ═══ */
+#textCenter{position:absolute;top:0;left:0;right:0;bottom:0;z-index:10;pointer-events:none;}
+.tc-at-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:90vw;max-width:700px;text-align:center;opacity:0;}
+.tc-below-block{position:absolute;top:50%;left:50%;transform:translate(-50%,calc(-50% + 160px));width:90vw;max-width:600px;text-align:center;opacity:0;}
+
+/* ═══ TEXT LEFT ZONE ═══ */
+#textLeft{position:absolute;top:0;left:0;right:0;bottom:0;z-index:8;pointer-events:none;}
+#textLeft > div{position:absolute;top:50%;left:80px;transform:translateY(-50%);width:35%;max-width:400px;text-align:left;opacity:0;}
+
+/* ═══ MOCKUP RIGHT ZONE ═══ */
+#mockupRight{position:absolute;top:0;left:0;right:0;bottom:0;z-index:9;pointer-events:none;}
+#mockupRight > div{position:absolute;top:50%;right:80px;transform:translateY(-50%);opacity:0;}
+
+/* ═══ TYPOGRAPHY ═══ */
+.t-headline{font-family:var(--serif);font-size:72px;font-weight:400;line-height:1.1;letter-spacing:-0.5px;}
+.t-sub{font-family:var(--sans);font-weight:300;font-size:18px;line-height:1.6;color:rgba(255,255,255,0.55);max-width:620px;margin:0 auto;}
+.t-question{font-family:var(--serif);font-style:italic;font-size:40px;line-height:1.3;color:rgba(255,255,255,0.85);}
+.t-pillar{font-family:var(--serif);font-size:48px;line-height:1.6;color:var(--white);opacity:0;}
+.t-body{font-family:var(--sans);font-weight:400;font-size:20px;line-height:1.6;color:rgba(255,255,255,0.75);}
+.t-body-sm{font-family:var(--sans);font-weight:300;font-size:15px;line-height:1.6;color:rgba(255,255,255,0.45);}
+.t-label{font-family:var(--mono);font-size:10px;letter-spacing:2.5px;text-transform:uppercase;}
+.t-name{font-family:var(--serif);font-size:36px;line-height:1.3;}
+.t-resolve{font-family:var(--sans);font-weight:400;font-size:22px;line-height:1.5;color:rgba(255,255,255,0.85);}
+.t-reveal-body{font-family:var(--sans);font-weight:300;font-size:19px;line-height:1.7;color:rgba(255,255,255,0.7);}
+.t-core{font-family:var(--serif);font-size:36px;line-height:1.3;}
+.t-identity{font-family:var(--serif);font-size:40px;line-height:1.3;}
+.t-system{font-family:var(--mono);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.5);}
+
+/* ═══ SCROLL INDICATOR ═══ */
+.scroll-indicator{position:absolute;bottom:48px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0.5;}
+.scroll-indicator span{font-family:var(--mono);font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.5);}
+.scroll-line{width:1px;height:24px;background:rgba(255,255,255,0.3);animation:scroll-pulse 2.5s infinite ease-in-out;}
+@keyframes scroll-pulse{0%,100%{opacity:0.3;transform:translateY(0)}50%{opacity:0.6;transform:translateY(6px)}}
+
+/* ═══ PHONE MOCKUP ═══ */
+.phone-frame{width:280px;height:560px;border-radius:36px;border:2px solid rgba(255,255,255,0.12);background:#111;position:relative;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.5);}
+.phone-notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:120px;height:28px;background:#111;border-radius:0 0 16px 16px;z-index:2;}
+.phone-screen{position:absolute;top:0;left:0;right:0;bottom:0;padding:40px 20px 20px;display:flex;flex-direction:column;gap:8px;overflow:hidden;}
+
+/* ═══ DESKTOP MOCKUP ═══ */
+.desktop-frame{width:580px;height:380px;border-radius:12px;border:2px solid rgba(255,255,255,0.1);background:#0a0a0a;position:relative;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,0.6);}
+.desktop-titlebar{height:32px;background:rgba(255,255,255,0.04);border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;padding:0 12px;gap:6px;}
+.desktop-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.1);}
+.desktop-screen{position:absolute;top:32px;left:0;right:0;bottom:0;padding:24px;overflow:hidden;}
+
+/* ═══ PHONE INTERNALS ═══ */
+.stamp-block{background:var(--blue);border-radius:8px;padding:14px 16px;opacity:0;transform:scale(0.95);}
+.stamp-block.active{opacity:1;transform:scale(1);transition:all 0.15s ease-out;}
+.stamp-title{font-family:var(--sans);font-weight:500;font-size:14px;color:#fff;}
+.stamp-time{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,0.6);margin-top:4px;}
+.stamp-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;}
+.stamp-chip{background:rgba(255,255,255,0.06);border-radius:8px;padding:10px 12px;font-family:var(--sans);font-size:11px;color:rgba(255,255,255,0.5);opacity:0;}
+.stamp-chip.active{opacity:1;transition:opacity 0.12s;}
+.rhythm-row{display:flex;align-items:center;gap:4px;opacity:0;transform:translateY(8px);}
+.rhythm-row.active{opacity:1;transform:translateY(0);transition:all 0.15s ease-out;}
+.rhythm-block{height:36px;border-radius:6px;flex:1;position:relative;overflow:hidden;}
+.rhythm-label{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-family:var(--sans);font-size:10px;color:rgba(255,255,255,0.8);}
+.record-field{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:rgba(255,255,255,0.04);border-radius:8px;opacity:0;}
+.record-field.active{opacity:1;transition:opacity 0.12s;}
+.record-field-label{font-family:var(--sans);font-size:12px;color:rgba(255,255,255,0.5);}
+.record-field-value{font-family:var(--sans);font-size:12px;color:var(--white);}
+.quality-score{display:flex;align-items:center;gap:6px;padding:14px;background:rgba(255,255,255,0.04);border-radius:10px;opacity:0;}
+.quality-score.active{opacity:1;transition:opacity 0.12s;}
+.quality-dot{width:24px;height:24px;border-radius:50%;border:1px solid rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;color:rgba(255,255,255,0.4);}
+.quality-dot.filled{background:var(--green);border-color:var(--green);color:#fff;}
+
+/* ═══ DESKTOP INTERNALS ═══ */
+.insight-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:16px;margin-bottom:12px;}
+.insight-label{font-family:var(--mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:8px;}
+.insight-value{font-family:var(--serif);font-size:28px;color:var(--white);}
+.insight-bar{height:4px;border-radius:2px;background:rgba(255,255,255,0.06);margin-top:10px;overflow:hidden;}
+.insight-bar-fill{height:100%;border-radius:2px;transition:width 1.2s var(--ease-power2-out);}
+.explorer-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
+.explorer-cell{height:8px;border-radius:2px;opacity:0;transition:opacity 0.8s;}
+
+/* ═══ CONVERGENCE ═══ */
+#morphBlock{position:absolute;opacity:0;z-index:10;overflow:hidden;}
+#morphColor{position:absolute;top:0;left:0;right:0;bottom:0;border-radius:inherit;opacity:0;}
+#blockStack{position:absolute;top:0;left:50%;transform:translateX(-50%);width:160px;padding-top:30vh;display:flex;flex-direction:column;gap:3px;z-index:6;opacity:0;}
+.stack-block{border-radius:4px;position:relative;overflow:hidden;opacity:0;transform:translateY(20px);}
+.stack-block-name{position:absolute;left:8px;top:50%;transform:translateY(-50%);font-family:var(--sans);font-size:9px;color:rgba(255,255,255,0.85);white-space:nowrap;}
+.stack-block-time{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:8px;color:rgba(255,255,255,0.5);white-space:nowrap;}
+#stackDateHeader{position:absolute;top:calc(30vh - 42px);left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.35);white-space:nowrap;opacity:0;z-index:6;}
+.week-view{position:absolute;top:0;display:flex;gap:3px;z-index:6;opacity:0;}
+.week-col{width:160px;display:flex;flex-direction:column;gap:3px;opacity:0;}
+.week-block{border-radius:4px;position:relative;overflow:hidden;opacity:0;transform:translateY(12px);}
+.week-header{font-family:var(--mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.35);text-align:center;padding-bottom:8px;}
+#yearGrid{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.9);opacity:0;z-index:7;display:grid;grid-template-columns:repeat(52,1fr);gap:2px;}
+.year-cell{width:12px;height:12px;border-radius:2px;opacity:0;}
+
+/* ═══ CTA ═══ */
+.cta-section{position:relative;min-height:80vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:0 48px;gap:32px;}
+.cta-btn{display:inline-block;font-family:var(--sans);font-size:13px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--black);background:var(--white);padding:14px 36px;border-radius:100px;text-decoration:none;transition:all 0.3s;}
+.cta-btn:hover{transform:translateY(-2px);box-shadow:0 0 30px rgba(255,255,255,0.3);}
+
+/* ═══ FOOTER ═══ */
+footer{padding:60px 48px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(255,255,255,0.06);}
+.footer-logo{font-family:var(--serif);font-size:16px;color:rgba(255,255,255,0.3);text-decoration:none;}
+.footer-links{display:flex;gap:32px;}
+.footer-links a{font-family:var(--sans);font-size:12px;color:rgba(255,255,255,0.3);text-decoration:none;transition:color 0.3s;}
+.footer-links a:hover{color:var(--white);}
+
+/* ═══ SYSTEM ORIENT ═══ */
+.system-words{display:flex;align-items:center;gap:32px;}
+.system-dot{width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,0.25);}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="nav-logo"><img src="logo-existence.svg" alt="Existence" height="18"></a>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/how-it-works-v5.html" style="color:var(--white)">How It Works</a>
+    <a href="/about.html">About</a>
+    <a href="#" class="nav-cta">Get Early Access</a>
+  </div>
+</nav>
+
+<!-- STORY NAV -->
+<div id="storyNav">
+  <div class="snav-item"><div class="snav-dot active" id="snavDot0"></div><span class="snav-label active" id="snavLabel0">Intention</span></div>
+  <div class="snav-line"></div>
+  <div class="snav-item"><div class="snav-dot" id="snavDot1"></div><span class="snav-label" id="snavLabel1">The Block</span></div>
+  <div class="snav-line"></div>
+  <div class="snav-item"><div class="snav-dot" id="snavDot2"></div><span class="snav-label" id="snavLabel2">The Cycle</span></div>
+  <div class="snav-line"></div>
+  <div class="snav-item"><div class="snav-dot" id="snavDot3"></div><span class="snav-label" id="snavLabel3">The Pattern</span></div>
+  <div class="snav-line"></div>
+  <div class="snav-item"><div class="snav-dot" id="snavDot4"></div><span class="snav-label" id="snavLabel4">Identity</span></div>
+</div>
+
+<!-- ═══════════════════════════════════ JOURNEY ═══════════════════════════════════ -->
+<div id="journeyOuter">
+  <div id="journeySticky">
+    <div class="grid-bg" id="gridBg"></div>
+    <div id="ambientGlow"></div>
+
+    <!-- BLOCK ANCHOR (permanent center, z-index 5) -->
+    <div id="blockAnchor">
+      <svg id="blockSvg" viewBox="0 0 148 148" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">
+        <defs>
+          <linearGradient id="blockGrad" x1="74" y1="0" x2="74" y2="148">
+            <stop offset="0%" stop-color="rgba(255,255,255,0.04)"/>
+            <stop offset="100%" stop-color="rgba(255,255,255,0.01)"/>
+          </linearGradient>
+          <filter id="edgeGlow"><feGaussianBlur stdDeviation="1.5"/></filter>
+          <filter id="surgeGlow"><feGaussianBlur stdDeviation="1"/></filter>
+        </defs>
+        <rect id="blockGradRect" x="4" y="4" width="140" height="140" rx="0" fill="url(#blockGrad)" opacity="1"/>
+        <g id="edgeGlowLines" filter="url(#edgeGlow)">
+          <line x1="4" y1="4" x2="144" y2="4" stroke="rgba(255,255,255,0.12)" stroke-width="0.5"/>
+          <line x1="4" y1="144" x2="144" y2="144" stroke="rgba(255,255,255,0.12)" stroke-width="0.5"/>
+          <line x1="4" y1="4" x2="4" y2="144" stroke="rgba(255,255,255,0.12)" stroke-width="0.5"/>
+          <line x1="144" y1="4" x2="144" y2="144" stroke="rgba(255,255,255,0.12)" stroke-width="0.5"/>
+        </g>
+        <g id="edgeGlowBrackets" filter="url(#edgeGlow)">
+          <rect x="2" y="2" width="10" height="0.5" fill="rgba(255,255,255,0.35)"/>
+          <rect x="2" y="2" width="0.5" height="10" fill="rgba(255,255,255,0.35)"/>
+          <rect x="136" y="2" width="10" height="0.5" fill="rgba(255,255,255,0.35)"/>
+          <rect x="145.5" y="2" width="0.5" height="10" fill="rgba(255,255,255,0.35)"/>
+          <rect x="2" y="145.5" width="10" height="0.5" fill="rgba(255,255,255,0.35)"/>
+          <rect x="2" y="136" width="0.5" height="10" fill="rgba(255,255,255,0.35)"/>
+          <rect x="136" y="145.5" width="10" height="0.5" fill="rgba(255,255,255,0.35)"/>
+          <rect x="145.5" y="136" width="0.5" height="10" fill="rgba(255,255,255,0.35)"/>
+        </g>
+        <rect id="trimPath" x="4" y="4" width="140" height="140" rx="0" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="0.8" stroke-dasharray="40 520" stroke-dashoffset="0" filter="url(#surgeGlow)" opacity="0"/>
+        <g id="contentBandsGroup">
+          <rect class="content-band" x="14" y="20" width="120" height="14" rx="2" fill="rgba(255,255,255,0.06)" opacity="0"/>
+          <rect class="content-band" x="14" y="40" width="120" height="14" rx="2" fill="rgba(255,255,255,0.05)" opacity="0"/>
+          <rect class="content-band" x="14" y="60" width="90" height="14" rx="2" fill="rgba(255,255,255,0.04)" opacity="0"/>
+          <rect class="content-band" x="14" y="80" width="120" height="14" rx="2" fill="rgba(255,255,255,0.05)" opacity="0"/>
+          <rect class="content-band" x="14" y="100" width="70" height="14" rx="2" fill="rgba(255,255,255,0.04)" opacity="0"/>
+        </g>
+      </svg>
+      <span class="duality-label" id="dualityLeft">intention</span>
+      <span class="duality-label" id="dualityRight">reality</span>
+      <div class="duality-divider" id="dualityDivider"></div>
+    </div>
+
+    <!-- TEXT CENTER ZONE -->
+    <div id="textCenter">
+      <div class="tc-at-center" id="heroContent">
+        <h1 class="t-headline">How It Works</h1>
+        <p class="t-sub" style="margin-top:24px">A simple cycle. A lifetime of impact.</p>
+        <div class="scroll-indicator" id="scrollIndicator"><span>Scroll</span><div class="scroll-line"></div></div>
+      </div>
+      <div class="tc-at-center" id="intentionContent"><p class="t-question">How do you want to spend your time?</p></div>
+      <div class="tc-at-center" id="pillarContent">
+        <div style="display:flex;flex-direction:column;gap:4px;align-items:center">
+          <span class="t-pillar" id="pillar0">Work.</span>
+          <span class="t-pillar" id="pillar1">Life.</span>
+          <span class="t-pillar" id="pillar2">Health.</span>
+          <span class="t-pillar" id="pillar3">Sleep.</span>
+        </div>
+        <p class="t-body-sm" style="margin-top:40px;opacity:0" id="pillarBaseline">This becomes the baseline everything is measured against.</p>
+      </div>
+      <div class="tc-below-block" id="blockIntroContent">
+        <p class="t-body">Everything you do exists inside a unit of time.</p>
+        <p class="t-name" style="margin-top:16px">A Time Block.</p>
+      </div>
+      <div class="tc-below-block" id="blockDualContent">
+        <p class="t-body">It captures what you planned — and what actually happened.</p>
+        <p class="t-body-sm" style="margin-top:16px">As these accumulate, they become the record of you.</p>
+      </div>
+      <div class="tc-below-block" id="bridgeContent"><p class="t-body">Now your intention has something to measure against.</p></div>
+      <div class="tc-below-block" id="systemContent">
+        <div class="system-words"><span class="t-system" style="color:var(--c-eng)">Engineer</span><div class="system-dot"></div><span class="t-system" style="color:var(--c-rec)">Record</span><div class="system-dot"></div><span class="t-system" style="color:var(--c-rev)">Reveal</span></div>
+        <p style="font-family:var(--sans);font-weight:300;font-size:14px;color:rgba(255,255,255,0.35);margin-top:20px">A simple cycle.</p>
+      </div>
+      <div class="tc-below-block" id="engResolveContent"><p class="t-resolve">You can create your time in seconds, not minutes.</p></div>
+      <div class="tc-below-block" id="recDataContent"><p class="t-body">Each recorded block adds to something larger.</p></div>
+      <div class="tc-below-block" id="recResolveContent"><p class="t-resolve">Capturing your real time is as easy as tapping through it.</p></div>
+      <div class="tc-below-block" id="revIntroContent">
+        <span class="t-label" style="color:var(--c-rev)">Reveal</span>
+        <p class="t-reveal-body" style="margin-top:16px">For the first time, you can see exactly how your time is being created.</p>
+      </div>
+      <div class="tc-below-block" id="revCloseContent"><p class="t-reveal-body" style="font-size:20px;color:rgba(255,255,255,0.8)">This is where time stops being something that happens to you — and starts being something you understand.</p></div>
+      <div class="tc-below-block" id="coreIdeaContent">
+        <p class="t-core">The difference between intention and reality becomes visible.</p>
+        <p class="t-body-sm" style="margin-top:20px">This is the product.</p>
+      </div>
+      <div class="tc-at-center" id="identityContent"><p class="t-identity">You become who you intend to be.</p></div>
+    </div>
+
+    <!-- TEXT LEFT ZONE -->
+    <div id="textLeft">
+      <div id="engIntroLeft"><span class="t-label" style="color:var(--c-eng)">Engineer</span><h2 class="t-name" style="margin-top:12px;font-size:28px">Planning time should feel effortless.</h2></div>
+      <div id="engStampLeft"><span class="t-label" style="color:var(--c-eng)">Engineer</span><p class="t-resolve" style="margin-top:8px">Tap. Named. Placed.</p><p class="t-body-sm" style="margin-top:8px">Stamps let you create blocks in a single gesture.</p></div>
+      <div id="engRhythmLeft"><span class="t-label" style="color:var(--c-eng)">Engineer</span><p class="t-resolve" style="margin-top:8px">Set it once. It repeats.</p><p class="t-body-sm" style="margin-top:8px">Rhythm handles the blocks that shape every day.</p></div>
+      <div id="recIntroLeft"><span class="t-label" style="color:var(--c-rec)">Record</span><h2 class="t-name" style="margin-top:12px;font-size:28px">Capturing reality should feel effortless.</h2></div>
+      <div id="recUpdateLeft"><span class="t-label" style="color:var(--c-rec)">Record</span><p class="t-body" style="margin-top:8px">Adjust what happened. Score how it felt. Add a photo if you want.</p></div>
+      <div id="revInsightsLeft"><span class="t-label" style="color:var(--c-rev)">Reveal</span><p class="t-name" style="margin-top:8px;font-size:24px">Time Insights</p><p class="t-reveal-body" style="margin-top:12px">You see the gap. You know exactly where intention and reality split. Now you can do something about it.</p></div>
+      <div id="revExplorerLeft"><span class="t-label" style="color:var(--c-rev)">Reveal</span><p class="t-name" style="margin-top:8px;font-size:24px">Time Explorer</p><p class="t-reveal-body" style="margin-top:12px">You're not looking at data. You're looking at your life, laid out. The patterns that were invisible become obvious.</p></div>
+      <div id="revAgentLeft"><span class="t-label" style="color:var(--c-rev)">Reveal</span><p class="t-name" style="margin-top:8px;font-size:24px">Time Agent</p><p class="t-reveal-body" style="margin-top:12px">It knows your record better than you do. Ask it why you feel productive some weeks and drained in others. It will tell you.</p></div>
+      <div id="dayLeft"><p class="t-body">One day, structured.</p></div>
+      <div id="weekLeft"><p class="t-body">One week, and patterns begin.</p></div>
+      <div id="yearLeft"><p class="t-body">Over time, this reveals who you actually are.</p></div>
+    </div>
+
+    <!-- MOCKUP RIGHT ZONE -->
+    <div id="mockupRight">
+      <!-- STAMP PHONE -->
+      <div id="stampPhoneWrap">
+        <div class="phone-frame"><div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div style="font-family:var(--mono);font-size:9px;color:rgba(255,255,255,0.3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px">TODAY</div>
+            <div class="stamp-block" id="stamp0"><div class="stamp-title">Deep Work</div><div class="stamp-time">8:00 AM — 11:00 AM</div></div>
+            <div class="stamp-grid"><div class="stamp-chip" id="stampChip0">Morning Run</div><div class="stamp-chip" id="stampChip1">Coffee</div><div class="stamp-chip" id="stampChip2">Team Sync</div><div class="stamp-chip" id="stampChip3">Design Review</div></div>
+          </div>
+        </div>
+      </div>
+      <!-- RHYTHM PHONE -->
+      <div id="rhythmPhoneWrap">
+        <div class="phone-frame"><div class="phone-notch"></div>
+          <div class="phone-screen" id="rhythmScreen">
+            <div style="font-family:var(--mono);font-size:9px;color:rgba(255,255,255,0.3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px">RHYTHM</div>
+          </div>
+        </div>
+      </div>
+      <!-- RECORD PHONE -->
+      <div id="recPhoneWrap">
+        <div class="phone-frame"><div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div style="font-family:var(--mono);font-size:9px;color:rgba(255,255,255,0.3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px">RECORDING</div>
+            <div class="stamp-block" style="opacity:1;transform:none;background:var(--blue);margin-bottom:12px"><div class="stamp-title">Deep Work</div><div class="stamp-time">8:00 AM — 10:45 AM</div></div>
+            <div class="record-field" id="recField0"><span class="record-field-label">Adjusted</span><span class="record-field-value" style="color:var(--c-rec)">10:45 AM</span></div>
+            <div style="height:8px"></div>
+            <div class="quality-score" id="recQuality"><div class="quality-dot">1</div><div class="quality-dot">2</div><div class="quality-dot">3</div><div class="quality-dot">4</div><div class="quality-dot">5</div><div class="quality-dot">6</div><div class="quality-dot">7</div><div class="quality-dot filled">8</div><div class="quality-dot">9</div><div class="quality-dot">10</div></div>
+            <div style="height:8px"></div>
+            <div class="record-field" id="recField1"><span class="record-field-label">Reflection</span><span class="record-field-value" style="font-size:11px;color:rgba(255,255,255,0.5)">Good flow state today</span></div>
+          </div>
+        </div>
+      </div>
+      <!-- INSIGHTS DESKTOP -->
+      <div id="insightsDesktopWrap">
+        <div class="desktop-frame"><div class="desktop-titlebar"><div class="desktop-dot"></div><div class="desktop-dot"></div><div class="desktop-dot"></div></div>
+          <div class="desktop-screen">
+            <div class="insight-card"><div class="insight-label">Time Alignment</div><div class="insight-value">73%</div><div class="insight-bar"><div class="insight-bar-fill" id="alignBar" style="width:0%;background:var(--c-rev)"></div></div></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div class="insight-card"><div class="insight-label">Work</div><div class="insight-bar"><div class="insight-bar-fill" id="workBar" style="width:0%;background:var(--blue)"></div></div></div><div class="insight-card"><div class="insight-label">Health</div><div class="insight-bar"><div class="insight-bar-fill" id="healthBar" style="width:0%;background:var(--green)"></div></div></div></div>
+          </div>
+        </div>
+      </div>
+      <!-- EXPLORER DESKTOP -->
+      <div id="explorerDesktopWrap">
+        <div class="desktop-frame"><div class="desktop-titlebar"><div class="desktop-dot"></div><div class="desktop-dot"></div><div class="desktop-dot"></div></div>
+          <div class="desktop-screen"><div style="font-family:var(--mono);font-size:9px;color:rgba(255,255,255,0.3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px">30 DAYS</div><div class="explorer-grid" id="explorerGrid"></div></div>
+        </div>
+      </div>
+      <!-- AGENT PHONE -->
+      <div id="agentPhoneWrap">
+        <div class="phone-frame"><div class="phone-notch"></div>
+          <div class="phone-screen" style="padding-top:48px;gap:12px">
+            <div style="font-family:var(--mono);font-size:9px;color:var(--c-rev);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px">E</div>
+            <div id="agentBubble0" style="background:rgba(255,255,255,0.05);border-radius:12px 12px 12px 4px;padding:12px 16px;font-size:13px;color:rgba(255,255,255,0.7);line-height:1.5;opacity:0;max-width:90%">Why do I feel more productive on Tuesdays?</div>
+            <div id="agentBubble1" style="background:rgba(130,217,197,0.08);border:1px solid rgba(130,217,197,0.15);border-radius:12px 12px 4px 12px;padding:12px 16px;font-size:13px;color:rgba(255,255,255,0.65);line-height:1.5;opacity:0;align-self:flex-end;max-width:90%">Your Tuesdays start with a 90-minute Deep Work block and you consistently score them 8+. The pattern breaks on days that begin with meetings.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONVERGENCE VISUALS -->
+    <div id="morphBlock">
+      <svg id="morphSvg" viewBox="0 0 148 148" fill="none" style="width:100%;height:100%;position:absolute;top:0;left:0">
+        <g id="mBrackets"><rect x="2" y="2" width="10" height="0.5" fill="rgba(255,255,255,0.35)"/><rect x="2" y="2" width="0.5" height="10" fill="rgba(255,255,255,0.35)"/><rect x="136" y="2" width="10" height="0.5" fill="rgba(255,255,255,0.35)"/><rect x="145.5" y="2" width="0.5" height="10" fill="rgba(255,255,255,0.35)"/><rect x="2" y="145.5" width="10" height="0.5" fill="rgba(255,255,255,0.35)"/><rect x="2" y="136" width="0.5" height="10" fill="rgba(255,255,255,0.35)"/><rect x="136" y="145.5" width="10" height="0.5" fill="rgba(255,255,255,0.35)"/><rect x="145.5" y="136" width="0.5" height="10" fill="rgba(255,255,255,0.35)"/></g>
+        <g id="mLines"><line x1="2" y1="2" x2="146" y2="2" stroke="rgba(255,255,255,0.12)" stroke-width="0.5"/><line x1="2" y1="146" x2="146" y2="146" stroke="rgba(255,255,255,0.12)" stroke-width="0.5"/><line x1="2" y1="2" x2="2" y2="146" stroke="rgba(255,255,255,0.12)" stroke-width="0.5"/><line x1="146" y1="2" x2="146" y2="146" stroke="rgba(255,255,255,0.12)" stroke-width="0.5"/></g>
+      </svg>
+      <div id="morphColor"></div>
+    </div>
+    <div id="blockStack"></div>
+    <div id="stackDateHeader">WED, MAR 5</div>
+    <div class="week-view" id="weekViewLeft" style="padding-top:calc(30vh - 42px)"></div>
+    <div class="week-view" id="weekViewRight" style="padding-top:calc(30vh - 42px)"></div>
+    <div id="yearGrid"></div>
+
+  </div>
+</div>
+
+<!-- CTA -->
+<section class="cta-section">
+  <p class="t-body" style="color:rgba(255,255,255,0.65)">The life you intend to live is waiting.</p>
+  <a href="#" class="cta-btn">Get Early Access</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <a href="/" class="footer-logo">existence</a>
+  <div class="footer-links"><a href="#">Privacy</a><a href="#">Terms</a></div>
+</footer>
+
+<script>
+(function() {
+  'use strict';
+
+  // ─── Easing ───
+  function smoothstep(t) { return t * t * (3 - 2 * t); }
+  function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  function clamp01(t) { return Math.max(0, Math.min(1, t)); }
+
+  // ─── Phase Registry ───
+  var phases = [
+    { name: 'hero',               vh: 100 },
+    { name: 'hero-exit',          vh: 80  },
+    { name: 'intention-question', vh: 120 },
+    { name: 'pillars',            vh: 200 },
+    { name: 'pillars-exit',       vh: 60  },
+    { name: 'block-draw',         vh: 180 },
+    { name: 'block-duality',      vh: 200 },
+    { name: 'bridge',             vh: 80  },
+    { name: 'system-orient',      vh: 80  },
+    { name: 'eng-intro',          vh: 80  },
+    { name: 'eng-stamp',          vh: 140 },
+    { name: 'eng-rhythm',         vh: 140 },
+    { name: 'eng-resolve',        vh: 120 },
+    { name: 'rec-intro',          vh: 60  },
+    { name: 'rec-update',         vh: 160 },
+    { name: 'rec-data',           vh: 120 },
+    { name: 'rec-resolve',        vh: 100 },
+    { name: 'rev-intro',          vh: 100 },
+    { name: 'rev-insights',       vh: 160 },
+    { name: 'rev-explorer',       vh: 160 },
+    { name: 'rev-agent',          vh: 160 },
+    { name: 'rev-close',          vh: 120 },
+    { name: 'core-idea',          vh: 120 },
+    { name: 'compound-day',       vh: 140 },
+    { name: 'compound-week',      vh: 160 },
+    { name: 'compound-year',      vh: 200 },
+    { name: 'identity',           vh: 120 }
+  ];
+
+  var vh = window.innerHeight;
+  var totalVh = 0;
+  var phaseBounds = [];
+  for (var i = 0; i < phases.length; i++) {
+    var startPx = totalVh * vh / 100;
+    totalVh += phases[i].vh;
+    phaseBounds.push({ start: startPx, end: totalVh * vh / 100, duration: phases[i].vh * vh / 100 });
+  }
+  document.getElementById('journeyOuter').style.height = totalVh + 'vh';
+
+  function getPhaseState(scrollPx) {
+    for (var i = 0; i < phaseBounds.length; i++) {
+      if (scrollPx < phaseBounds[i].end) {
+        return { index: i, progress: clamp01((scrollPx - phaseBounds[i].start) / phaseBounds[i].duration) };
+      }
+    }
+    return { index: phases.length - 1, progress: 1 };
+  }
+
+  // ─── Lenis ───
+  var lenis = new Lenis({ duration: 0.8, easing: function(t) { return 1 - Math.pow(1 - t, 3); }, smoothWheel: true, smoothTouch: false, wheelMultiplier: 1.4 });
+  function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+  requestAnimationFrame(raf);
+
+  // ─── Flow Helpers (the core innovation) ───
+  function flowCenterAt(el, eS, eE, xS, xE, p, travel) {
+    if (!el) return;
+    var eP = smoothstep(clamp01((p - eS) / (eE - eS)));
+    var xP = smoothstep(clamp01((p - xS) / (xE - xS)));
+    var o = eP * (1 - xP);
+    var y = (1 - eP) * travel + xP * (-travel);
+    el.style.opacity = o;
+    el.style.transform = 'translate(-50%, calc(-50% + ' + y + 'px))';
+  }
+
+  function flowCenterBelow(el, eS, eE, xS, xE, p, travel) {
+    if (!el) return;
+    var eP = smoothstep(clamp01((p - eS) / (eE - eS)));
+    var xP = smoothstep(clamp01((p - xS) / (xE - xS)));
+    var o = eP * (1 - xP);
+    var y = (1 - eP) * travel + xP * (-travel);
+    el.style.opacity = o;
+    el.style.transform = 'translate(-50%, calc(-50% + 160px + ' + y + 'px))';
+  }
+
+  function flowLeft(el, eS, eE, xS, xE, p, travel) {
+    if (!el) return;
+    var eP = smoothstep(clamp01((p - eS) / (eE - eS)));
+    var xP = smoothstep(clamp01((p - xS) / (xE - xS)));
+    var o = eP * (1 - xP);
+    var y = (1 - eP) * travel + xP * (-travel);
+    el.style.opacity = o;
+    el.style.transform = 'translateY(calc(-50% + ' + y + 'px))';
+  }
+
+  function flowRight(el, eS, eE, xS, xE, p, travel) {
+    if (!el) return;
+    var eP = easeOutCubic(clamp01((p - eS) / (eE - eS)));
+    var xP = smoothstep(clamp01((p - xS) / (xE - xS)));
+    var o = eP * (1 - xP);
+    var y = (1 - eP) * travel + xP * (-travel);
+    el.style.opacity = o;
+    el.style.transform = 'translateY(calc(-50% + ' + y + 'px))';
+  }
+
+  // ─── Build Dynamic Elements ───
+  var blockData = [
+    { name: 'Morning Run', time: '6:30 AM', color: '#6BAA83', h: 49 },
+    { name: 'Deep Work', time: '8 AM', color: '#3C5999', h: 65 },
+    { name: 'Coffee', time: '11 AM', color: '#838C9F', h: 28 },
+    { name: 'Team Sync', time: '11:30 AM', color: '#A38523', h: 48 },
+    { name: 'Lunch', time: '1 PM', color: '#A38523', h: 28 },
+    { name: 'Design Review', time: '2 PM', color: '#3C5999', h: 75 },
+    { name: 'Walk', time: '5 PM', color: '#6BAA83', h: 32 },
+    { name: 'Dinner', time: '6 PM', color: '#838C9F', h: 42 },
+    { name: 'Reading', time: '7:30 PM', color: '#A38523', h: 55 },
+    { name: 'Journal', time: '9:30 PM', color: '#6BAA83', h: 26 }
+  ];
+  var WEEK_BLOCK_W = 160;
+
+  // Stack blocks
+  var blockStackEl = document.getElementById('blockStack');
+  var stackBlocks = [];
+  for (var si = 0; si < blockData.length; si++) {
+    var d = blockData[si];
+    var b = document.createElement('div');
+    b.className = 'stack-block';
+    b.style.cssText = 'width:160px;height:' + d.h + 'px;background:' + d.color;
+    b.innerHTML = '<span class="stack-block-name">' + d.name + '</span><span class="stack-block-time">' + d.time + '</span>';
+    blockStackEl.appendChild(b);
+    stackBlocks.push(b);
+  }
+
+  // Week data
+  var weekDaysLeft = [
+    { label:'SUN', stagger:2, blocks:[{c:'#6BAA83',h:40},{c:'#838C9F',h:35},{c:'transparent',h:6},{c:'#A38523',h:50},{c:'#3C5999',h:30},{c:'#838C9F',h:28},{c:'transparent',h:6},{c:'#6BAA83',h:45},{c:'#A38523',h:32}] },
+    { label:'MON', stagger:1, blocks:[{c:'#6BAA83',h:45},{c:'#3C5999',h:70},{c:'#838C9F',h:25},{c:'transparent',h:6},{c:'#A38523',h:45},{c:'#3C5999',h:60},{c:'#6BAA83',h:30},{c:'#838C9F',h:40},{c:'#A38523',h:50}] },
+    { label:'TUE', stagger:0, blocks:[{c:'#6BAA83',h:48},{c:'#3C5999',h:65},{c:'#838C9F',h:30},{c:'#A38523',h:42},{c:'transparent',h:6},{c:'#3C5999',h:55},{c:'#6BAA83',h:35},{c:'#838C9F',h:38},{c:'#A38523',h:48}] }
+  ];
+  var weekDaysRight = [
+    { label:'THU', stagger:0, blocks:[{c:'#6BAA83',h:50},{c:'#3C5999',h:60},{c:'#838C9F',h:28},{c:'transparent',h:6},{c:'#A38523',h:48},{c:'#3C5999',h:65},{c:'#6BAA83',h:30},{c:'#838C9F',h:42},{c:'#A38523',h:35}] },
+    { label:'FRI', stagger:1, blocks:[{c:'#6BAA83',h:42},{c:'#3C5999',h:55},{c:'transparent',h:6},{c:'#838C9F',h:32},{c:'#A38523',h:50},{c:'#3C5999',h:45},{c:'#6BAA83',h:38},{c:'#838C9F',h:30},{c:'#A38523',h:55}] },
+    { label:'SAT', stagger:2, blocks:[{c:'#838C9F',h:35},{c:'#6BAA83',h:55},{c:'transparent',h:6},{c:'#A38523',h:42},{c:'#838C9F',h:28},{c:'#6BAA83',h:50},{c:'transparent',h:6},{c:'#A38523',h:38},{c:'#6BAA83',h:30}] }
+  ];
+
+  function buildWeekCol(dayData) {
+    var col = document.createElement('div');
+    col.className = 'week-col';
+    col.dataset.stagger = dayData.stagger;
+    col.innerHTML = '<div class="week-header">' + dayData.label + '</div>';
+    for (var b = 0; b < dayData.blocks.length; b++) {
+      var blk = document.createElement('div');
+      blk.className = 'week-block';
+      blk.style.cssText = 'width:160px;height:' + dayData.blocks[b].h + 'px;background:' + dayData.blocks[b].c;
+      col.appendChild(blk);
+    }
+    return col;
+  }
+  var weekViewLeftEl = document.getElementById('weekViewLeft');
+  var weekViewRightEl = document.getElementById('weekViewRight');
+  for (var wl = 0; wl < weekDaysLeft.length; wl++) weekViewLeftEl.appendChild(buildWeekCol(weekDaysLeft[wl]));
+  for (var wr = 0; wr < weekDaysRight.length; wr++) weekViewRightEl.appendChild(buildWeekCol(weekDaysRight[wr]));
+  var weekColsAll = document.querySelectorAll('.week-col');
+
+  // Explorer grid
+  var explorerGridEl = document.getElementById('explorerGrid');
+  var brandColors = ['#6BAA83','#3C5999','#838C9F','#A38523','rgba(255,255,255,0.04)'];
+  for (var eg = 0; eg < 210; eg++) { var c = document.createElement('div'); c.className = 'explorer-cell'; c.style.background = brandColors[Math.floor(Math.random() * brandColors.length)]; explorerGridEl.appendChild(c); }
+
+  // Year grid
+  var yearGridEl = document.getElementById('yearGrid');
+  for (var yg = 0; yg < 364; yg++) { var yc = document.createElement('div'); yc.className = 'year-cell'; yc.style.background = brandColors[Math.floor(Math.random() * (brandColors.length - 1))]; yearGridEl.appendChild(yc); }
+
+  // Rhythm rows
+  var rhythmData = [{name:'Morning Run',color:'#6BAA83'},{name:'Deep Work',color:'#3C5999'},{name:'Team Sync',color:'#A38523'},{name:'Lunch',color:'#A38523'},{name:'Design Review',color:'#3C5999'}];
+  var rhythmScreen = document.getElementById('rhythmScreen');
+  for (var ri = 0; ri < rhythmData.length; ri++) { var row = document.createElement('div'); row.className = 'rhythm-row'; row.id = 'rhythmRow' + ri; row.innerHTML = '<div class="rhythm-block" style="background:' + rhythmData[ri].color + '"><span class="rhythm-label">' + rhythmData[ri].name + '</span></div>'; rhythmScreen.appendChild(row); }
+
+  // ─── DOM Refs ───
+  var E = function(id) { return document.getElementById(id); };
+  var blockAnchor = E('blockAnchor');
+  var ambientGlow = E('ambientGlow');
+  var trimPath = E('trimPath');
+  var storyNav = E('storyNav');
+  var snavDots = [0,1,2,3,4].map(function(i) { return E('snavDot' + i); });
+  var snavLabels = [0,1,2,3,4].map(function(i) { return E('snavLabel' + i); });
+
+  // All flow element IDs
+  var flowIds = [
+    'heroContent','intentionContent','pillarContent','blockIntroContent','blockDualContent',
+    'bridgeContent','systemContent','engResolveContent','recDataContent','recResolveContent',
+    'revIntroContent','revCloseContent','coreIdeaContent','identityContent',
+    'engIntroLeft','engStampLeft','engRhythmLeft','recIntroLeft','recUpdateLeft',
+    'revInsightsLeft','revExplorerLeft','revAgentLeft','dayLeft','weekLeft','yearLeft',
+    'stampPhoneWrap','rhythmPhoneWrap','recPhoneWrap','insightsDesktopWrap','explorerDesktopWrap','agentPhoneWrap'
+  ];
+  var F = {};
+  flowIds.forEach(function(id) { F[id] = E(id); });
+
+  function resetAll() { for (var k in F) { if (F[k]) F[k].style.opacity = '0'; } }
+
+  // ─── Block Appearance ───
+  function updateBlock(pi, p) {
+    if (pi < 5) { blockAnchor.style.opacity = '0'; return; }
+    if (pi === 5) {
+      blockAnchor.style.opacity = smoothstep(clamp01(p / 0.25));
+      blockAnchor.style.transform = 'translate(-50%,-50%) scale(' + lerp(0.8, 1.4, smoothstep(clamp01(p / 0.5))) + ')';
+      blockAnchor.style.filter = 'none';
+      return;
+    }
+    if (pi === 6) {
+      blockAnchor.style.opacity = '1';
+      blockAnchor.style.transform = 'translate(-50%,-50%) scale(' + lerp(1.4, 1.8, smoothstep(clamp01(p / 0.3))) + ')';
+      blockAnchor.style.filter = 'none';
+      return;
+    }
+    if (pi === 7) {
+      blockAnchor.style.opacity = '1';
+      blockAnchor.style.transform = 'translate(-50%,-50%) scale(1.8)';
+      var dimP = smoothstep(clamp01(p / 0.4));
+      var glowP = clamp01((p - 0.5) / 0.5);
+      blockAnchor.style.filter = 'brightness(' + lerp(1, 0.4, dimP) + ')';
+      if (glowP > 0) blockAnchor.style.filter = 'brightness(' + lerp(0.4, 1.1, smoothstep(glowP)) + ')';
+      return;
+    }
+    if (pi >= 8 && pi <= 22) {
+      blockAnchor.style.opacity = '1';
+      blockAnchor.style.transform = 'translate(-50%,-50%) scale(1.8)';
+      var dimPhases = [10, 11, 14, 18, 19, 20];
+      blockAnchor.style.filter = 'brightness(' + (dimPhases.indexOf(pi) !== -1 ? '0.75' : '1') + ')';
+      return;
+    }
+    if (pi >= 23) { blockAnchor.style.opacity = '0'; }
+  }
+
+  // ─── Ambient Glow ───
+  function updateGlow(pi, p) {
+    if (pi < 5) { ambientGlow.style.opacity = '0'; return; }
+    var color = 'rgba(255,255,255,0.04)';
+    var op = 0.5;
+    if (pi >= 5 && pi <= 8) color = 'rgba(255,255,255,0.05)';
+    if (pi >= 9 && pi <= 12) color = 'rgba(138,180,248,0.06)';
+    if (pi >= 13 && pi <= 16) color = 'rgba(232,168,124,0.06)';
+    if (pi >= 17 && pi <= 21) color = 'rgba(130,217,197,0.06)';
+    if (pi === 22) { color = 'rgba(255,255,255,0.08)'; op = 0.8; }
+    if (pi === 7) op = 0.3 + Math.sin(p * Math.PI) * 0.3;
+    if (pi >= 23) op = 0;
+    ambientGlow.style.background = 'radial-gradient(circle, ' + color + ' 0%, transparent 70%)';
+    ambientGlow.style.opacity = op;
+  }
+
+  // ─── Content Bands ───
+  function updateBands(pi, p) {
+    var bands = document.querySelectorAll('.content-band');
+    if (pi === 5) {
+      var bP = clamp01((p - 0.3) / 0.4);
+      for (var i = 0; i < bands.length; i++) bands[i].setAttribute('opacity', clamp01((bP - i * 0.1) / 0.25).toFixed(2));
+    } else if (pi >= 6 && pi <= 22) {
+      for (var j = 0; j < bands.length; j++) bands[j].setAttribute('opacity', '1');
+    } else {
+      for (var k = 0; k < bands.length; k++) bands[k].setAttribute('opacity', '0');
+    }
+  }
+
+  // ─── Trim Path ───
+  function updateTrim(pi, p) {
+    if (pi === 5) { trimPath.style.opacity = smoothstep(clamp01(p / 0.25)); trimPath.setAttribute('stroke-dashoffset', -p * 1200); }
+    else if (pi === 6) { trimPath.style.opacity = 1 - clamp01(p / 0.3); }
+    else { trimPath.style.opacity = '0'; }
+  }
+
+  // ─── Duality Labels ───
+  function updateDuality(pi, p) {
+    var dl = E('dualityLeft'), dr = E('dualityRight'), dd = E('dualityDivider');
+    if (pi === 6) {
+      var dP = smoothstep(clamp01((p - 0.1) / 0.3));
+      dl.style.opacity = dP * 0.6; dr.style.opacity = dP * 0.6; dd.style.opacity = dP * 0.3;
+    } else if (pi === 7) {
+      var fo = clamp01(p / 0.2);
+      dl.style.opacity = 0.6 * (1 - fo); dr.style.opacity = 0.6 * (1 - fo); dd.style.opacity = 0.3 * (1 - fo);
+    } else {
+      dl.style.opacity = '0'; dr.style.opacity = '0'; dd.style.opacity = '0';
+    }
+  }
+
+  // ─── Story Nav ───
+  function updateNav(pi) {
+    var visible = pi >= 1 && pi <= 25;
+    storyNav.classList.toggle('visible', visible);
+    var map = [[0,1,2,3,4],[5,6,7],[8,9,10,11,12,13,14,15,16,17,18,19,20,21],[22,23,24],[25,26]];
+    for (var i = 0; i < map.length; i++) {
+      var active = map[i].indexOf(pi) !== -1;
+      snavDots[i].classList.toggle('active', active);
+      snavLabels[i].classList.toggle('active', active);
+    }
+  }
+
+  // ─── Pillar Stagger ───
+  function updatePillars(p) {
+    F.pillarContent.style.opacity = '1';
+    F.pillarContent.style.transform = 'translate(-50%, -50%)';
+    for (var i = 0; i < 4; i++) {
+      var pp = smoothstep(clamp01((p - i * 0.12) / 0.2));
+      var el = E('pillar' + i);
+      el.style.opacity = pp;
+      el.style.transform = 'translateY(' + ((1 - pp) * 20) + 'px)';
+    }
+    E('pillarBaseline').style.opacity = smoothstep(clamp01((p - 0.65) / 0.2)) * 0.5;
+  }
+
+  // ─── Main Update ───
+  function updateJourney() {
+    var state = getPhaseState(window.scrollY);
+    var pi = state.index, p = state.progress;
+
+    updateBlock(pi, p);
+    updateGlow(pi, p);
+    updateBands(pi, p);
+    updateTrim(pi, p);
+    updateDuality(pi, p);
+    updateNav(pi);
+    resetAll();
+
+    // Grid bg
+    var gridBg = E('gridBg');
+    if (pi <= 1) gridBg.style.opacity = 0.18 * (pi === 1 ? (1 - clamp01(p / 0.6)) : 1);
+    else gridBg.style.opacity = '0';
+
+    // Scroll indicator
+    E('scrollIndicator').style.opacity = pi === 0 ? 0.5 * (1 - clamp01(p / 0.3)) : 0;
+
+    // ─── ACT I: Quiet Conviction ───
+    if (pi === 0) { F.heroContent.style.opacity = '1'; F.heroContent.style.transform = 'translate(-50%,-50%)'; }
+    if (pi === 1) { var hOut = smoothstep(clamp01(p / 0.5)); F.heroContent.style.opacity = 1 - hOut; F.heroContent.style.transform = 'translate(-50%,calc(-50% + ' + (-hOut * 40) + 'px))'; }
+    if (pi === 2) { flowCenterAt(F.intentionContent, 0, 0.35, 0.75, 1, p, 30); }
+    if (pi === 3) { updatePillars(p); }
+    if (pi === 4) { flowCenterAt(F.pillarContent, 0, 0, 0, 0.5, p, 30); }
+    if (pi === 5) { flowCenterBelow(F.blockIntroContent, 0.35, 0.6, 0.85, 1, p, 25); }
+    if (pi === 6) { flowCenterBelow(F.blockDualContent, 0.1, 0.4, 0.8, 1, p, 25); }
+    if (pi === 7) { flowCenterBelow(F.bridgeContent, 0, 0.4, 0.8, 1, p, 20); }
+
+    // ─── ACT II: System ───
+    if (pi === 8) { flowCenterBelow(F.systemContent, 0, 0.3, 0.7, 1, p, 20); }
+
+    // ─── ACT III: Engineer (SNAPPY) ───
+    if (pi === 9)  { flowLeft(F.engIntroLeft, 0, 0.25, 0.7, 1, p, 16); }
+    if (pi === 10) {
+      flowLeft(F.engStampLeft, 0, 0.15, 0.85, 1, p, 14);
+      flowRight(F.stampPhoneWrap, 0, 0.2, 0.85, 1, p, 40);
+      var s0 = clamp01((p - 0.15) / 0.1);
+      E('stamp0').classList.toggle('active', s0 > 0.5);
+      for (var sci = 0; sci < 4; sci++) { E('stampChip' + sci).classList.toggle('active', clamp01((p - 0.25 - sci * 0.06) / 0.08) > 0.5); }
+    }
+    if (pi === 11) {
+      flowLeft(F.engRhythmLeft, 0, 0.15, 0.85, 1, p, 14);
+      flowRight(F.rhythmPhoneWrap, 0, 0.2, 0.85, 1, p, 40);
+      for (var rri = 0; rri < rhythmData.length; rri++) { E('rhythmRow' + rri).classList.toggle('active', clamp01((p - 0.15 - rri * 0.06) / 0.1) > 0.5); }
+    }
+    if (pi === 12) { flowCenterBelow(F.engResolveContent, 0, 0.3, 0.7, 1, p, 14); }
+
+    // ─── ACT III: Record (SNAPPY) ───
+    if (pi === 13) { flowLeft(F.recIntroLeft, 0, 0.25, 0.6, 1, p, 16); }
+    if (pi === 14) {
+      flowLeft(F.recUpdateLeft, 0, 0.15, 0.85, 1, p, 14);
+      flowRight(F.recPhoneWrap, 0, 0.2, 0.85, 1, p, 40);
+      E('recField0').classList.toggle('active', clamp01((p - 0.15) / 0.08) > 0.5);
+      E('recQuality').classList.toggle('active', clamp01((p - 0.25) / 0.08) > 0.5);
+      E('recField1').classList.toggle('active', clamp01((p - 0.35) / 0.08) > 0.5);
+    }
+    if (pi === 15) { flowCenterBelow(F.recDataContent, 0, 0.3, 0.7, 1, p, 14); }
+    if (pi === 16) { flowCenterBelow(F.recResolveContent, 0, 0.3, 0.7, 1, p, 14); }
+
+    // ─── ACT III: Reveal (SLOW) ───
+    if (pi === 17) { flowCenterBelow(F.revIntroContent, 0, 0.45, 0.8, 1, p, 25); }
+    if (pi === 18) {
+      flowLeft(F.revInsightsLeft, 0, 0.35, 0.85, 1, p, 22);
+      flowRight(F.insightsDesktopWrap, 0, 0.4, 0.85, 1, p, 30);
+      var iP = smoothstep(clamp01(p / 0.5));
+      E('alignBar').style.width = (iP * 73) + '%';
+      E('workBar').style.width = (iP * 82) + '%';
+      E('healthBar').style.width = (iP * 61) + '%';
+    }
+    if (pi === 19) {
+      flowLeft(F.revExplorerLeft, 0, 0.35, 0.85, 1, p, 22);
+      flowRight(F.explorerDesktopWrap, 0, 0.4, 0.85, 1, p, 30);
+      var cells = explorerGridEl.querySelectorAll('.explorer-cell');
+      for (var ci = 0; ci < cells.length; ci++) cells[ci].style.opacity = clamp01((p - 0.1 - (ci / cells.length) * 0.5) / 0.3);
+    }
+    if (pi === 20) {
+      flowLeft(F.revAgentLeft, 0, 0.35, 0.85, 1, p, 22);
+      flowRight(F.agentPhoneWrap, 0, 0.4, 0.85, 1, p, 30);
+      E('agentBubble0').style.opacity = smoothstep(clamp01((p - 0.2) / 0.3));
+      E('agentBubble0').style.transform = 'translateY(' + ((1 - smoothstep(clamp01((p - 0.2) / 0.3))) * 12) + 'px)';
+      E('agentBubble1').style.opacity = smoothstep(clamp01((p - 0.45) / 0.3));
+      E('agentBubble1').style.transform = 'translateY(' + ((1 - smoothstep(clamp01((p - 0.45) / 0.3))) * 12) + 'px)';
+    }
+    if (pi === 21) { flowCenterBelow(F.revCloseContent, 0, 0.4, 0.8, 1, p, 22); }
+
+    // ─── ACT IV: Convergence ───
+    if (pi === 22) { flowCenterBelow(F.coreIdeaContent, 0, 0.35, 0.75, 1, p, 20); }
+
+    // Phase 23: Compound Day
+    var morphBlock = E('morphBlock');
+    if (pi === 23) {
+      flowLeft(F.dayLeft, 0, 0.3, 2, 2, p, 20);
+      var vw = window.innerWidth, vh2 = window.innerHeight;
+      var mFade = clamp01(p / 0.15);
+      var mToStack = easeOutCubic(clamp01((p - 0.05) / 0.35));
+      var sW = 148, eW = 160, sH = 148, eH = blockData[0].h;
+      var cW = lerp(sW, eW, mToStack), cH = lerp(sH, eH, mToStack);
+      var tY = vh2 * 0.3;
+      morphBlock.style.opacity = mFade * (1 - clamp01((p - 0.45) / 0.05));
+      morphBlock.style.width = cW + 'px'; morphBlock.style.height = cH + 'px';
+      morphBlock.style.left = (vw / 2 - cW / 2) + 'px';
+      morphBlock.style.top = lerp(vh2 / 2 - sH / 2, tY, mToStack) + 'px';
+      var bkF = clamp01((p - 0.15) / 0.1), lnF = clamp01((p - 0.2) / 0.1), clF = clamp01((p - 0.25) / 0.1);
+      E('mBrackets').setAttribute('opacity', (1 - bkF).toFixed(2));
+      E('mLines').setAttribute('opacity', (1 - lnF).toFixed(2));
+      E('morphColor').style.opacity = clF; E('morphColor').style.background = blockData[0].color;
+      morphBlock.style.borderRadius = (clF * 4) + 'px';
+      blockStackEl.style.opacity = p > 0.4 ? 1 : 0;
+      for (var sti = 0; sti < stackBlocks.length; sti++) {
+        if (sti === 0) { var s0P = clamp01((p - 0.45) / 0.05); stackBlocks[0].style.opacity = s0P; stackBlocks[0].style.transform = 'translateY(0)'; }
+        else { var bP = clamp01((p - 0.45 - sti * 0.04) / 0.06); stackBlocks[sti].style.opacity = bP; stackBlocks[sti].style.transform = 'translateY(' + ((1 - bP) * 20) + 'px)'; }
+      }
+      E('stackDateHeader').style.opacity = clamp01((p - 0.5) / 0.1);
+    } else if (pi < 23) {
+      morphBlock.style.opacity = 0; blockStackEl.style.opacity = 0;
+      stackBlocks.forEach(function(b) { b.style.opacity = 0; b.style.transform = 'translateY(20px)'; });
+      E('stackDateHeader').style.opacity = 0;
+    }
+
+    // Phase 24: Compound Week
+    if (pi === 24) {
+      flowLeft(F.weekLeft, 0, 0.3, 2, 2, p, 20);
+      morphBlock.style.opacity = 0;
+      blockStackEl.style.opacity = 1;
+      stackBlocks.forEach(function(b) { b.style.opacity = 1; b.style.transform = 'translateY(0)'; });
+      E('stackDateHeader').style.opacity = 1;
+      var vw2 = window.innerWidth, colGap = 3;
+      var wedC = vw2 / 2, wedL = wedC - WEEK_BLOCK_W / 2, wedR = wedC + WEEK_BLOCK_W / 2;
+      weekViewLeftEl.style.right = (vw2 - wedL + colGap) + 'px'; weekViewLeftEl.style.left = 'auto'; weekViewLeftEl.style.gap = colGap + 'px';
+      weekViewRightEl.style.left = (wedR + colGap) + 'px'; weekViewRightEl.style.right = 'auto'; weekViewRightEl.style.gap = colGap + 'px';
+      var cShow = clamp01((p - 0.08) / 0.1);
+      weekViewLeftEl.style.opacity = cShow; weekViewRightEl.style.opacity = cShow;
+      var tW = (0.85 - 0.12) / 3;
+      weekColsAll.forEach(function(col) {
+        var tier = parseInt(col.dataset.stagger), cS = 0.12 + tier * tW, cE = cS + tW * 2;
+        var cR = clamp01((p - cS) / (cE - cS)), cEase = easeOutCubic(cR);
+        col.style.opacity = cEase;
+        col.querySelectorAll('.week-block').forEach(function(blk, bI) {
+          var bE = easeOutCubic(clamp01((cR - 0.12 - bI * 0.03) / 0.5));
+          blk.style.opacity = bE; blk.style.transform = 'translateY(' + ((1 - bE) * 16) + 'px)';
+        });
+      });
+    } else if (pi < 24) {
+      weekViewLeftEl.style.opacity = 0; weekViewRightEl.style.opacity = 0;
+      weekColsAll.forEach(function(col) { col.style.opacity = 0; col.querySelectorAll('.week-block').forEach(function(blk) { blk.style.opacity = 0; }); });
+    }
+
+    // Phase 25: Year
+    if (pi === 25) {
+      flowLeft(F.yearLeft, 0.15, 0.45, 2, 2, p, 20);
+      var wOut = clamp01(p / 0.2);
+      blockStackEl.style.opacity = 1 - wOut; weekViewLeftEl.style.opacity = 1 - wOut; weekViewRightEl.style.opacity = 1 - wOut;
+      E('stackDateHeader').style.opacity = 1 - wOut;
+      var yIn = smoothstep(clamp01((p - 0.15) / 0.4));
+      yearGridEl.style.opacity = yIn;
+      yearGridEl.style.transform = 'translate(-50%,-50%) scale(' + lerp(0.85, 1, easeOutCubic(clamp01((p - 0.15) / 0.5))) + ')';
+      var yCells = yearGridEl.querySelectorAll('.year-cell');
+      for (var yi = 0; yi < yCells.length; yi++) yCells[yi].style.opacity = clamp01((p - 0.15 - (yi / yCells.length) * 0.4) / 0.3);
+    } else if (pi < 25) {
+      yearGridEl.style.opacity = 0;
+      yearGridEl.querySelectorAll('.year-cell').forEach(function(c) { c.style.opacity = 0; });
+    }
+
+    // Phase 26: Identity
+    if (pi === 26) {
+      var yOut = clamp01(p / 0.25);
+      yearGridEl.style.opacity = 1 - yOut;
+      flowCenterAt(F.identityContent, 0.2, 0.5, 2, 2, p, 20);
+    }
+
+    // Reset bars when not in insights phase
+    if (pi !== 18) { E('alignBar').style.width = '0%'; E('workBar').style.width = '0%'; E('healthBar').style.width = '0%'; }
+    if (pi !== 19) { explorerGridEl.querySelectorAll('.explorer-cell').forEach(function(c) { c.style.opacity = 0; }); }
+  }
+
+  // ─── Hook ───
+  lenis.on('scroll', updateJourney);
+  window.addEventListener('scroll', updateJourney, { passive: true });
+  updateJourney();
+})();
+</script>
+</body>
+</html>
