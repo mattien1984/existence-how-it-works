@@ -43,32 +43,16 @@ body{font-family:var(--sans);background:var(--black);color:var(--white);overflow
 #heroBlockSvg{width:100%;height:100%;position:relative;z-index:2;}
 
 /* ═══ INTENTION CARD ═══ */
-#s2{flex-direction:column;align-items:center;text-align:center;gap:0;padding-top:26vh;}
-.int-title{font-family:var(--serif);font-size:clamp(32px,3.5vw,48px);font-weight:400;line-height:0.95;opacity:0;transform:translateY(20px);}
-.int-sub{font-family:var(--sans);font-weight:300;font-size:clamp(14px,1.1vw,17px);color:rgba(255,255,255,0.6);margin-top:12px;line-height:1.3;opacity:0;transform:translateY(15px);}
-/* ═══ INTENTION UI CARD ═══ */
-#intentionUI{opacity:0;margin-top:44px;width:520px;transform-origin:top center;scale:0.75;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:20px 36px;display:flex;flex-direction:column;gap:0;}
-.iui-pillar{display:flex;flex-direction:column;gap:0;}
-.iui-pillar+.iui-pillar{margin-top:10px;}
-.iui-label-row{display:flex;align-items:center;gap:10px;}
-.iui-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-.iui-label{font-family:var(--mono);font-size:14px;letter-spacing:2px;text-transform:uppercase;color:var(--white);}
-.iui-stats{font-family:var(--sans);font-weight:300;font-size:14px;color:rgba(255,255,255,0.5);margin-top:4px;line-height:1.4;text-align:left;}
-.iui-slider{position:relative;width:100%;height:14px;margin-top:12px;display:flex;align-items:center;}
-.iui-track{position:absolute;top:50%;left:0;right:0;height:4px;transform:translateY(-50%);background:rgba(255,255,255,0.1);border-radius:2px;}
-.iui-fill{position:absolute;top:50%;left:0;height:4px;transform:translateY(-50%);border-radius:2px;}
-.iui-handle{position:absolute;top:50%;width:14px;height:14px;border-radius:50%;transform:translate(-50%,-50%);}
-/* ═══ STACKED BAR ═══ */
-.iui-stacked-bar{display:flex;width:100%;height:40px;border-radius:8px;overflow:hidden;margin-top:48px;}
-.iui-bar-seg{height:100%;}
-/* ═══ LEGEND ═══ */
-.iui-legend{display:flex;justify-content:space-between;margin-top:16px;}
-.iui-legend-item{display:flex;align-items:center;gap:6px;}
-.iui-legend-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
-.iui-legend-text{font-family:var(--mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.5);}
+#s2{flex-direction:column;align-items:center;text-align:center;gap:0;}
+.int-title{font-family:var(--serif);font-size:clamp(32px,3.5vw,48px);font-weight:400;line-height:1.2;opacity:0;transform:translateY(20px);}
+.int-sub{font-family:var(--sans);font-weight:300;font-size:clamp(14px,1.1vw,17px);color:rgba(255,255,255,0.6);margin-top:20px;line-height:1.6;opacity:0;transform:translateY(15px);}
+.int-pillars{display:flex;flex-direction:column;gap:0;margin-top:40px;width:240px;opacity:0;transform:translateY(15px);}
+.int-row{display:flex;align-items:center;gap:20px;padding:14px 0;}
+.int-pillar{font-family:var(--sans);font-weight:500;font-size:clamp(16px,1.4vw,22px);color:var(--white);min-width:70px;text-align:left;}
+.int-bar{flex:1;height:1px;background:var(--white);opacity:0.7;transform-origin:left;transform:scaleX(0);}
 
 /* ═══ BLOCK INTRO TEXT ═══ */
-#blockTitle{position:absolute;top:calc(50% - 185px);left:50%;transform:translate(-50%,0);font-family:var(--serif);font-size:clamp(32px,3.5vw,52px);font-weight:400;text-align:center;white-space:nowrap;z-index:11;opacity:0;}
+#blockTitle{position:absolute;top:calc(50% - 170px);left:50%;transform:translate(-50%,0);font-family:var(--serif);font-size:clamp(32px,3.5vw,52px);font-weight:400;text-align:center;white-space:nowrap;z-index:11;opacity:0;}
 #blockSub{position:absolute;top:calc(50% + 120px);left:50%;transform:translate(-50%,0);font-family:var(--sans);font-weight:300;font-size:clamp(15px,1.2vw,19px);color:#ffffff;text-align:center;line-height:1.5;z-index:11;opacity:0;white-space:nowrap;}
 
 /* ═══ DUALITY TEXT ═══ */
@@ -88,7 +72,7 @@ body{font-family:var(--sans);background:var(--black);color:var(--white);overflow
 #gridContainer{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:11;opacity:0;}
 .grid-cell{background:transparent;padding:0;margin:0;line-height:0;overflow:hidden;}
 .grid-cell svg{width:100%;height:100%;display:block;}
-#accText{position:absolute;top:calc(50% + 160px);left:50%;transform:translate(-50%,0);font-family:var(--serif);font-size:clamp(24px,2.5vw,36px);font-weight:400;text-align:center;line-height:1.15;z-index:11;opacity:0;white-space:nowrap;}
+#accText{position:absolute;top:calc(50% + 140px);left:50%;transform:translate(-50%,0);font-family:var(--serif);font-size:clamp(24px,2.5vw,36px);font-weight:400;text-align:center;line-height:1.4;z-index:11;opacity:0;white-space:nowrap;}
 #accText em{font-style:italic;}
 </style>
 </head>
@@ -120,61 +104,11 @@ body{font-family:var(--sans);background:var(--black);color:var(--white);overflow
     <div class="screen" id="s2">
       <h2 class="int-title" id="intTitle">Define how you want<br>to spend your time.</h2>
       <p class="int-sub" id="intSub">This becomes the baseline against<br>which everything is measured.</p>
-      <div id="intentionUI">
-        <!-- SLEEP -->
-        <div class="iui-pillar">
-          <div class="iui-label-row"><span class="iui-dot" style="background:#C74B8E"></span><span class="iui-label">Sleep</span></div>
-          <div class="iui-stats">8h / day &middot; 56h / week</div>
-          <div class="iui-slider">
-            <div class="iui-track"></div>
-            <div class="iui-fill" id="slFill0" style="width:0%;background:#C74B8E"></div>
-            <div class="iui-handle" id="slHandle0" style="left:0%;background:#C74B8E"></div>
-          </div>
-        </div>
-        <!-- WORK -->
-        <div class="iui-pillar">
-          <div class="iui-label-row"><span class="iui-dot" style="background:#4B59C7"></span><span class="iui-label">Work</span></div>
-          <div class="iui-stats">5.2h / work day &middot; 26h / week</div>
-          <div class="iui-slider">
-            <div class="iui-track"></div>
-            <div class="iui-fill" id="slFill1" style="width:0%;background:#4B59C7"></div>
-            <div class="iui-handle" id="slHandle1" style="left:0%;background:#4B59C7"></div>
-          </div>
-        </div>
-        <!-- HEALTH -->
-        <div class="iui-pillar">
-          <div class="iui-label-row"><span class="iui-dot" style="background:#4BAF5E"></span><span class="iui-label">Health</span></div>
-          <div class="iui-stats">7.0h / day &middot; 49h / week</div>
-          <div class="iui-slider">
-            <div class="iui-track"></div>
-            <div class="iui-fill" id="slFill2" style="width:0%;background:#4BAF5E"></div>
-            <div class="iui-handle" id="slHandle2" style="left:0%;background:#4BAF5E"></div>
-          </div>
-        </div>
-        <!-- LIFE -->
-        <div class="iui-pillar">
-          <div class="iui-label-row"><span class="iui-dot" style="background:#A89534"></span><span class="iui-label">Life</span></div>
-          <div class="iui-stats">5.3h / day &middot; 37h / week<br>Remaining time</div>
-          <div class="iui-slider">
-            <div class="iui-track"></div>
-            <div class="iui-fill" id="slFill3" style="width:0%;background:#A89534"></div>
-            <div class="iui-handle" id="slHandle3" style="left:0%;background:#A89534"></div>
-          </div>
-        </div>
-        <!-- STACKED BAR (168h week: Sleep 56h, Work 26h, Health 49h, Life 37h) -->
-        <div class="iui-stacked-bar">
-          <div class="iui-bar-seg" id="seg0" style="width:0%;background:#C74B8E"></div>
-          <div class="iui-bar-seg" id="seg1" style="width:0%;background:#4B59C7"></div>
-          <div class="iui-bar-seg" id="seg2" style="width:0%;background:#4BAF5E"></div>
-          <div class="iui-bar-seg" id="seg3" style="width:0%;background:#A89534"></div>
-        </div>
-        <!-- LEGEND -->
-        <div class="iui-legend">
-          <div class="iui-legend-item"><span class="iui-legend-dot" style="background:#C74B8E"></span><span class="iui-legend-text" id="leg0">Sleep 33%</span></div>
-          <div class="iui-legend-item"><span class="iui-legend-dot" style="background:#4B59C7"></span><span class="iui-legend-text" id="leg1">Work 15%</span></div>
-          <div class="iui-legend-item"><span class="iui-legend-dot" style="background:#4BAF5E"></span><span class="iui-legend-text" id="leg2">Health 29%</span></div>
-          <div class="iui-legend-item"><span class="iui-legend-dot" style="background:#A89534"></span><span class="iui-legend-text" id="leg3">Life 22%</span></div>
-        </div>
+      <div class="int-pillars" id="intPillars">
+        <div class="int-row"><span class="int-pillar">Work</span><div class="int-bar" id="bar0"></div></div>
+        <div class="int-row"><span class="int-pillar">Life</span><div class="int-bar" id="bar1"></div></div>
+        <div class="int-row"><span class="int-pillar">Health</span><div class="int-bar" id="bar2"></div></div>
+        <div class="int-row"><span class="int-pillar">Sleep</span><div class="int-bar" id="bar3"></div></div>
       </div>
     </div>
 
@@ -232,18 +166,18 @@ body{font-family:var(--sans);background:var(--black);color:var(--white);overflow
     </div>
 
     <!-- BLOCK TEXT (persistent, positioned around block) -->
-    <h2 id="blockTitle">This is a Time Block</h2>
+    <h2 id="blockTitle">This is a time block</h2>
     <p id="blockSub">It is the foundational<br>container for all time.</p>
     <p id="blockSub2" style="position:absolute;top:calc(50% + 120px);left:50%;transform:translate(-50%,0);font-family:var(--sans);font-weight:300;font-size:clamp(15px,1.2vw,19px);color:#ffffff;text-align:center;line-height:1.5;z-index:11;opacity:0;white-space:nowrap;">Everything you do exists<br>inside a unit of time.</p>
     <p id="blockSub3" style="position:absolute;top:calc(50% + 120px);left:50%;transform:translate(-50%,0);font-family:var(--sans);font-weight:300;font-size:clamp(15px,1.2vw,19px);color:#ffffff;text-align:center;line-height:1.5;z-index:11;opacity:0;white-space:nowrap;">It gives time structure.</p>
 
     <!-- DUALITY TEXT (persistent) -->
     <div id="dualLeft" style="display:flex;flex-direction:column;gap:8px;">
-      <p style="font-family:var(--serif);font-size:clamp(24px,2.5vw,38px);font-weight:400;line-height:1.25;">It captures what<br>you <em>planned</em>.</p>
+      <p style="font-family:var(--serif);font-size:clamp(24px,2.5vw,38px);font-weight:400;line-height:1.25;">It captures what<br>you planned.</p>
       <p style="font-family:var(--sans);font-weight:300;font-size:clamp(13px,1.1vw,16px);color:rgba(255,255,255,0.5);text-align:right;">Your intention.</p>
     </div>
     <div id="dualRight" style="display:flex;flex-direction:column;gap:8px;">
-      <p style="font-family:var(--serif);font-size:clamp(24px,2.5vw,38px);font-weight:400;line-height:1.25;">And what actually<br><em>happened</em>.</p>
+      <p style="font-family:var(--serif);font-size:clamp(24px,2.5vw,38px);font-weight:400;line-height:1.25;">And what actually<br>happened.</p>
       <p style="font-family:var(--sans);font-weight:300;font-size:clamp(13px,1.1vw,16px);color:rgba(255,255,255,0.5);text-align:left;">Your reality.</p>
     </div>
 
@@ -362,7 +296,8 @@ body{font-family:var(--sans);background:var(--black);color:var(--white);overflow
   // ─── DOM refs ───
   var E=function(id){return document.getElementById(id);};
   var s1=E('s1'),s2=E('s2');
-  var intTitle=E('intTitle'),intSubText=E('intSub'),intentionUI=E('intentionUI');
+  var intTitle=E('intTitle'),intSubText=E('intSub'),intPillars=E('intPillars');
+  var bars=[E('bar0'),E('bar1'),E('bar2'),E('bar3')];
   var heroBlock=E('heroBlock');
   var blockTitle=E('blockTitle'),blockSub=E('blockSub'),blockSub2=E('blockSub2'),blockSub3=E('blockSub3');
   var dualLeft=E('dualLeft'),dualRight=E('dualRight');
@@ -377,10 +312,11 @@ body{font-family:var(--sans);background:var(--black);color:var(--white);overflow
   // Grid state
   var GRID_LOOSE_COLS=7,GRID_LOOSE_ROWS=3;
   var GRID_FULL_COLS=27,GRID_FULL_ROWS=15;
-  var CELL_SIZE=clamp01(window.innerWidth/1400)*52;
-  if(CELL_SIZE<36) CELL_SIZE=36;
-  var centerCol=Math.floor(GRID_FULL_COLS/2); // 13
-  var centerRow=Math.floor(GRID_FULL_ROWS/2); // 7
+  var CELL_LOOSE=clamp01(window.innerWidth/1400)*52;
+  if(CELL_LOOSE<36) CELL_LOOSE=36;
+  var CELL_DENSE=clamp01(window.innerWidth/1400)*28;
+  if(CELL_DENSE<20) CELL_DENSE=20;
+  var GAP_LOOSE=0,GAP_DENSE=0;
 
   // Mini block SVG markup (simplified: edge lines + bracket corners, no filters)
   var miniBlockSvg='<svg viewBox="890.75 620.28 136.09 136.4" fill="none" preserveAspectRatio="none" style="width:100%;height:100%;display:block">'
@@ -398,33 +334,16 @@ body{font-family:var(--sans);background:var(--black);color:var(--white);overflow
     +'<rect x="1026.04" y="750.08" width="0.8" height="6.4" fill="rgba(255,255,255,0.6)"/>'
     +'</svg>';
 
-  // Build grid cells — ALL pre-positioned at final positions in a FIXED-SIZE container
+  // Build grid cells (enough for full expanded grid)
   var totalCells=GRID_FULL_COLS*GRID_FULL_ROWS;
-  var FULL_W=GRID_FULL_COLS*CELL_SIZE;
-  var FULL_H=GRID_FULL_ROWS*CELL_SIZE;
-  // Set container size ONCE — it never changes
-  gridContainer.style.width=FULL_W+'px';
-  gridContainer.style.height=FULL_H+'px';
-
-  // Max distance from center (corner to center)
-  var maxDist=Math.max(centerCol,centerRow);
-  // Distance threshold for the initial 7×3 cluster
-  var looseDist=3; // covers 7×3 centered region (max of 3 cols, 1 row from center)
-
   var gridCells=[];
-  var cellDist=[]; // pre-computed normalized distance for each cell
   for(var gi=0;gi<totalCells;gi++){
-    var row=Math.floor(gi/GRID_FULL_COLS);
-    var col=gi%GRID_FULL_COLS;
     var c=document.createElement('div');
     c.className='grid-cell';
-    c.style.cssText='position:absolute;opacity:0;width:'+CELL_SIZE+'px;height:'+CELL_SIZE+'px;left:'+(col*CELL_SIZE)+'px;top:'+(row*CELL_SIZE)+'px;';
+    c.style.cssText='position:absolute;opacity:0;';
     c.innerHTML=miniBlockSvg;
     gridContainer.appendChild(c);
     gridCells.push(c);
-    // Distance from center cell
-    var dist=Math.max(Math.abs(col-centerCol),Math.abs(row-centerRow));
-    cellDist.push(dist);
   }
 
   // Surge started flag
@@ -484,24 +403,14 @@ body{font-family:var(--sans);background:var(--black);color:var(--white);overflow
       var sIn=smoothstep(clamp01((p-0.12)/0.2));
       intSubText.style.opacity=sIn;
       intSubText.style.transform='translateY('+((1-sIn)*15)+'px)';
-      // Intention UI fades in earlier
-      var pIn=smoothstep(clamp01((p-0.15)/0.2));
-      intentionUI.style.opacity=pIn;
-      intentionUI.style.transform='translateY('+((1-pIn)*15)+'px)';
-
-      // Slider animations — stagger per pillar
-      // 168h week: Sleep 56h (33.3%), Work 26h (15.5%), Health 49h (29.2%), Life 37h (22.0%)
-      var slTargets=[33.3, 15.5, 29.2, 22.0]; // percentage of 168h week
-      var slWidths=[60, 45, 60, 25]; // slider fill %
-      var slLabels=['Sleep','Work','Health','Life'];
-      for(var si=0;si<4;si++){
-        var slP=smoothstep(clamp01((p-0.3-si*0.06)/0.2));
-        var curW=slP*slWidths[si];
-        E('slFill'+si).style.width=curW+'%';
-        E('slHandle'+si).style.left=curW+'%';
-        var segW=slP*slTargets[si];
-        E('seg'+si).style.width=segW+'%';
-        E('leg'+si).textContent=slLabels[si]+' '+Math.round(segW)+'%';
+      // Pillars stagger after
+      var pIn=smoothstep(clamp01((p-0.25)/0.2));
+      intPillars.style.opacity=pIn;
+      intPillars.style.transform='translateY('+((1-pIn)*15)+'px)';
+      // Bars grow one by one
+      for(var bi=0;bi<bars.length;bi++){
+        var barP=smoothstep(clamp01((p-0.4-bi*0.06)/0.12));
+        bars[bi].style.transform='scaleX('+barP+')';
       }
     }
 
@@ -514,9 +423,9 @@ body{font-family:var(--sans);background:var(--black);color:var(--white);overflow
       intTitle.style.transform='translateY('+(-splitP*80)+'px)';
       intSubText.style.opacity=1-splitP;
       intSubText.style.transform='translateY('+(-splitP*60)+'px)';
-      // Intention UI goes DOWN
-      intentionUI.style.opacity=1-splitP;
-      intentionUI.style.transform='translateY('+(splitP*80)+'px)';
+      // Pillars go DOWN
+      intPillars.style.opacity=1-splitP;
+      intPillars.style.transform='translateY('+(splitP*80)+'px)';
       // Block scales up in the gap between them
       var blockReveal=smoothstep(clamp01((p-0.1)/0.5));
       var blockScale=lerp(0.3,1,blockReveal);
@@ -531,7 +440,7 @@ body{font-family:var(--sans);background:var(--black);color:var(--white);overflow
       }
     }
     if(pi>3) s2.style.opacity='0';
-    if(pi<2){s2.style.opacity='0';intTitle.style.opacity='0';intSubText.style.opacity='0';intentionUI.style.opacity='0';}
+    if(pi<2){s2.style.opacity='0';intTitle.style.opacity='0';intSubText.style.opacity='0';intPillars.style.opacity='0';bars.forEach(function(b){b.style.transform='scaleX(0)';});}
 
     // ─── PHASE 4: Block holds + title/sub appear ───
     if(pi===4){
@@ -543,7 +452,7 @@ body{font-family:var(--sans);background:var(--black);color:var(--white);overflow
       blockTitle.style.opacity=titleIn;
       blockTitle.style.transform='translate(-50%,'+(((1-titleIn)*15))+'px)';
       var subIn=smoothstep(clamp01((p-0.4)/0.25));
-      blockSub.style.opacity=subIn;
+      blockSub.style.opacity=subIn*0.75;
       blockSub.style.transform='translate(-50%,'+(((1-subIn)*10))+'px)';
 
       if(p>0.5) trimPathGroup.setAttribute('opacity',Math.max(0,1-(p-0.5)*4).toFixed(2));
@@ -556,11 +465,11 @@ body{font-family:var(--sans);background:var(--black);color:var(--white);overflow
       blockTitle.style.opacity='1';blockTitle.style.transform='translate(-50%,0)';
       // Sub1 fades out up
       var s1Out=smoothstep(clamp01(p/0.3));
-      blockSub.style.opacity=(1-s1Out);
+      blockSub.style.opacity=(1-s1Out)*0.75;
       blockSub.style.transform='translate(-50%,'+(-s1Out*15)+'px)';
       // Sub2 fades in
       var s2In=smoothstep(clamp01((p-0.2)/0.3));
-      blockSub2.style.opacity=s2In;
+      blockSub2.style.opacity=s2In*0.75;
       blockSub2.style.transform='translate(-50%,'+((1-s2In)*10)+'px)';
       blockSub3.style.opacity='0';
     }
@@ -572,11 +481,11 @@ body{font-family:var(--sans);background:var(--black);color:var(--white);overflow
       blockSub.style.opacity='0';
       // Sub2 fades out up
       var s2Out=smoothstep(clamp01(p/0.3));
-      blockSub2.style.opacity=(1-s2Out);
+      blockSub2.style.opacity=(1-s2Out)*0.75;
       blockSub2.style.transform='translate(-50%,'+(-s2Out*15)+'px)';
       // Sub3 fades in
       var s3In=smoothstep(clamp01((p-0.2)/0.3));
-      blockSub3.style.opacity=s3In;
+      blockSub3.style.opacity=s3In*0.75;
       blockSub3.style.transform='translate(-50%,'+((1-s3In)*10)+'px)';
     }
 
@@ -593,7 +502,7 @@ body{font-family:var(--sans);background:var(--black);color:var(--white);overflow
       var titOut=clamp01(p/0.15);
       blockTitle.style.opacity=1-titOut;
       blockSub.style.opacity='0';blockSub2.style.opacity='0';
-      blockSub3.style.opacity=(1-titOut);
+      blockSub3.style.opacity=(1-titOut)*0.75;
 
       // Left text first — "It captures what you planned."
       var lIn=smoothstep(clamp01((p-0.1)/0.2));
@@ -637,131 +546,169 @@ body{font-family:var(--sans);background:var(--black);color:var(--white);overflow
       dualRight.style.opacity=1-dOut;
       heroBlock.style.opacity='1';
       heroBlock.style.transform='translate(-50%,-50%) scale(1)';
-      // Gradient fill always stays visible
+      E('blockGradRect').setAttribute('opacity','0');
     }
 
-    // ─── PHASE 9: Grid expand (block shrinks, 7×3 peppers in around it) ───
-    // Container is FIXED size (FULL_W × FULL_H) and never changes.
-    // All cells are pre-positioned. Only opacity changes.
+    // ─── PHASE 9: Grid expand (block shrinks, duplicates pepper out) ───
     if(pi===9){
       splitWrap.style.opacity='0';
       dualLeft.style.opacity='0';dualRight.style.opacity='0';
       blockTitle.style.opacity='0';blockSub.style.opacity='0';blockSub2.style.opacity='0';blockSub3.style.opacity='0';
 
-      // Block shrinks to grid cell size but stays at viewport center
+      // Block shrinks to grid cell size but stays fully visible at center
       var shrinkP=smoothstep(clamp01(p/0.3));
-      var targetScale=CELL_SIZE/160;
-      var blockScale9=lerp(1,targetScale,shrinkP);
+      var targetScale=CELL_LOOSE/160;
+      var blockScale=lerp(1,targetScale,shrinkP);
       heroBlock.style.opacity='1';
-      heroBlock.style.transform='translate(-50%,-50%) scale('+blockScale9+')';
+      heroBlock.style.transform='translate(-50%,-50%) scale('+blockScale+')';
 
-      // Show grid container (fixed size, centered)
+      // Grid peppers in
       gridContainer.style.opacity='1';
+      var looseW=GRID_LOOSE_COLS*CELL_LOOSE+(GRID_LOOSE_COLS-1)*GAP_LOOSE;
+      var looseH=GRID_LOOSE_ROWS*CELL_LOOSE+(GRID_LOOSE_ROWS-1)*GAP_LOOSE;
+      gridContainer.style.width=looseW+'px';
+      gridContainer.style.height=looseH+'px';
 
-      // Pepper in cells that are within the 7×3 region (distance-based from center)
+      var visibleCells=GRID_LOOSE_COLS*GRID_LOOSE_ROWS;
       for(var gi2=0;gi2<totalCells;gi2++){
-        var row9=Math.floor(gi2/GRID_FULL_COLS);
-        var col9=gi2%GRID_FULL_COLS;
-        var isCenter=(col9===centerCol&&row9===centerRow);
-
-        if(cellDist[gi2]<=looseDist){
-          // This cell is within the initial 7×3 cluster
-          if(isCenter){
-            // Center cell hidden — hero block sits there
+        if(gi2<visibleCells){
+          var row=Math.floor(gi2/GRID_LOOSE_COLS);
+          var col=gi2%GRID_LOOSE_COLS;
+          gridCells[gi2].style.width=CELL_LOOSE+'px';
+          gridCells[gi2].style.height=CELL_LOOSE+'px';
+          gridCells[gi2].style.left=(col*(CELL_LOOSE+GAP_LOOSE))+'px';
+          gridCells[gi2].style.top=(row*(CELL_LOOSE+GAP_LOOSE))+'px';
+          // Pepper in with stagger from center (skip center cell — hero block sits there)
+          var centerIdx=1*GRID_LOOSE_COLS+3;
+          var dist=Math.abs(col-3)+Math.abs(row-1);
+          var cellP=smoothstep(clamp01((p-0.2-dist*0.04)/0.2));
+          if(gi2===centerIdx){
             gridCells[gi2].style.opacity='0';
           } else {
-            // Stagger in based on distance from center
-            var stagger9=cellDist[gi2]/looseDist; // 0..1
-            var cellP9=smoothstep(clamp01((p-0.2-stagger9*0.3)/0.2));
-            gridCells[gi2].style.opacity=cellP9;
+            gridCells[gi2].style.opacity=cellP;
+            gridCells[gi2].style.transform='scale(1)';
           }
         } else {
-          // Outside 7×3 — hidden during phase 9
           gridCells[gi2].style.opacity='0';
         }
       }
 
       // Acc text
-      var looseH9=GRID_LOOSE_ROWS*CELL_SIZE;
-      var textP9=smoothstep(clamp01((p-0.35)/0.25));
-      accText.style.opacity=textP9;
-      accText.style.top='calc(50% + '+(looseH9/2+40)+'px)';
+      var textP=smoothstep(clamp01((p-0.35)/0.25));
+      accText.style.opacity=textP;
+      accText.style.top='calc(50% + '+(looseH/2+40)+'px)';
     }
     if(pi<9){gridContainer.style.opacity='0';accText.style.opacity='0';}
 
-    // ─── PHASE 10: Grid expands — per-cell pepper stagger from center ───
+    // ─── PHASE 10: Grid grows (same pepper style, expands outward) ───
     if(pi===10){
-      // Hero block stays visible at cell size in center
-      heroBlock.style.opacity='1';
-      heroBlock.style.filter='none';
-      heroBlock.style.transform='translate(-50%,-50%) scale('+(CELL_SIZE/160)+')';
+      heroBlock.style.opacity='0';
       gridContainer.style.opacity='1';
       accText.style.opacity='1';
 
+      // Full grid dimensions
+      var fullW=GRID_FULL_COLS*CELL_LOOSE;
+      var fullH=GRID_FULL_ROWS*CELL_LOOSE;
+      gridContainer.style.width=fullW+'px';
+      gridContainer.style.height=fullH+'px';
+
+      // Offset: original 7×3 sits in center of 13×7
+      var colOff=Math.floor((GRID_FULL_COLS-GRID_LOOSE_COLS)/2); // 3
+      var rowOff=Math.floor((GRID_FULL_ROWS-GRID_LOOSE_ROWS)/2); // 2
+
+      var fullCells=GRID_FULL_COLS*GRID_FULL_ROWS;
+      var centerCol=Math.floor(GRID_FULL_COLS/2);
+      var centerRow=Math.floor(GRID_FULL_ROWS/2);
+
       for(var gi3=0;gi3<totalCells;gi3++){
-        var d=cellDist[gi3];
-        if(d===0){
-          gridCells[gi3].style.opacity='0'; // center cell hidden, hero sits there
-        } else if(d<=looseDist){
-          gridCells[gi3].style.opacity='1'; // original 7×3 already visible
+        if(gi3<fullCells){
+          var r2=Math.floor(gi3/GRID_FULL_COLS);
+          var c2=gi3%GRID_FULL_COLS;
+          gridCells[gi3].style.width=CELL_LOOSE+'px';
+          gridCells[gi3].style.height=CELL_LOOSE+'px';
+          gridCells[gi3].style.left=(c2*CELL_LOOSE)+'px';
+          gridCells[gi3].style.top=(r2*CELL_LOOSE)+'px';
+
+          // Was this cell in the original 7×3?
+          var inOriginal=(c2>=colOff&&c2<colOff+GRID_LOOSE_COLS&&r2>=rowOff&&r2<rowOff+GRID_LOOSE_ROWS);
+          if(inOriginal){
+            gridCells[gi3].style.opacity='1';
+          } else {
+            // Pepper in from center outward, same style as phase 9
+            var dist=Math.abs(c2-centerCol)+Math.abs(r2-centerRow);
+            var cellP=smoothstep(clamp01((p-dist*0.03)/0.2));
+            gridCells[gi3].style.opacity=cellP;
+          }
           gridCells[gi3].style.transform='scale(1)';
         } else {
-          // Each cell gets its own entrance based on its distance
-          var normalD=(d-looseDist)/(maxDist-looseDist); // 0 at edge of 7×3, 1 at corner
-          var cellP=smoothstep(clamp01((p-normalD*0.7)/0.15));
-          gridCells[gi3].style.opacity=cellP;
-          gridCells[gi3].style.transform='scale('+lerp(0.5,1,cellP)+')';
+          gridCells[gi3].style.opacity='0';
         }
       }
 
-      var looseH10=GRID_LOOSE_ROWS*CELL_SIZE;
-      accText.style.top='calc(50% + '+(looseH10/2+40)+'px)';
+      // Text stays in same position (use original grid height for positioning)
+      var origH=GRID_LOOSE_ROWS*CELL_LOOSE;
+      accText.style.top='calc(50% + '+(origH/2+40)+'px)';
     }
 
-    // ─── PHASE 11: Grid contracts — per-cell stagger, outside-in ───
+    // ─── PHASE 11: Grid breathes back in to single block ───
     if(pi===11){
       gridContainer.style.opacity='1';
 
+      var breatheP=smoothstep(clamp01(p/0.7));
+
+      // Full grid dimensions (same as phase 10 end state)
+      var fullW11=GRID_FULL_COLS*CELL_LOOSE;
+      var fullH11=GRID_FULL_ROWS*CELL_LOOSE;
+      gridContainer.style.width=fullW11+'px';
+      gridContainer.style.height=fullH11+'px';
+
+      var colOff11=Math.floor((GRID_FULL_COLS-GRID_LOOSE_COLS)/2);
+      var rowOff11=Math.floor((GRID_FULL_ROWS-GRID_LOOSE_ROWS)/2);
+      var centerCol11=Math.floor(GRID_FULL_COLS/2);
+      var centerRow11=Math.floor(GRID_FULL_ROWS/2);
+      var fullCells11=GRID_FULL_COLS*GRID_FULL_ROWS;
+
+      // Reverse: outer cells fade out first, inner cells last
       for(var gi4=0;gi4<totalCells;gi4++){
-        var d11=cellDist[gi4];
-        if(d11===0){
-          gridCells[gi4].style.opacity='0';
+        if(gi4<fullCells11){
+          var r3=Math.floor(gi4/GRID_FULL_COLS);
+          var c3=gi4%GRID_FULL_COLS;
+          gridCells[gi4].style.width=CELL_LOOSE+'px';
+          gridCells[gi4].style.height=CELL_LOOSE+'px';
+          gridCells[gi4].style.left=(c3*CELL_LOOSE)+'px';
+          gridCells[gi4].style.top=(r3*CELL_LOOSE)+'px';
+
+          var dist=Math.abs(c3-centerCol11)+Math.abs(r3-centerRow11);
+          var maxDist=centerCol11+centerRow11;
+          // Outer cells fade first (low dist = fades last)
+          var fadeStart=(1-dist/maxDist)*0.5;
+          var cellFade=smoothstep(clamp01((breatheP-fadeStart)/0.3));
+          gridCells[gi4].style.opacity=1-cellFade;
+          gridCells[gi4].style.transform='scale(1)';
         } else {
-          // Reverse: outer cells disappear first
-          var normalD11=1-(d11/maxDist); // 1 at center, 0 at edge
-          var cellP11=smoothstep(clamp01((p-normalD11*0.6)/0.15));
-          gridCells[gi4].style.opacity=1-cellP11;
-          gridCells[gi4].style.transform='scale('+lerp(1,0.5,cellP11)+')';
+          gridCells[gi4].style.opacity='0';
         }
       }
 
       // Text fades out
       accText.style.opacity=1-smoothstep(clamp01(p/0.3));
-      var looseH11=GRID_LOOSE_ROWS*CELL_SIZE;
-      accText.style.top='calc(50% + '+(looseH11/2+40)+'px)';
+      var origH11=GRID_LOOSE_ROWS*CELL_LOOSE;
+      accText.style.top='calc(50% + '+(origH11/2+40)+'px)';
 
-      // Hero block stays at cell size, then scales back up once grid is mostly gone
-      heroBlock.style.opacity='1';
-      heroBlock.style.filter='none';
-      var blockScaleUp=smoothstep(clamp01((p-0.6)/0.35));
-      heroBlock.style.transform='translate(-50%,-50%) scale('+lerp(CELL_SIZE/160,1,blockScaleUp)+')';
-
-      if(p>=0.95) gridContainer.style.opacity='0';
+      // Hero block fades back in as grid disappears
+      var blockReturn=smoothstep(clamp01((p-0.5)/0.4));
+      heroBlock.style.opacity=blockReturn;
+      heroBlock.style.transform='translate(-50%,-50%) scale('+lerp(CELL_LOOSE/160,1,blockReturn)+')';
     }
 
     // ─── Ensure block hidden when not in block phases ───
     if(pi<3){heroBlock.style.opacity='0';}
-    if(pi>=9&&pi<=11){/* grid phases handle block */}
-
-    // ─── Slider interactivity check ───
-    if(pi===2 && p>=0.85){
-    }
+    if(pi>=9&&pi<=10){/* grid phases handle block */}
   }
 
   lenis.on('scroll',update);
   window.addEventListener('scroll',update,{passive:true});
   update();
-
 })();
 </script>
 </body>
